@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" content="LINGUA – Deine KI-gestützte Sprachlern-App">
-<title>LINGUA</title>
+<meta name="description" content="LINGUA v1.1 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="author" content="René Prause">
+<title>LINGUA v1.1 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -26,6 +27,7 @@
   --es: #f7971e;
   --en: #6c63ff;
   --tr: #e63946;
+  --sq: #e41e20;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 html { height:100%; }
@@ -73,6 +75,7 @@ header {
 .lang-pill[data-lang="es"] { --pill-color:var(--es); }
 .lang-pill[data-lang="en"] { --pill-color:var(--en); }
 .lang-pill[data-lang="tr"] { --pill-color:var(--tr); }
+.lang-pill[data-lang="sq"] { --pill-color:var(--sq); }
 .settings-btn {
   background:var(--surface2); border:1px solid var(--border); border-radius:8px;
   padding:.35rem .6rem; cursor:pointer; font-size:1rem; color:var(--muted);
@@ -310,10 +313,10 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 
 /* LANGUAGE SELECTION CARDS */
 .lang-select-grid {
-  display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; max-width:620px; margin:0 auto;
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; max-width:640px; margin:0 auto;
 }
-@media(max-width:480px) {
-  .lang-select-grid { grid-template-columns:1fr 1fr; }
+@media(max-width:500px) {
+  .lang-select-grid { grid-template-columns:1fr 1fr; gap:.75rem; }
 }
 .lang-select-card {
   background:var(--surface); border:2px solid var(--border); border-radius:20px;
@@ -482,7 +485,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;">v1.1</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill active" data-lang="ru">🇷🇺 RU</button>
@@ -490,6 +493,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <button class="lang-pill" data-lang="es">🇪🇸 ES</button>
         <button class="lang-pill" data-lang="en">🇬🇧 EN</button>
         <button class="lang-pill" data-lang="tr">🇹🇷 TR</button>
+        <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
       </div>
       <button class="settings-btn" onclick="openSettings()" title="Einstellungen">
         <span class="api-dot-inline" id="api-dot"></span>⚙
@@ -546,6 +550,11 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
             <div class="lsc-flag">🇹🇷</div>
             <div class="lsc-name">Türkisch</div>
             <div class="lsc-sub">Türkçe · Altaisch</div>
+          </button>
+          <button class="lang-select-card" onclick="selectLanguage('sq')">
+            <div class="lsc-flag">🇦🇱</div>
+            <div class="lsc-name">Albanisch</div>
+            <div class="lsc-sub">Shqip · Isolat</div>
           </button>
         </div>
       </div>
@@ -746,6 +755,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
               <option value="es">🇪🇸 Spanisch</option>
               <option value="en">🇬🇧 Englisch</option>
               <option value="tr">🇹🇷 Türkisch</option>
+              <option value="sq">🇦🇱 Albanisch</option>
             </select>
           </div>
           <textarea class="translate-textarea" id="trans-input" placeholder="Text eingeben..."></textarea>
@@ -766,6 +776,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
               <option value="es">🇪🇸 Spanisch</option>
               <option value="en">🇬🇧 Englisch</option>
               <option value="tr">🇹🇷 Türkisch</option>
+              <option value="sq">🇦🇱 Albanisch</option>
             </select>
           </div>
           <textarea class="translate-textarea" id="trans-output" placeholder="Übersetzung erscheint hier..." readonly></textarea>
@@ -808,7 +819,10 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
   </main>
 
-  <footer>LINGUA · KI-Sprachlern-App · Dein Fortschritt wird lokal gespeichert</footer>
+  <footer>
+    LINGUA v1.1 · KI-Sprachlern-App · Dein Fortschritt wird lokal gespeichert
+    <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · 2026</span>
+  </footer>
 </div>
 
 <!-- SETTINGS MODAL -->
@@ -847,6 +861,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <button class="lang-pill" data-settings-lang="es" onclick="setLangFromSettings('es')">🇪🇸 Spanisch</button>
         <button class="lang-pill" data-settings-lang="en" onclick="setLangFromSettings('en')">🇬🇧 Englisch</button>
         <button class="lang-pill" data-settings-lang="tr" onclick="setLangFromSettings('tr')">🇹🇷 Türkisch</button>
+        <button class="lang-pill" data-settings-lang="sq" onclick="setLangFromSettings('sq')">🇦🇱 Albanisch</button>
       </div>
     </div>
 
@@ -876,7 +891,10 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
       </div>
     </div>
 
-    <div style="font-size:.7rem;color:var(--muted);text-align:center;">LINGUA · Alle Daten werden lokal gespeichert</div>
+    <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;">
+      LINGUA v1.1 · Alle Daten werden lokal gespeichert<br>
+      <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · 2026</span>
+    </div>
   </div>
 </div>
 
@@ -1665,12 +1683,256 @@ const VOCAB = {
       {f:"kahvehane",t:"Kaffeehaus",p:"kah-ve-ha-ne"},{f:"çarşı",t:"Großer Basar",p:"çar-şı"},
       {f:"ramazan",t:"Ramadan",p:"ra-ma-zan"},{f:"bayram",t:"Fest / Feiertag",p:"bay-ram"},
     ],
+  },
+  sq: {
+    "Grundlagen": [
+      {f:"përshëndetje",t:"Hallo",p:"pər-shən-det-je"},{f:"mirëdita",t:"Guten Tag",p:"mi-rə-di-ta"},
+      {f:"mirëmëngjes",t:"Guten Morgen",p:"mi-rə-məng-jes"},{f:"mirëmbrëma",t:"Guten Abend",p:"mi-rəm-brə-ma"},
+      {f:"faleminderit",t:"Danke",p:"fa-le-min-de-rit"},{f:"ju lutem",t:"Bitte",p:"ju lu-tem"},
+      {f:"po",t:"Ja",p:"po"},{f:"jo",t:"Nein",p:"jo"},{f:"më falni",t:"Entschuldigung",p:"mə fal-ni"},
+      {f:"mirë",t:"Gut",p:"mi-rə"},{f:"keq",t:"Schlecht",p:"keq"},
+      {f:"si jeni",t:"Wie geht es Ihnen",p:"si je-ni"},{f:"si je",t:"Wie geht es dir",p:"si je"},
+      {f:"nuk kuptoj",t:"Ich verstehe nicht",p:"nuk kup-toj"},
+      {f:"unë quhem",t:"Ich heiße",p:"u-nə quu-hem"},
+      {f:"ku",t:"Wo",p:"ku"},{f:"kur",t:"Wann",p:"kur"},{f:"pse",t:"Warum",p:"pse"},
+      {f:"sa kushton",t:"Wie viel kostet es",p:"sa kush-ton"},
+      {f:"ndihmë",t:"Hilfe",p:"ndi-hmə"},{f:"të lutem flisni më ngadalë",t:"Bitte sprechen Sie langsamer",p:"tə lu-tem flis-ni mə nga-da-lə"},
+      {f:"po e kuptoj",t:"Ich verstehe",p:"po e kup-toj"},{f:"nuk e di",t:"Ich weiß nicht",p:"nuk e di"},
+      {f:"mirë se vini",t:"Willkommen",p:"mi-rə se vi-ni"},{f:"lamtumirë",t:"Auf Wiedersehen",p:"lam-tu-mi-rə"},
+      {f:"natën e mirë",t:"Gute Nacht",p:"na-tən e mi-rə"},{f:"po",t:"Ja",p:"po"},
+    ],
+    "Zahlen": [
+      {f:"një",t:"Eins",p:"njə"},{f:"dy",t:"Zwei",p:"dy"},{f:"tre",t:"Drei",p:"tre"},
+      {f:"katër",t:"Vier",p:"ka-tər"},{f:"pesë",t:"Fünf",p:"pe-sə"},{f:"gjashtë",t:"Sechs",p:"gjash-tə"},
+      {f:"shtatë",t:"Sieben",p:"shta-tə"},{f:"tetë",t:"Acht",p:"te-tə"},{f:"nëntë",t:"Neun",p:"nən-tə"},
+      {f:"dhjetë",t:"Zehn",p:"dhje-tə"},{f:"njëmbëdhjetë",t:"Elf",p:"njəm-bədh-je-tə"},
+      {f:"dymbëdhjetë",t:"Zwölf",p:"dym-bədh-je-tə"},{f:"njëzet",t:"Zwanzig",p:"njə-zet"},
+      {f:"tridhjetë",t:"Dreißig",p:"tri-dhje-tə"},{f:"dyzet",t:"Vierzig",p:"dy-zet"},
+      {f:"pesëdhjetë",t:"Fünfzig",p:"pe-sədh-je-tə"},{f:"njëqind",t:"Hundert",p:"njə-qind"},
+      {f:"një mijë",t:"Tausend",p:"njə mi-jə"},{f:"i pari",t:"Erste/r",p:"i pa-ri"},
+      {f:"i dyti",t:"Zweite/r",p:"i dy-ti"},{f:"i treti",t:"Dritte/r",p:"i tre-ti"},
+    ],
+    "Farben": [
+      {f:"i kuq",t:"Rot",p:"i kuq"},{f:"i kaltër",t:"Blau",p:"i kal-tər"},{f:"i gjelbër",t:"Grün",p:"i gjel-bər"},
+      {f:"i verdhë",t:"Gelb",p:"i ver-dhə"},{f:"i bardhë",t:"Weiß",p:"i bar-dhə"},{f:"i zi",t:"Schwarz",p:"i zi"},
+      {f:"portokalli",t:"Orange",p:"por-to-ka-lli"},{f:"vjollcë",t:"Violett",p:"vjoll-cə"},
+      {f:"rozë",t:"Rosa",p:"ro-zə"},{f:"gri",t:"Grau",p:"gri"},{f:"kafe",t:"Braun",p:"ka-fe"},
+      {f:"ar",t:"Golden",p:"ar"},{f:"argjend",t:"Silber",p:"ar-gjend"},{f:"blu e errët",t:"Dunkelblau",p:"blu e er-rət"},
+    ],
+    "Essen & Trinken": [
+      {f:"bukë",t:"Brot",p:"bu-kə"},{f:"ujë",t:"Wasser",p:"u-jə"},{f:"qumësht",t:"Milch",p:"qu-məsht"},
+      {f:"mish",t:"Fleisch",p:"mish"},{f:"peshk",t:"Fisch",p:"peshk"},{f:"perime",t:"Gemüse",p:"pe-ri-me"},
+      {f:"fruta",t:"Obst",p:"fru-ta"},{f:"supë",t:"Suppe",p:"su-pə"},{f:"çaj",t:"Tee",p:"çaj"},
+      {f:"kafe",t:"Kaffee",p:"ka-fe"},{f:"birrë",t:"Bier",p:"bir-rə"},{f:"verë",t:"Wein",p:"ve-rə"},
+      {f:"mollë",t:"Apfel",p:"mo-llə"},{f:"patate",t:"Kartoffel",p:"pa-ta-te"},
+      {f:"pulë",t:"Hühnchen",p:"pu-lə"},{f:"vezë",t:"Ei",p:"ve-zə"},{f:"djathë",t:"Käse",p:"dja-thə"},
+      {f:"gjalp",t:"Butter",p:"gjalp"},{f:"sheqer",t:"Zucker",p:"she-qer"},{f:"kripë",t:"Salz",p:"kri-pə"},
+      {f:"oriz",t:"Reis",p:"o-riz"},{f:"makarona",t:"Nudeln",p:"ma-ka-ro-na"},{f:"domate",t:"Tomate",p:"do-ma-te"},
+      {f:"qepë",t:"Zwiebel",p:"qe-pə"},{f:"hudhër",t:"Knoblauch",p:"hu-dhər"},
+      {f:"portokall",t:"Orange (Frucht)",p:"por-to-kall"},{f:"luleshtrydhe",t:"Erdbeere",p:"lu-le-shtr-ydhe"},
+      {f:"akullore",t:"Eis",p:"a-kul-lo-re"},{f:"tortë",t:"Kuchen / Torte",p:"tor-tə"},
+      {f:"lëng frutash",t:"Saft",p:"ləng fru-tash"},{f:"vaj",t:"Öl",p:"vaj"},
+      {f:"piper",t:"Pfeffer",p:"pi-per"},{f:"mjaltë",t:"Honig",p:"mjal-tə"},
+      {f:"kos",t:"Joghurt",p:"kos"},{f:"salcë",t:"Soße / Sauce",p:"sal-cə"},
+      {f:"lakër",t:"Kohl",p:"la-kər"},{f:"karotë",t:"Möhre",p:"ka-ro-tə"},
+      {f:"spinaq",t:"Spinat",p:"spi-naq"},{f:"kungull",t:"Kürbis",p:"kun-gull"},
+    ],
+    "Familie": [
+      {f:"nënë",t:"Mutter",p:"nə-nə"},{f:"baba",t:"Vater",p:"ba-ba"},
+      {f:"vëlla",t:"Bruder",p:"vəl-la"},{f:"motër",t:"Schwester",p:"mo-tər"},
+      {f:"gjyshja",t:"Großmutter",p:"gjy-shja"},{f:"gjyshi",t:"Großvater",p:"gjy-shi"},
+      {f:"djali",t:"Sohn",p:"dja-li"},{f:"vajza",t:"Tochter",p:"vaj-za"},
+      {f:"burri",t:"Ehemann",p:"bur-ri"},{f:"gruaja",t:"Ehefrau",p:"grua-ja"},
+      {f:"xhaxhai",t:"Onkel (väterlich)",p:"xha-xhai"},{f:"daja",t:"Onkel (mütterlich)",p:"da-ja"},
+      {f:"halla",t:"Tante (väterlich)",p:"hal-la"},{f:"tezja",t:"Tante (mütterlich)",p:"tez-ja"},
+      {f:"nipi / mbesa",t:"Neffe / Nichte",p:"ni-pi / mbe-sa"},{f:"kushëriri",t:"Cousin / Cousine",p:"ku-shə-ri-ri"},
+      {f:"prindërit",t:"Eltern",p:"prin-də-rit"},{f:"fëmija",t:"Kind",p:"fə-mi-ja"},
+      {f:"bebja",t:"Baby",p:"beb-ja"},{f:"familja",t:"Familie",p:"fa-mi-lja"},
+    ],
+    "Reisen": [
+      {f:"aeroporti",t:"Flughafen",p:"ae-ro-por-ti"},{f:"stacioni i trenit",t:"Bahnhof",p:"sta-cio-ni i tre-nit"},
+      {f:"hoteli",t:"Hotel",p:"ho-te-li"},{f:"rruga",t:"Straße",p:"rru-ga"},{f:"qyteti",t:"Stadt",p:"qy-te-ti"},
+      {f:"bileta",t:"Ticket",p:"bi-le-ta"},{f:"pasaporta",t:"Reisepass",p:"pa-sa-por-ta"},
+      {f:"taksi",t:"Taxi",p:"tak-si"},{f:"treni",t:"Zug",p:"tre-ni"},{f:"avioni",t:"Flugzeug",p:"a-vio-ni"},
+      {f:"autobusi",t:"Bus",p:"au-to-bu-si"},{f:"makina",t:"Auto",p:"ma-ki-na"},{f:"anija",t:"Schiff",p:"a-ni-ja"},
+      {f:"harta",t:"Landkarte",p:"har-ta"},{f:"kufiri",t:"Grenze",p:"ku-fi-ri"},
+      {f:"viza",t:"Visum",p:"vi-za"},{f:"bagazhi",t:"Gepäck",p:"ba-ga-zhi"},{f:"dhoma",t:"Zimmer",p:"dho-ma"},
+      {f:"rezervimi",t:"Buchung / Reservierung",p:"re-zer-vi-mi"},
+      {f:"muzeu",t:"Museum",p:"mu-ze-u"},{f:"plazhi",t:"Strand",p:"pla-zhi"},
+      {f:"mali",t:"Berg",p:"ma-li"},{f:"lumi",t:"Fluss",p:"lu-mi"},{f:"deti",t:"Meer",p:"de-ti"},
+      {f:"liqeni",t:"See",p:"li-qe-ni"},{f:"pylli",t:"Wald",p:"pyl-li"},
+    ],
+    "Körper": [
+      {f:"koka",t:"Kopf",p:"ko-ka"},{f:"dora",t:"Hand",p:"do-ra"},{f:"këmba",t:"Fuß / Bein",p:"kəm-ba"},
+      {f:"syri",t:"Auge",p:"sy-ri"},{f:"veshi",t:"Ohr",p:"ve-shi"},{f:"goja",t:"Mund",p:"go-ja"},
+      {f:"hunda",t:"Nase",p:"hun-da"},{f:"zemra",t:"Herz",p:"zem-ra"},{f:"barku",t:"Bauch",p:"bar-ku"},
+      {f:"shpina",t:"Rücken",p:"shpi-na"},{f:"supi",t:"Schulter",p:"su-pi"},{f:"gjuri",t:"Knie",p:"gju-ri"},
+      {f:"gishti",t:"Finger",p:"gish-ti"},{f:"dhëmbi",t:"Zahn",p:"dhəm-bi"},{f:"floku",t:"Haare",p:"flo-ku"},
+      {f:"lëkura",t:"Haut",p:"lə-ku-ra"},{f:"gjaku",t:"Blut",p:"gja-ku"},{f:"krahu",t:"Arm",p:"kra-hu"},
+      {f:"qafa",t:"Hals / Nacken",p:"qa-fa"},{f:"fytyra",t:"Gesicht",p:"fy-ty-ra"},
+      {f:"buzët",t:"Lippen",p:"bu-zət"},{f:"dhëmbët",t:"Zähne",p:"dhəm-bət"},
+    ],
+    "Zeit": [
+      {f:"sot",t:"Heute",p:"sot"},{f:"nesër",t:"Morgen",p:"ne-sər"},{f:"dje",t:"Gestern",p:"dje"},
+      {f:"mëngjes",t:"Morgen (Tageszeit)",p:"məng-jes"},{f:"pasdite",t:"Nachmittag",p:"pas-di-te"},
+      {f:"mbrëmje",t:"Abend",p:"mbrəm-je"},{f:"natë",t:"Nacht",p:"na-tə"},
+      {f:"javë",t:"Woche",p:"ja-və"},{f:"muaj",t:"Monat",p:"muaj"},{f:"vit",t:"Jahr",p:"vit"},
+      {f:"orë",t:"Stunde / Uhr",p:"o-rə"},{f:"minutë",t:"Minute",p:"mi-nu-tə"},{f:"sekondë",t:"Sekunde",p:"se-kon-də"},
+      {f:"e hënë",t:"Montag",p:"e hə-nə"},{f:"e martë",t:"Dienstag",p:"e mar-tə"},
+      {f:"e mërkurë",t:"Mittwoch",p:"e mər-ku-rə"},{f:"e enjte",t:"Donnerstag",p:"e enj-te"},
+      {f:"e premte",t:"Freitag",p:"e prem-te"},{f:"e shtunë",t:"Samstag",p:"e shtu-nə"},
+      {f:"e diel",t:"Sonntag",p:"e diel"},
+      {f:"janar",t:"Januar",p:"ja-nar"},{f:"shkurt",t:"Februar",p:"shkurt"},{f:"mars",t:"März",p:"mars"},
+      {f:"prill",t:"April",p:"prill"},{f:"maj",t:"Mai",p:"maj"},{f:"qershor",t:"Juni",p:"qer-shor"},
+      {f:"korrik",t:"Juli",p:"kor-rik"},{f:"gusht",t:"August",p:"gusht"},{f:"shtator",t:"September",p:"shta-tor"},
+      {f:"tetor",t:"Oktober",p:"te-tor"},{f:"nëntor",t:"November",p:"nən-tor"},{f:"dhjetor",t:"Dezember",p:"dhje-tor"},
+    ],
+    "Berufe": [
+      {f:"mjek",t:"Arzt",p:"mjek"},{f:"mësues",t:"Lehrer",p:"mə-su-es"},
+      {f:"inxhinier",t:"Ingenieur",p:"inxhi-ni-er"},{f:"avokat",t:"Anwalt",p:"a-vo-kat"},
+      {f:"kuzhinier",t:"Koch",p:"ku-zhi-ni-er"},{f:"student",t:"Student",p:"stu-dent"},
+      {f:"infermiere",t:"Krankenschwester",p:"in-fer-mie-re"},{f:"zjarrfikës",t:"Feuerwehrmann",p:"zjar-rfi-kəs"},
+      {f:"polic",t:"Polizist",p:"po-lic"},{f:"arkitekt",t:"Architekt",p:"ar-ki-tekt"},
+      {f:"gazetar",t:"Journalist",p:"ga-ze-tar"},{f:"aktor",t:"Schauspieler",p:"ak-tor"},
+      {f:"këngëtar",t:"Sänger",p:"kəng-ə-tar"},{f:"piktor",t:"Maler",p:"pik-tor"},
+      {f:"pilot",t:"Pilot",p:"pi-lot"},{f:"farmacist",t:"Apotheker",p:"far-ma-cist"},
+      {f:"shofer",t:"Fahrer",p:"sho-fer"},{f:"fermer",t:"Bauer",p:"fer-mer"},
+      {f:"programues",t:"Programmierer",p:"pro-gra-mu-es"},{f:"tregtar",t:"Händler / Kaufmann",p:"treg-tar"},
+    ],
+    "Wohnen": [
+      {f:"shtëpia",t:"Haus",p:"shtə-pia"},{f:"apartamenti",t:"Wohnung",p:"a-par-ta-men-ti"},
+      {f:"dhoma",t:"Zimmer",p:"dho-ma"},{f:"kuzhina",t:"Küche",p:"ku-zhi-na"},
+      {f:"banja",t:"Badezimmer",p:"ban-ja"},{f:"dhoma e gjumit",t:"Schlafzimmer",p:"dho-ma e gju-mit"},
+      {f:"dhoma e ndenjjes",t:"Wohnzimmer",p:"dho-ma e ndenj-jes"},
+      {f:"dera",t:"Tür",p:"de-ra"},{f:"dritarja",t:"Fenster",p:"dri-ta-rja"},
+      {f:"tavolina",t:"Tisch",p:"ta-vo-li-na"},{f:"karrigia",t:"Stuhl",p:"kar-ri-gia"},
+      {f:"krevati",t:"Bett",p:"kre-va-ti"},{f:"dollapi",t:"Schrank",p:"dol-la-pi"},
+      {f:"divani",t:"Sofa",p:"di-va-ni"},{f:"frigoriferi",t:"Kühlschrank",p:"fri-go-ri-fe-ri"},
+      {f:"sobë",t:"Herd / Ofen",p:"so-bə"},{f:"ashensori",t:"Aufzug",p:"a-shen-so-ri"},
+      {f:"shkallet",t:"Treppe",p:"shkal-let"},{f:"ballkoni",t:"Balkon",p:"ball-ko-ni"},
+      {f:"qilimi",t:"Teppich",p:"qi-li-mi"},{f:"pasqyra",t:"Spiegel",p:"pas-qy-ra"},
+    ],
+    "Natur & Wetter": [
+      {f:"dielli",t:"Sonne",p:"diel-li"},{f:"hëna",t:"Mond",p:"hə-na"},{f:"ylli",t:"Stern",p:"yl-li"},
+      {f:"qielli",t:"Himmel",p:"qiel-li"},{f:"reja",t:"Wolke",p:"re-ja"},{f:"shiu",t:"Regen",p:"shiu"},
+      {f:"bora",t:"Schnee",p:"bo-ra"},{f:"era",t:"Wind",p:"e-ra"},{f:"stuhia",t:"Gewitter / Sturm",p:"stu-hia"},
+      {f:"nxehtë",t:"Heiß / Warm",p:"nxeh-tə"},{f:"ftohtë",t:"Kalt / Kälte",p:"ftoh-tə"},
+      {f:"mjegulla",t:"Nebel",p:"mje-gul-la"},{f:"pylli",t:"Wald",p:"pyl-li"},
+      {f:"deti",t:"Meer",p:"de-ti"},{f:"liqeni",t:"See",p:"li-qe-ni"},
+      {f:"lumi",t:"Fluss",p:"lu-mi"},{f:"fusha",t:"Feld / Ebene",p:"fu-sha"},
+      {f:"lula",t:"Blume",p:"lu-la"},{f:"pema",t:"Baum",p:"pe-ma"},{f:"bari",t:"Gras",p:"ba-ri"},
+      {f:"mali",t:"Berg",p:"ma-li"},{f:"shkëmbi",t:"Fels",p:"shkəm-bi"},
+      {f:"plazhi",t:"Strand",p:"pla-zhi"},{f:"ishull",t:"Insel",p:"i-shull"},
+    ],
+    "Tiere": [
+      {f:"qeni",t:"Hund",p:"qe-ni"},{f:"macja",t:"Katze",p:"ma-cja"},{f:"kali",t:"Pferd",p:"ka-li"},
+      {f:"lopa",t:"Kuh",p:"lo-pa"},{f:"derr",t:"Schwein",p:"derr"},{f:"dele",t:"Schaf",p:"de-le"},
+      {f:"shpend",t:"Vogel",p:"shpend"},{f:"peshk",t:"Fisch",p:"peshk"},{f:"luani",t:"Löwe",p:"lua-ni"},
+      {f:"tigri",t:"Tiger",p:"tig-ri"},{f:"elefant",t:"Elefant",p:"e-le-fant"},{f:"ariu",t:"Bär",p:"a-riu"},
+      {f:"ujku",t:"Wolf",p:"uj-ku"},{f:"dhelpra",t:"Fuchs",p:"dhel-pra"},{f:"lepuri",t:"Hase",p:"le-pu-ri"},
+      {f:"gjarpri",t:"Schlange",p:"gjar-pri"},{f:"flutura",t:"Schmetterling",p:"flu-tu-ra"},
+      {f:"shqiponja",t:"Adler",p:"shqi-po-nja"},{f:"majmuni",t:"Affe",p:"maj-mu-ni"},
+      {f:"bualli",t:"Büffel",p:"bual-li"},{f:"sorka",t:"Reh",p:"sor-ka"},
+    ],
+    "Gesundheit": [
+      {f:"spitali",t:"Krankenhaus",p:"spi-ta-li"},{f:"farmacia",t:"Apotheke",p:"far-ma-cia"},
+      {f:"ilaç",t:"Medikament",p:"i-laç"},{f:"dhimbje",t:"Schmerz",p:"dhim-bje"},
+      {f:"ethe",t:"Fieber",p:"e-the"},{f:"kollë",t:"Husten",p:"kol-lə"},
+      {f:"rrufë",t:"Schnupfen",p:"rru-fə"},{f:"alergjia",t:"Allergie",p:"a-ler-gjia"},
+      {f:"operacion",t:"Operation",p:"o-pe-ra-cion"},{f:"receta",t:"Rezept",p:"re-ce-ta"},
+      {f:"sigurimi",t:"Versicherung",p:"si-gu-ri-mi"},{f:"ambulanca",t:"Krankenwagen",p:"am-bu-lan-ca"},
+      {f:"i sëmurë",t:"Krank",p:"i sə-mu-rə"},{f:"i shëndetshëm",t:"Gesund",p:"i shən-det-shəm"},
+      {f:"mjekësia",t:"Medizin",p:"mje-kə-sia"},{f:"vaksinimi",t:"Impfung",p:"vak-si-ni-mi"},
+    ],
+    "Einkaufen": [
+      {f:"dyqani",t:"Geschäft / Laden",p:"dy-qa-ni"},{f:"tregu",t:"Markt",p:"tre-gu"},
+      {f:"çmimi",t:"Preis",p:"çmi-mi"},{f:"zbritja",t:"Rabatt",p:"zbri-tja"},
+      {f:"arka",t:"Kasse",p:"ar-ka"},{f:"para",t:"Geld",p:"pa-ra"},
+      {f:"monedhë",t:"Münze",p:"mo-ne-dhə"},{f:"portofoli",t:"Geldbeutel",p:"por-to-fo-li"},
+      {f:"kartë krediti",t:"Kreditkarte",p:"kar-tə kre-di-ti"},
+      {f:"fatura",t:"Rechnung / Quittung",p:"fa-tu-ra"},{f:"rrobat",t:"Kleidung",p:"rro-bat"},
+      {f:"këpucët",t:"Schuhe",p:"kə-pu-cət"},{f:"çanta",t:"Tasche",p:"çan-ta"},
+      {f:"blerje",t:"Einkauf",p:"ble-rje"},{f:"shitje",t:"Verkauf",p:"shi-tje"},
+    ],
+    "Technologie": [
+      {f:"telefoni",t:"Telefon",p:"te-le-fo-ni"},{f:"kompjuteri",t:"Computer",p:"komp-ju-te-ri"},
+      {f:"interneti",t:"Internet",p:"in-ter-ne-ti"},{f:"aplikacioni",t:"App",p:"a-pli-ka-cio-ni"},
+      {f:"fjalëkalimi",t:"Passwort",p:"fja-lə-ka-li-mi"},{f:"ekrani",t:"Bildschirm",p:"ek-ra-ni"},
+      {f:"tastiera",t:"Tastatur",p:"tas-tie-ra"},{f:"kamera",t:"Kamera",p:"ka-me-ra"},
+      {f:"bateria",t:"Akku / Batterie",p:"ba-te-ria"},{f:"Wi-Fi",t:"WLAN",p:"waj-faj"},
+      {f:"e-mail",t:"E-Mail",p:"i-mejl"},{f:"mesazhi",t:"Nachricht",p:"me-sa-zhi"},
+      {f:"rrjeti social",t:"Soziale Medien",p:"rrje-ti so-cial"},{f:"ngarkuesi",t:"Ladegerät",p:"ngar-ku-e-si"},
+    ],
+    "Adjektive": [
+      {f:"i madh",t:"Groß",p:"i madh"},{f:"i vogël",t:"Klein",p:"i vo-gəl"},
+      {f:"i ri",t:"Neu / Jung",p:"i ri"},{f:"i vjetër",t:"Alt",p:"i vje-tər"},
+      {f:"i bukur",t:"Schön",p:"i bu-kur"},{f:"i shëmtuar",t:"Hässlich",p:"i shəm-tuar"},
+      {f:"i zgjuar",t:"Klug",p:"i zgju-ar"},{f:"i shpejtë",t:"Schnell",p:"i shpej-tə"},
+      {f:"i ngadalshëm",t:"Langsam",p:"i nga-dal-shəm"},{f:"i shtrenjtë",t:"Teuer",p:"i shtrenjt-ə"},
+      {f:"i lirë",t:"Günstig / Frei",p:"i li-rə"},{f:"i rëndë",t:"Schwer",p:"i rən-də"},
+      {f:"i lehtë",t:"Leicht",p:"i leh-tə"},{f:"i nxehtë",t:"Heiß",p:"i nxeh-tə"},
+      {f:"i ftohtë",t:"Kalt",p:"i ftoh-tə"},{f:"i shijshëm",t:"Lecker",p:"i shi-jshəm"},
+      {f:"i lodhur",t:"Müde",p:"i lo-dhur"},{f:"i lumtur",t:"Glücklich",p:"i lum-tur"},
+      {f:"i trishtuar",t:"Traurig",p:"i trish-tuar"},{f:"i fortë",t:"Stark",p:"i for-tə"},
+      {f:"i dobët",t:"Schwach",p:"i do-bət"},{f:"i gjatë",t:"Lang / Groß (Person)",p:"i gja-tə"},
+      {f:"i shkurtër",t:"Kurz / Klein (Person)",p:"i shkur-tər"},
+    ],
+    "Verben": [
+      {f:"shkoj",t:"Gehen",p:"shkoj"},{f:"vrapoj",t:"Rennen / Laufen",p:"vra-poj"},
+      {f:"ha",t:"Essen",p:"ha"},{f:"pi",t:"Trinken",p:"pi"},
+      {f:"fle",t:"Schlafen",p:"fle"},{f:"punoj",t:"Arbeiten",p:"pu-noj"},
+      {f:"flas",t:"Sprechen",p:"flas"},{f:"dëgjoj",t:"Zuhören",p:"də-gjoj"},
+      {f:"shoh",t:"Sehen",p:"shoh"},{f:"lexoj",t:"Lesen",p:"le-xoj"},
+      {f:"shkruaj",t:"Schreiben",p:"shkru-aj"},{f:"dua",t:"Lieben / Wollen",p:"du-a"},
+      {f:"di",t:"Wissen / Können",p:"di"},{f:"mendoj",t:"Denken",p:"men-doj"},
+      {f:"ndihmoj",t:"Helfen",p:"ndi-hmoj"},{f:"blej",t:"Kaufen",p:"blej"},
+      {f:"hap",t:"Öffnen",p:"hap"},{f:"mbyll",t:"Schließen",p:"mbyll"},
+      {f:"filloj",t:"Beginnen",p:"fil-loj"},{f:"mbaroj",t:"Beenden",p:"mba-roj"},
+      {f:"jap",t:"Geben",p:"jap"},{f:"marr",t:"Nehmen",p:"marr"},
+      {f:"vij",t:"Kommen",p:"vij"},{f:"pres",t:"Warten",p:"pres"},
+      {f:"dërgoj",t:"Schicken",p:"dər-goj"},{f:"gjej",t:"Finden",p:"gjej"},
+      {f:"kuptoj",t:"Verstehen",p:"kup-toj"},{f:"mësoj",t:"Lernen / Lehren",p:"mə-soj"},
+    ],
+    "Sport & Freizeit": [
+      {f:"futbolli",t:"Fußball",p:"fut-bol-li"},{f:"basketbolli",t:"Basketball",p:"bas-ket-bol-li"},
+      {f:"notimi",t:"Schwimmen",p:"no-ti-mi"},{f:"vrapimi",t:"Laufen / Joggen",p:"vra-pi-mi"},
+      {f:"tenisi",t:"Tennis",p:"te-ni-si"},{f:"skijimi",t:"Ski fahren",p:"ski-ji-mi"},
+      {f:"kinema",t:"Kino",p:"ki-ne-ma"},{f:"teatri",t:"Theater",p:"te-a-tri"},
+      {f:"muzika",t:"Musik",p:"mu-zi-ka"},{f:"vallëzimi",t:"Tanzen",p:"val-lə-zi-mi"},
+      {f:"vizatimi",t:"Zeichnen",p:"vi-za-ti-mi"},{f:"leximi",t:"Lesen (Hobby)",p:"le-xi-mi"},
+      {f:"udhëtimi",t:"Reisen",p:"u-dhə-ti-mi"},{f:"fotografimi",t:"Fotografie",p:"fo-to-gra-fi-mi"},
+      {f:"gatimi",t:"Kochen",p:"ga-ti-mi"},{f:"yoga",t:"Yoga",p:"yo-ga"},
+      {f:"çiklizmi",t:"Radfahren",p:"çik-liz-mi"},{f:"hiking",t:"Wandern",p:"hai-king"},
+    ],
+    "Schule & Bildung": [
+      {f:"shkolla",t:"Schule",p:"shkol-la"},{f:"universiteti",t:"Universität",p:"u-ni-ver-si-te-ti"},
+      {f:"klasa",t:"Klasse / Unterrichtsraum",p:"kla-sa"},{f:"mësimi",t:"Unterrichtsstunde",p:"mə-si-mi"},
+      {f:"detyra e shtëpisë",t:"Hausaufgaben",p:"de-ty-ra e shtə-pi-së"},
+      {f:"libri",t:"Buch",p:"lib-ri"},{f:"fletorja",t:"Heft",p:"fle-tor-ja"},
+      {f:"lapsi",t:"Bleistift",p:"lap-si"},{f:"penna",t:"Stift / Kugelschreiber",p:"pen-na"},
+      {f:"dërrasa",t:"Tafel",p:"dər-ra-sa"},{f:"provimi",t:"Prüfung",p:"pro-vi-mi"},
+      {f:"nota",t:"Note",p:"no-ta"},{f:"biblioteka",t:"Bibliothek",p:"bi-blio-te-ka"},
+      {f:"matematika",t:"Mathematik",p:"ma-te-ma-ti-ka"},{f:"historia",t:"Geschichte",p:"his-to-ria"},
+      {f:"gjeografia",t:"Geographie",p:"gje-o-gra-fia"},{f:"kimia",t:"Chemie",p:"ki-mia"},
+    ],
+    "Albanische Kultur": [
+      {f:"Besa",t:"Ehrenwort / Treueversprechen (alban. Wert)",p:"Be-sa"},
+      {f:"kanuni",t:"Gewohnheitsrecht (Kanun)",p:"ka-nu-ni"},
+      {f:"rakia",t:"Schnaps / Raki",p:"ra-kia"},{f:"byrek",t:"Blätterteiggebäck",p:"by-rek"},
+      {f:"tavë kosi",t:"Lammauflauf mit Joghurt",p:"ta-və ko-si"},
+      {f:"fustanella",t:"Traditionelles Männerrock-Kostüm",p:"fus-ta-nel-la"},
+      {f:"Skënderbeu",t:"Skanderbeg (Nationalheld)",p:"Skən-der-beu"},
+      {f:"shqiponja",t:"Adler (Nationalvogel / Wappentier)",p:"shqi-po-nja"},
+      {f:"shqip",t:"Albanisch (Sprache)",p:"shqip"},{f:"Shqipëria",t:"Albanien",p:"Shqi-pə-ria"},
+      {f:"Kosova",t:"Kosovo",p:"Ko-so-va"},{f:"gurbeti",t:"Emigration / Heimweh",p:"gur-be-ti"},
+      {f:"iso-poliphonia",t:"Albanische Mehrstimmigkeit (UNESCO)",p:"i-so-po-li-pho-nia"},
+    ],
   }
 };
 
-const LANG_NAMES = { ru:"Russisch", it:"Italienisch", es:"Spanisch", en:"Englisch", tr:"Türkisch" };
-const LANG_VOICE = { ru:"ru-RU", it:"it-IT", es:"es-ES", en:"en-GB", tr:"tr-TR" };
-const LANG_EMOJI = { ru:"🇷🇺", it:"🇮🇹", es:"🇪🇸", en:"🇬🇧", tr:"🇹🇷" };
+const LANG_NAMES = { ru:"Russisch", it:"Italienisch", es:"Spanisch", en:"Englisch", tr:"Türkisch", sq:"Albanisch" };
+const LANG_VOICE = { ru:"ru-RU", it:"it-IT", es:"es-ES", en:"en-GB", tr:"tr-TR", sq:"sq-AL" };
+const LANG_EMOJI = { ru:"🇷🇺", it:"🇮🇹", es:"🇪🇸", en:"🇬🇧", tr:"🇹🇷", sq:"🇦🇱" };
 
 // ============================================================
 // SETTINGS & API KEY MANAGEMENT
@@ -2373,8 +2635,8 @@ async function doTranslate() {
   if (!text) return;
   const from = document.getElementById('trans-from').value;
   const to = document.getElementById('trans-to').value;
-  const fromName = { de:'Deutsch', ru:'Russisch', it:'Italienisch', es:'Spanisch', en:'Englisch', tr:'Türkisch' }[from];
-  const toName   = { de:'Deutsch', ru:'Russisch', it:'Italienisch', es:'Spanisch', en:'Englisch', tr:'Türkisch' }[to];
+  const fromName = { de:'Deutsch', ru:'Russisch', it:'Italienisch', es:'Spanisch', en:'Englisch', tr:'Türkisch', sq:'Albanisch' }[from];
+  const toName   = { de:'Deutsch', ru:'Russisch', it:'Italienisch', es:'Spanisch', en:'Englisch', tr:'Türkisch', sq:'Albanisch' }[to];
 
   document.getElementById('trans-loading').style.display = 'block';
   document.getElementById('trans-output').value = '';
