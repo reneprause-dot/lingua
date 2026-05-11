@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="description" content="LINGUA – Deine KI-gestützte Sprachlern-App">
+<title>LINGUA</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07070d;
+  --surface: #0f0f1a;
+  --surface2: #161625;
+  --border: #1e1e35;
+  --accent: #6c63ff;
+  --accent2: #ff6b6b;
+  --accent3: #43e97b;
+  --accent4: #f7971e;
+  --text: #e8e8f0;
+  --muted: #6b6b8a;
+  --ru: #ff6b6b;
+  --it: #43e97b;
+  --es: #f7971e;
+  --en: #6c63ff;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; background:var(--bg); color:var(--text); font-family:'DM Mono', monospace; overflow-x:hidden; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+/* BACKGROUND MESH */
+body::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background: radial-gradient(ellipse 60% 50% at 20% 10%, rgba(108,99,255,.12) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 40% at 80% 80%, rgba(255,107,107,.08) 0%, transparent 70%),
+              radial-gradient(ellipse 50% 60% at 50% 50%, rgba(67,233,123,.05) 0%, transparent 70%);
+}
+
+/* LAYOUT */
+#app { position:relative; z-index:1; display:grid; grid-template-rows:auto 1fr auto; min-height:100vh; }
+
+/* HEADER */
+header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.2rem 2rem; border-bottom:1px solid var(--border);
+  background:rgba(7,7,13,.8); backdrop-filter:blur(20px); position:sticky; top:0; z-index:100;
+}
+.logo {
+  font-family:'Syne', sans-serif; font-weight:800; font-size:1.6rem;
+  letter-spacing:-.02em; color:var(--text);
+}
+.logo span { color:var(--accent); }
+.lang-pills { display:flex; gap:.5rem; }
+.lang-pill {
+  padding:.3rem .7rem; border-radius:100px; border:1px solid var(--border);
+  font-size:.7rem; font-family:'Syne',sans-serif; font-weight:600; letter-spacing:.05em;
+  cursor:pointer; transition:all .2s; background:transparent; color:var(--muted);
+}
+.lang-pill.active { border-color:var(--pill-color,var(--accent)); color:var(--pill-color,var(--accent)); background:rgba(108,99,255,.1); }
+.lang-pill[data-lang="ru"] { --pill-color:var(--ru); }
+.lang-pill[data-lang="it"] { --pill-color:var(--it); }
+.lang-pill[data-lang="es"] { --pill-color:var(--es); }
+.lang-pill[data-lang="en"] { --pill-color:var(--en); }
+
+/* NAV */
+nav {
+  display:flex; gap:.25rem; overflow-x:auto; padding:1rem 2rem;
+  background:rgba(7,7,13,.5); border-bottom:1px solid var(--border);
+  scrollbar-width:none;
+}
+nav::-webkit-scrollbar { display:none; }
+.nav-btn {
+  display:flex; align-items:center; gap:.5rem; padding:.6rem 1.1rem;
+  border-radius:8px; border:1px solid transparent; background:transparent;
+  color:var(--muted); font-family:'Syne',sans-serif; font-size:.8rem; font-weight:600;
+  cursor:pointer; transition:all .2s; white-space:nowrap; letter-spacing:.02em;
+}
+.nav-btn:hover { color:var(--text); border-color:var(--border); }
+.nav-btn.active { background:var(--surface); border-color:var(--border); color:var(--accent); }
+.nav-icon { font-size:1rem; }
+
+/* MAIN */
+main { padding:2rem; max-width:900px; width:100%; margin:0 auto; }
+
+/* SECTIONS */
+.section { display:none; animation:fadeIn .3s ease; }
+.section.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* CARDS */
+.card {
+  background:var(--surface); border:1px solid var(--border); border-radius:16px;
+  padding:1.5rem; margin-bottom:1rem;
+}
+.card-title {
+  font-family:'Syne',sans-serif; font-weight:700; font-size:1rem;
+  color:var(--text); margin-bottom:1rem; display:flex; align-items:center; gap:.5rem;
+}
+
+/* VOCAB TRAINER */
+.vocab-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:20px;
+  padding:3rem 2rem; text-align:center; margin-bottom:1.5rem; position:relative;
+  min-height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  transition:transform .3s; cursor:pointer;
+}
+.vocab-card:hover { transform:translateY(-2px); }
+.vocab-card .word-main {
+  font-family:'Instrument Serif', serif; font-size:3rem; color:var(--text);
+  margin-bottom:.5rem; line-height:1.1;
+}
+.vocab-card .word-sub {
+  font-size:.85rem; color:var(--muted); font-style:italic;
+}
+.vocab-card .word-translation {
+  font-size:1.2rem; color:var(--accent); margin-top:1rem;
+  font-family:'Syne',sans-serif; opacity:0; transition:opacity .3s;
+}
+.vocab-card.revealed .word-translation { opacity:1; }
+.vocab-card .flip-hint { position:absolute; bottom:1rem; right:1rem; font-size:.7rem; color:var(--muted); }
+.vocab-controls { display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; }
+.btn {
+  padding:.7rem 1.4rem; border-radius:10px; border:1px solid var(--border);
+  background:var(--surface2); color:var(--text); font-family:'Syne',sans-serif;
+  font-size:.8rem; font-weight:600; cursor:pointer; transition:all .2s; letter-spacing:.03em;
+}
+.btn:hover { border-color:var(--accent); color:var(--accent); }
+.btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+.btn.primary:hover { background:#5a52e8; }
+.btn.success { background:rgba(67,233,123,.15); border-color:var(--accent3); color:var(--accent3); }
+.btn.danger { background:rgba(255,107,107,.15); border-color:var(--accent2); color:var(--accent2); }
+.btn.warn { background:rgba(247,151,30,.15); border-color:var(--accent4); color:var(--accent4); }
+
+/* PROGRESS BAR */
+.progress-bar { height:4px; background:var(--border); border-radius:2px; margin-bottom:1.5rem; overflow:hidden; }
+.progress-fill { height:100%; background:var(--accent); border-radius:2px; transition:width .5s; }
+
+/* STATS ROW */
+.stats-row { display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+.stat-box {
+  flex:1; min-width:80px; background:var(--surface); border:1px solid var(--border);
+  border-radius:12px; padding:1rem; text-align:center;
+}
+.stat-num { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; color:var(--accent); }
+.stat-lbl { font-size:.7rem; color:var(--muted); margin-top:.2rem; }
+
+/* QUIZ */
+.quiz-question { font-family:'Instrument Serif',serif; font-size:2rem; text-align:center; margin-bottom:2rem; line-height:1.3; }
+.quiz-options { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-bottom:1.5rem; }
+.quiz-opt {
+  padding:1rem 1.2rem; border-radius:12px; border:1px solid var(--border);
+  background:var(--surface2); color:var(--text); font-family:'DM Mono',monospace;
+  font-size:.85rem; cursor:pointer; transition:all .2s; text-align:left;
+}
+.quiz-opt:hover { border-color:var(--accent); }
+.quiz-opt.correct { background:rgba(67,233,123,.2); border-color:var(--accent3); color:var(--accent3); }
+.quiz-opt.wrong { background:rgba(255,107,107,.2); border-color:var(--accent2); color:var(--accent2); }
+.quiz-feedback { text-align:center; font-size:.9rem; min-height:1.5rem; color:var(--muted); }
+
+/* FREE LEARNING */
+.topic-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:.75rem; margin-bottom:1.5rem; }
+.topic-btn {
+  padding:1rem; border-radius:12px; border:1px solid var(--border); background:var(--surface2);
+  color:var(--text); font-family:'Syne',sans-serif; font-size:.8rem; font-weight:600;
+  cursor:pointer; transition:all .2s; text-align:center;
+}
+.topic-btn:hover, .topic-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(108,99,255,.1); }
+.vocab-list { display:flex; flex-direction:column; gap:.5rem; }
+.vocab-item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:.8rem 1rem; background:var(--surface2); border-radius:10px;
+  border:1px solid transparent; transition:border-color .2s;
+}
+.vocab-item:hover { border-color:var(--border); }
+.vi-foreign { font-family:'Instrument Serif',serif; font-size:1.1rem; }
+.vi-translation { font-size:.8rem; color:var(--muted); }
+.vi-speak { background:none; border:none; color:var(--muted); cursor:pointer; font-size:1rem; padding:.2rem; transition:color .2s; }
+.vi-speak:hover { color:var(--accent); }
+
+/* TRANSLATOR */
+.translate-grid { display:grid; grid-template-columns:1fr auto 1fr; gap:1rem; align-items:start; }
+.translate-box { background:var(--surface2); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.translate-label { padding:.6rem 1rem; font-size:.7rem; font-family:'Syne',sans-serif; font-weight:700; letter-spacing:.08em; color:var(--muted); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.translate-textarea { width:100%; background:transparent; border:none; color:var(--text); font-family:'DM Mono',monospace; font-size:.95rem; padding:1rem; min-height:130px; resize:none; outline:none; }
+.translate-arrow { display:flex; flex-direction:column; align-items:center; gap:.5rem; padding-top:2.5rem; }
+.translate-arrow button { background:var(--surface); border:1px solid var(--border); color:var(--accent); border-radius:8px; padding:.5rem .7rem; cursor:pointer; font-size:1.1rem; transition:all .2s; }
+.translate-arrow button:hover { background:var(--accent); color:#fff; }
+.lang-select { background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:.2rem .5rem; font-family:'DM Mono',monospace; font-size:.75rem; }
+
+/* AI ASSISTANT */
+.chat-window {
+  background:var(--surface2); border:1px solid var(--border); border-radius:16px;
+  height:380px; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:.75rem;
+  margin-bottom:1rem;
+}
+.msg { display:flex; gap:.75rem; animation:fadeIn .2s ease; }
+.msg.user { flex-direction:row-reverse; }
+.msg-avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.8rem; flex-shrink:0; }
+.msg.ai .msg-avatar { background:rgba(108,99,255,.2); color:var(--accent); }
+.msg.user .msg-avatar { background:rgba(67,233,123,.2); color:var(--accent3); }
+.msg-bubble { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:.75rem 1rem; font-size:.85rem; line-height:1.6; max-width:80%; }
+.msg.user .msg-bubble { background:rgba(108,99,255,.12); border-color:rgba(108,99,255,.3); }
+.chat-input-row { display:flex; gap:.75rem; align-items:center; }
+.chat-input {
+  flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:10px;
+  color:var(--text); font-family:'DM Mono',monospace; font-size:.85rem; padding:.75rem 1rem;
+  outline:none; transition:border-color .2s;
+}
+.chat-input:focus { border-color:var(--accent); }
+.mic-btn {
+  width:42px; height:42px; border-radius:50%; background:var(--surface); border:1px solid var(--border);
+  color:var(--muted); cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+}
+.mic-btn:hover { border-color:var(--accent); color:var(--accent); }
+.mic-btn.listening { background:rgba(255,107,107,.2); border-color:var(--accent2); color:var(--accent2); animation:pulse 1s infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+.ai-mode-chips { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.ai-chip { padding:.3rem .75rem; border-radius:100px; border:1px solid var(--border); font-size:.72rem; font-family:'Syne',sans-serif; font-weight:600; cursor:pointer; transition:all .2s; color:var(--muted); background:transparent; }
+.ai-chip.active { border-color:var(--accent); color:var(--accent); background:rgba(108,99,255,.1); }
+
+/* FOOTER */
+footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:center; font-size:.7rem; color:var(--muted); }
+
+/* LOADING SPINNER */
+.spinner { display:inline-block; width:16px; height:16px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .6s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* BADGE */
+.badge { display:inline-block; padding:.15rem .5rem; border-radius:100px; font-size:.65rem; font-family:'Syne',sans-serif; font-weight:700; letter-spacing:.05em; }
+.badge-accent { background:rgba(108,99,255,.2); color:var(--accent); }
+
+/* API KEY MODAL */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:500;
+  display:flex; align-items:center; justify-content:center; padding:1.5rem;
+  backdrop-filter:blur(8px);
+}
+.modal-overlay.hidden { display:none; }
+.modal-box {
+  background:var(--surface); border:1px solid var(--border); border-radius:20px;
+  padding:2rem; max-width:420px; width:100%;
+}
+.modal-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1.2rem; margin-bottom:.5rem; }
+.modal-desc { font-size:.8rem; color:var(--muted); line-height:1.6; margin-bottom:1.25rem; }
+.modal-input {
+  width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:10px;
+  color:var(--text); font-family:'DM Mono',monospace; font-size:.85rem; padding:.75rem 1rem;
+  outline:none; margin-bottom:1rem; transition:border-color .2s;
+}
+.modal-input:focus { border-color:var(--accent); }
+.modal-link { font-size:.75rem; color:var(--accent); text-decoration:none; display:block; margin-bottom:1.25rem; }
+.modal-link:hover { text-decoration:underline; }
+.modal-note { font-size:.72rem; color:var(--muted); margin-top:1rem; line-height:1.5; padding:.75rem; background:rgba(108,99,255,.07); border-radius:8px; border:1px solid rgba(108,99,255,.15); }
+.api-key-indicator {
+  width:8px; height:8px; border-radius:50%; background:var(--accent2); display:inline-block; margin-right:.4rem;
+}
+.api-key-indicator.ok { background:var(--accent3); }
+
+/* TOAST */
+#toast {
+  position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(100px);
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:.7rem 1.2rem; font-size:.8rem; z-index:999; transition:transform .3s;
+}
+#toast.show { transform:translateX(-50%) translateY(0); }
+
+/* HOME DASHBOARD */
+.home-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; }
+.home-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:16px;
+  padding:1.5rem; cursor:pointer; transition:all .25s; position:relative; overflow:hidden;
+}
+.home-card::before { content:''; position:absolute; inset:0; background:var(--hc-color,var(--accent)); opacity:0; transition:opacity .3s; }
+.home-card:hover { transform:translateY(-3px); border-color:var(--hc-color,var(--accent)); }
+.home-card:hover::before { opacity:.04; }
+.hc-icon { font-size:2rem; margin-bottom:.75rem; }
+.hc-title { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; margin-bottom:.3rem; }
+.hc-desc { font-size:.75rem; color:var(--muted); line-height:1.5; }
+
+/* RESPONSIVE */
+@media(max-width:600px) {
+  header { padding:1rem; }
+  main { padding:1rem; }
+  .translate-grid { grid-template-columns:1fr; }
+  .translate-arrow { flex-direction:row; padding:0; justify-content:center; }
+  .quiz-options { grid-template-columns:1fr; }
+  nav { padding:.75rem 1rem; }
+  .vocab-card .word-main { font-size:2rem; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="logo">LIN<span>GUA</span></div>
+    <div style="display:flex;align-items:center;gap:.75rem;">
+      <button onclick="openApiModal()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.35rem .7rem;cursor:pointer;font-size:.72rem;font-family:'Syne',sans-serif;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:.3rem;transition:all .2s;" id="api-key-btn">
+        <span class="api-key-indicator" id="api-dot"></span>API-Key
+      </button>
+      <div class="lang-pills">
+        <button class="lang-pill active" data-lang="ru">🇷🇺 RU</button>
+        <button class="lang-pill" data-lang="it">🇮🇹 IT</button>
+        <button class="lang-pill" data-lang="es">🇪🇸 ES</button>
+        <button class="lang-pill" data-lang="en">🇬🇧 EN</button>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <button class="nav-btn active" data-section="home"><span class="nav-icon">⌂</span> Start</button>
+    <button class="nav-btn" data-section="vocab"><span class="nav-icon">📚</span> Vokabeln</button>
+    <button class="nav-btn" data-section="quiz"><span class="nav-icon">❓</span> Quiz</button>
+    <button class="nav-btn" data-section="free"><span class="nav-icon">🗂</span> Freies Lernen</button>
+    <button class="nav-btn" data-section="translate"><span class="nav-icon">⇄</span> Übersetzer</button>
+    <button class="nav-btn" data-section="ai"><span class="nav-icon">✦</span> KI-Assistent</button>
+  </nav>
+
+  <main>
+    <!-- HOME -->
+    <div class="section active" id="home">
+      <div style="margin-bottom:2rem;">
+        <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.5rem;">
+          Willkommen zurück <span id="home-lang-emoji">🇷🇺</span>
+        </div>
+        <div style="color:var(--muted);font-size:.85rem;">Wähle eine Aktivität und starte deine Lernsession.</div>
+      </div>
+      <div class="stats-row" id="home-stats">
+        <div class="stat-box"><div class="stat-num" id="stat-learned">0</div><div class="stat-lbl">Gelernt</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-streak">0</div><div class="stat-lbl">Streak</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-correct">0</div><div class="stat-lbl">% Korrekt</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-total">0</div><div class="stat-lbl">Quiz Total</div></div>
+      </div>
+      <div class="home-grid">
+        <div class="home-card" style="--hc-color:var(--accent)" onclick="switchSection('vocab')">
+          <div class="hc-icon">📚</div>
+          <div class="hc-title">Vokabeltraining</div>
+          <div class="hc-desc">Lerne neue Wörter mit Karteikarten und Sprachausgabe</div>
+        </div>
+        <div class="home-card" style="--hc-color:var(--accent2)" onclick="switchSection('quiz')">
+          <div class="hc-icon">❓</div>
+          <div class="hc-title">Quiz</div>
+          <div class="hc-desc">Teste dein Wissen mit Multiple-Choice-Fragen</div>
+        </div>
+        <div class="home-card" style="--hc-color:var(--accent3)" onclick="switchSection('free')">
+          <div class="hc-icon">🗂</div>
+          <div class="hc-title">Freies Lernen</div>
+          <div class="hc-desc">Wähle ein Thema und stöbere durch Vokabeln</div>
+        </div>
+        <div class="home-card" style="--hc-color:var(--accent4)" onclick="switchSection('translate')">
+          <div class="hc-icon">⇄</div>
+          <div class="hc-title">Übersetzer</div>
+          <div class="hc-desc">Übersetze Begriffe und Sätze sofort</div>
+        </div>
+        <div class="home-card" style="--hc-color:#c77dff" onclick="switchSection('ai')">
+          <div class="hc-icon">✦</div>
+          <div class="hc-title">KI-Sprachassistent</div>
+          <div class="hc-desc">Übe Gespräche mit KI, Mikrofon & Sprachausgabe</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VOKABELTRAINING -->
+    <div class="section" id="vocab">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;">Vokabeltraining</div>
+        <span class="badge badge-accent" id="vocab-counter">0 / 0</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="vocab-progress" style="width:0%"></div></div>
+      <div class="vocab-card" id="vocab-card" onclick="revealVocab()">
+        <div class="word-main" id="vocab-word">—</div>
+        <div class="word-sub" id="vocab-phonetic"></div>
+        <div class="word-translation" id="vocab-translation"></div>
+        <div class="flip-hint">Klicken zum Aufdecken</div>
+      </div>
+      <div class="vocab-controls">
+        <button class="btn danger" onclick="vocabAnswer(false)">✗ Nochmal</button>
+        <button class="btn" onclick="speakCurrent()">🔊 Anhören</button>
+        <button class="btn warn" onclick="vocabAnswer('skip')">→ Überspringen</button>
+        <button class="btn success" onclick="vocabAnswer(true)">✓ Gewusst</button>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="section" id="quiz">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;">Quiz</div>
+        <div style="display:flex;gap:.5rem;align-items:center;">
+          <span class="badge badge-accent" id="quiz-score-badge">0 Punkte</span>
+          <span style="font-size:.75rem;color:var(--muted);" id="quiz-q-counter">Frage 1</span>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="quiz-progress" style="width:0%"></div></div>
+      <div class="card">
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:1rem;" id="quiz-lang-label">Russisch → Deutsch</div>
+        <div class="quiz-question" id="quiz-question">Lade...</div>
+        <div class="quiz-options" id="quiz-options"></div>
+        <div class="quiz-feedback" id="quiz-feedback"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;">
+        <button class="btn" onclick="startQuiz()">🔄 Neu starten</button>
+        <button class="btn primary" id="quiz-next-btn" onclick="nextQuizQuestion()" style="display:none;">Weiter →</button>
+      </div>
+    </div>
+
+    <!-- FREIES LERNEN -->
+    <div class="section" id="free">
+      <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:1.5rem;">Freies Lernen</div>
+      <div class="topic-grid" id="topic-grid"></div>
+      <div class="vocab-list" id="free-vocab-list"></div>
+    </div>
+
+    <!-- ÜBERSETZER -->
+    <div class="section" id="translate">
+      <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:1.5rem;">Übersetzer</div>
+      <div class="translate-grid">
+        <div class="translate-box">
+          <div class="translate-label">
+            <span>EINGABE</span>
+            <select class="lang-select" id="trans-from">
+              <option value="de">Deutsch</option>
+              <option value="ru">Russisch</option>
+              <option value="it">Italienisch</option>
+              <option value="es">Spanisch</option>
+              <option value="en">Englisch</option>
+            </select>
+          </div>
+          <textarea class="translate-textarea" id="trans-input" placeholder="Text eingeben..."></textarea>
+        </div>
+        <div class="translate-arrow">
+          <button onclick="doTranslate()" title="Übersetzen">⇄</button>
+          <button onclick="swapLangs()" title="Sprachen tauschen" style="font-size:.8rem;">↕</button>
+        </div>
+        <div class="translate-box">
+          <div class="translate-label">
+            <span>AUSGABE</span>
+            <select class="lang-select" id="trans-to">
+              <option value="de">Deutsch</option>
+              <option value="ru" selected>Russisch</option>
+              <option value="it">Italienisch</option>
+              <option value="es">Spanisch</option>
+              <option value="en">Englisch</option>
+            </select>
+          </div>
+          <textarea class="translate-textarea" id="trans-output" placeholder="Übersetzung erscheint hier..." readonly></textarea>
+        </div>
+      </div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem;">
+        <button class="btn primary" onclick="doTranslate()">Übersetzen</button>
+        <button class="btn" onclick="speakTranslation()">🔊 Ausgabe vorlesen</button>
+        <button class="btn" onclick="copyTranslation()">⧉ Kopieren</button>
+      </div>
+      <div id="trans-loading" style="display:none;margin-top:1rem;"><span class="spinner"></span> Übersetze...</div>
+    </div>
+
+    <!-- KI ASSISTENT -->
+    <div class="section" id="ai">
+      <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:1rem;">KI-Sprachassistent</div>
+      <div class="ai-mode-chips">
+        <button class="ai-chip active" data-mode="conversation">💬 Konversation</button>
+        <button class="ai-chip" data-mode="grammar">📝 Grammatik</button>
+        <button class="ai-chip" data-mode="pronunciation">🎤 Aussprache</button>
+        <button class="ai-chip" data-mode="correction">✏️ Korrektur</button>
+      </div>
+      <div class="chat-window" id="chat-window">
+        <div class="msg ai">
+          <div class="msg-avatar">✦</div>
+          <div class="msg-bubble" id="ai-welcome-msg">Hallo! Ich bin dein KI-Sprachassistent. Wähle eine Lernsprache oben und einen Modus, dann können wir loslegen. Du kannst tippen oder das Mikrofon nutzen!</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎤</button>
+        <input class="chat-input" id="chat-input" type="text" placeholder="Nachricht eingeben oder 🎤 drücken..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="btn primary" onclick="sendChat()">Senden</button>
+      </div>
+      <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button class="btn" onclick="quickPrompt('Erkläre mir eine häufige Grammatikregel auf Deutsch.')">📖 Grammatiktipp</button>
+        <button class="btn" onclick="quickPrompt('Gib mir 5 nützliche Alltagssätze in meiner Lernsprache.')">💡 Sätze des Tages</button>
+        <button class="btn" onclick="quickPrompt('Starte ein einfaches Gespräch mit mir auf meiner Lernsprache.')">🗣 Gespräch starten</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>LINGUA · KI-Sprachlern-App · Dein Fortschritt wird lokal gespeichert</footer>
+</div>
+
+<!-- API KEY MODAL -->
+<div class="modal-overlay hidden" id="api-modal">
+  <div class="modal-box">
+    <div class="modal-title">🔑 Anthropic API-Key</div>
+    <div class="modal-desc">
+      Für Übersetzer und KI-Assistent wird ein Anthropic API-Key benötigt. Der Key wird nur lokal auf deinem Gerät gespeichert und nie weitergegeben.
+    </div>
+    <a class="modal-link" href="https://console.anthropic.com" target="_blank">→ API-Key erstellen: console.anthropic.com → Settings → API Keys</a>
+    <input class="modal-input" id="api-key-input" type="password" placeholder="sk-ant-api03-...">
+    <div style="display:flex;gap:.75rem;">
+      <button class="btn primary" onclick="saveApiKey()" style="flex:1;">Speichern</button>
+      <button class="btn" onclick="closeApiModal()">Abbrechen</button>
+    </div>
+    <div class="modal-note">
+      💡 Der Key wird nur in deinem Browser-Speicher (localStorage) gesichert und verlässt dein Gerät nur für direkte API-Anfragen an Anthropic.
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ============================================================
+// VOCABULARY DATABASE
+// ============================================================
+const VOCAB = {
+  ru: {
+    "Grundlagen": [
+      {f:"привет",t:"Hallo",p:"privet"},{f:"спасибо",t:"Danke",p:"spasibo"},{f:"пожалуйста",t:"Bitte",p:"pozhaluysta"},
+      {f:"да",t:"Ja",p:"da"},{f:"нет",t:"Nein",p:"nyet"},{f:"извините",t:"Entschuldigung",p:"izvinite"},
+      {f:"доброе утро",t:"Guten Morgen",p:"dobroye utro"},{f:"добрый день",t:"Guten Tag",p:"dobryy den'"},
+      {f:"добрый вечер",t:"Guten Abend",p:"dobryy vecher"},{f:"до свидания",t:"Auf Wiedersehen",p:"do svidaniya"},
+      {f:"как дела",t:"Wie geht es dir",p:"kak dela"},{f:"хорошо",t:"Gut",p:"khorosho"},
+      {f:"плохо",t:"Schlecht",p:"plokho"},{f:"я не понимаю",t:"Ich verstehe nicht",p:"ya ne ponimayu"},
+    ],
+    "Zahlen": [
+      {f:"один",t:"Eins",p:"odin"},{f:"два",t:"Zwei",p:"dva"},{f:"три",t:"Drei",p:"tri"},
+      {f:"четыре",t:"Vier",p:"chetyre"},{f:"пять",t:"Fünf",p:"pyat'"},{f:"шесть",t:"Sechs",p:"shest'"},
+      {f:"семь",t:"Sieben",p:"sem'"},{f:"восемь",t:"Acht",p:"vosem'"},{f:"девять",t:"Neun",p:"devyat'"},
+      {f:"десять",t:"Zehn",p:"desyat'"},{f:"сто",t:"Hundert",p:"sto"},{f:"тысяча",t:"Tausend",p:"tysyacha"},
+    ],
+    "Farben": [
+      {f:"красный",t:"Rot",p:"krasnyy"},{f:"синий",t:"Blau",p:"siniy"},{f:"зелёный",t:"Grün",p:"zelyonyy"},
+      {f:"жёлтый",t:"Gelb",p:"zheltyy"},{f:"белый",t:"Weiß",p:"belyy"},{f:"чёрный",t:"Schwarz",p:"chornyy"},
+      {f:"оранжевый",t:"Orange",p:"oranzhevyy"},{f:"фиолетовый",t:"Violett",p:"fioletovyy"},
+      {f:"розовый",t:"Rosa",p:"rozovyy"},{f:"коричневый",t:"Braun",p:"korichnevyy"},
+    ],
+    "Essen & Trinken": [
+      {f:"хлеб",t:"Brot",p:"khleb"},{f:"вода",t:"Wasser",p:"voda"},{f:"молоко",t:"Milch",p:"moloko"},
+      {f:"мясо",t:"Fleisch",p:"myaso"},{f:"рыба",t:"Fisch",p:"ryba"},{f:"овощи",t:"Gemüse",p:"ovoshchi"},
+      {f:"фрукты",t:"Obst",p:"frukty"},{f:"суп",t:"Suppe",p:"sup"},{f:"чай",t:"Tee",p:"chay"},
+      {f:"кофе",t:"Kaffee",p:"kofe"},{f:"пиво",t:"Bier",p:"pivo"},{f:"вино",t:"Wein",p:"vino"},
+      {f:"яблоко",t:"Apfel",p:"yabloko"},{f:"картофель",t:"Kartoffel",p:"kartofel'"},
+    ],
+    "Familie": [
+      {f:"мама",t:"Mutter",p:"mama"},{f:"папа",t:"Vater",p:"papa"},{f:"брат",t:"Bruder",p:"brat"},
+      {f:"сестра",t:"Schwester",p:"sestra"},{f:"бабушка",t:"Großmutter",p:"babushka"},
+      {f:"дедушка",t:"Großvater",p:"dedushka"},{f:"сын",t:"Sohn",p:"syn"},
+      {f:"дочь",t:"Tochter",p:"doch'"},{f:"муж",t:"Ehemann",p:"muzh"},{f:"жена",t:"Ehefrau",p:"zhena"},
+    ],
+    "Reisen": [
+      {f:"аэропорт",t:"Flughafen",p:"aeroport"},{f:"вокзал",t:"Bahnhof",p:"vokzal"},
+      {f:"гостиница",t:"Hotel",p:"gostinitsa"},{f:"улица",t:"Straße",p:"ulitsa"},
+      {f:"город",t:"Stadt",p:"gorod"},{f:"страна",t:"Land",p:"strana"},
+      {f:"билет",t:"Ticket",p:"bilet"},{f:"паспорт",t:"Reisepass",p:"pasport"},
+      {f:"такси",t:"Taxi",p:"taksi"},{f:"метро",t:"U-Bahn",p:"metro"},
+    ],
+    "Körper": [
+      {f:"голова",t:"Kopf",p:"golova"},{f:"рука",t:"Hand / Arm",p:"ruka"},{f:"нога",t:"Bein / Fuß",p:"noga"},
+      {f:"глаз",t:"Auge",p:"glaz"},{f:"ухо",t:"Ohr",p:"ukho"},{f:"рот",t:"Mund",p:"rot"},
+      {f:"нос",t:"Nase",p:"nos"},{f:"сердце",t:"Herz",p:"serdtse"},{f:"живот",t:"Bauch",p:"zhivot"},
+    ],
+    "Zeit": [
+      {f:"сегодня",t:"Heute",p:"segodnya"},{f:"завтра",t:"Morgen",p:"zavtra"},{f:"вчера",t:"Gestern",p:"vchera"},
+      {f:"утро",t:"Morgen (Tageszeit)",p:"utro"},{f:"день",t:"Tag",p:"den'"},{f:"вечер",t:"Abend",p:"vecher"},
+      {f:"ночь",t:"Nacht",p:"noch'"},{f:"неделя",t:"Woche",p:"nedelya"},{f:"месяц",t:"Monat",p:"mesyats"},
+      {f:"год",t:"Jahr",p:"god"},{f:"час",t:"Stunde",p:"chas"},{f:"минута",t:"Minute",p:"minuta"},
+    ],
+    "Berufe": [
+      {f:"врач",t:"Arzt",p:"vrach"},{f:"учитель",t:"Lehrer",p:"uchitel'"},{f:"инженер",t:"Ingenieur",p:"inzhener"},
+      {f:"юрист",t:"Anwalt",p:"yurist"},{f:"повар",t:"Koch",p:"povar"},{f:"водитель",t:"Fahrer",p:"voditel'"},
+      {f:"студент",t:"Student",p:"student"},{f:"полицейский",t:"Polizist",p:"politseyskiy"},
+    ],
+  },
+  it: {
+    "Grundlagen": [
+      {f:"ciao",t:"Hallo / Tschüss",p:"chao"},{f:"grazie",t:"Danke",p:"gratsie"},{f:"prego",t:"Bitte",p:"preɡo"},
+      {f:"sì",t:"Ja",p:"si"},{f:"no",t:"Nein",p:"no"},{f:"scusi",t:"Entschuldigung",p:"skuzi"},
+      {f:"buongiorno",t:"Guten Morgen / Tag",p:"bwondʒorno"},{f:"buonasera",t:"Guten Abend",p:"bwonasera"},
+      {f:"arrivederci",t:"Auf Wiedersehen",p:"arrivedertʃi"},{f:"come stai",t:"Wie geht es dir",p:"kome stai"},
+      {f:"bene",t:"Gut",p:"bene"},{f:"non capisco",t:"Ich verstehe nicht",p:"non kapisko"},
+    ],
+    "Zahlen": [
+      {f:"uno",t:"Eins",p:"uno"},{f:"due",t:"Zwei",p:"due"},{f:"tre",t:"Drei",p:"tre"},
+      {f:"quattro",t:"Vier",p:"kwattro"},{f:"cinque",t:"Fünf",p:"tʃinkwe"},{f:"sei",t:"Sechs",p:"sei"},
+      {f:"sette",t:"Sieben",p:"sette"},{f:"otto",t:"Acht",p:"otto"},{f:"nove",t:"Neun",p:"nove"},
+      {f:"dieci",t:"Zehn",p:"dietʃi"},{f:"cento",t:"Hundert",p:"tʃento"},{f:"mille",t:"Tausend",p:"mille"},
+    ],
+    "Farben": [
+      {f:"rosso",t:"Rot",p:"rosso"},{f:"blu",t:"Blau",p:"blu"},{f:"verde",t:"Grün",p:"verde"},
+      {f:"giallo",t:"Gelb",p:"dʒallo"},{f:"bianco",t:"Weiß",p:"bjanko"},{f:"nero",t:"Schwarz",p:"nero"},
+      {f:"arancione",t:"Orange",p:"arantʃone"},{f:"viola",t:"Violett",p:"vjola"},{f:"rosa",t:"Rosa",p:"roza"},
+    ],
+    "Essen & Trinken": [
+      {f:"pane",t:"Brot",p:"pane"},{f:"acqua",t:"Wasser",p:"akkwa"},{f:"latte",t:"Milch",p:"latte"},
+      {f:"carne",t:"Fleisch",p:"karne"},{f:"pesce",t:"Fisch",p:"peʃe"},{f:"verdura",t:"Gemüse",p:"verdura"},
+      {f:"frutta",t:"Obst",p:"frutta"},{f:"pasta",t:"Pasta",p:"pasta"},{f:"pizza",t:"Pizza",p:"pittsa"},
+      {f:"caffè",t:"Kaffee",p:"kaffe"},{f:"vino",t:"Wein",p:"vino"},{f:"birra",t:"Bier",p:"birra"},
+    ],
+    "Familie": [
+      {f:"madre",t:"Mutter",p:"madre"},{f:"padre",t:"Vater",p:"padre"},{f:"fratello",t:"Bruder",p:"fratello"},
+      {f:"sorella",t:"Schwester",p:"sorella"},{f:"nonna",t:"Großmutter",p:"nonna"},
+      {f:"nonno",t:"Großvater",p:"nonno"},{f:"figlio",t:"Sohn",p:"fiʎʎo"},{f:"figlia",t:"Tochter",p:"fiʎʎa"},
+    ],
+    "Reisen": [
+      {f:"aeroporto",t:"Flughafen",p:"aeroporto"},{f:"stazione",t:"Bahnhof",p:"stattsione"},
+      {f:"albergo",t:"Hotel",p:"albergo"},{f:"via",t:"Straße",p:"via"},{f:"città",t:"Stadt",p:"tʃitta"},
+      {f:"biglietto",t:"Ticket",p:"biʎʎetto"},{f:"passaporto",t:"Reisepass",p:"passaporto"},
+      {f:"taxi",t:"Taxi",p:"taksi"},{f:"treno",t:"Zug",p:"treno"},
+    ],
+    "Zeit": [
+      {f:"oggi",t:"Heute",p:"oddʒi"},{f:"domani",t:"Morgen",p:"domani"},{f:"ieri",p:"jeri",t:"Gestern"},
+      {f:"mattina",t:"Morgen (Tageszeit)",p:"mattina"},{f:"sera",t:"Abend",p:"sera"},
+      {f:"notte",t:"Nacht",p:"notte"},{f:"settimana",t:"Woche",p:"settimana"},
+      {f:"mese",t:"Monat",p:"mese"},{f:"anno",t:"Jahr",p:"anno"},{f:"ora",t:"Stunde",p:"ora"},
+    ],
+    "Berufe": [
+      {f:"medico",t:"Arzt",p:"mediko"},{f:"insegnante",t:"Lehrer",p:"inseɲɲante"},
+      {f:"ingegnere",t:"Ingenieur",p:"indeɲɲere"},{f:"avvocato",t:"Anwalt",p:"avvokato"},
+      {f:"cuoco",t:"Koch",p:"kwoko"},{f:"studente",t:"Student",p:"studente"},
+    ],
+  },
+  es: {
+    "Grundlagen": [
+      {f:"hola",t:"Hallo",p:"ola"},{f:"gracias",t:"Danke",p:"gratʃjas"},{f:"por favor",t:"Bitte",p:"por favor"},
+      {f:"sí",t:"Ja",p:"si"},{f:"no",t:"Nein",p:"no"},{f:"perdón",t:"Entschuldigung",p:"perdon"},
+      {f:"buenos días",t:"Guten Morgen",p:"bwenos dias"},{f:"buenas tardes",t:"Guten Tag/Abend",p:"bwenas tardes"},
+      {f:"adiós",t:"Auf Wiedersehen",p:"adjos"},{f:"¿cómo estás?",t:"Wie geht es dir?",p:"komo estas"},
+      {f:"bien",t:"Gut",p:"bjen"},{f:"no entiendo",t:"Ich verstehe nicht",p:"no entjendo"},
+    ],
+    "Zahlen": [
+      {f:"uno",t:"Eins",p:"uno"},{f:"dos",t:"Zwei",p:"dos"},{f:"tres",t:"Drei",p:"tres"},
+      {f:"cuatro",t:"Vier",p:"kwatro"},{f:"cinco",t:"Fünf",p:"θinko"},{f:"seis",t:"Sechs",p:"seis"},
+      {f:"siete",t:"Sieben",p:"sjete"},{f:"ocho",t:"Acht",p:"otʃo"},{f:"nueve",t:"Neun",p:"nwebe"},
+      {f:"diez",t:"Zehn",p:"djeθ"},{f:"cien",t:"Hundert",p:"θjen"},{f:"mil",t:"Tausend",p:"mil"},
+    ],
+    "Farben": [
+      {f:"rojo",t:"Rot",p:"roxo"},{f:"azul",t:"Blau",p:"aθul"},{f:"verde",t:"Grün",p:"berde"},
+      {f:"amarillo",t:"Gelb",p:"amariʎo"},{f:"blanco",t:"Weiß",p:"blanko"},{f:"negro",t:"Schwarz",p:"neɣro"},
+      {f:"naranja",t:"Orange",p:"naranxa"},{f:"morado",t:"Violett",p:"morado"},{f:"rosa",t:"Rosa",p:"rosa"},
+    ],
+    "Essen & Trinken": [
+      {f:"pan",t:"Brot",p:"pan"},{f:"agua",t:"Wasser",p:"aɣwa"},{f:"leche",t:"Milch",p:"letʃe"},
+      {f:"carne",t:"Fleisch",p:"karne"},{f:"pescado",t:"Fisch",p:"peskado"},{f:"verduras",t:"Gemüse",p:"berduras"},
+      {f:"fruta",t:"Obst",p:"fruta"},{f:"arroz",t:"Reis",p:"aroθ"},{f:"café",t:"Kaffee",p:"kafe"},
+      {f:"vino",t:"Wein",p:"bino"},{f:"cerveza",t:"Bier",p:"θerbeθa"},{f:"jugo",t:"Saft",p:"xuxo"},
+    ],
+    "Familie": [
+      {f:"madre",t:"Mutter",p:"madre"},{f:"padre",t:"Vater",p:"padre"},{f:"hermano",t:"Bruder",p:"ermano"},
+      {f:"hermana",t:"Schwester",p:"ermana"},{f:"abuela",t:"Großmutter",p:"abwela"},
+      {f:"abuelo",t:"Großvater",p:"abwelo"},{f:"hijo",t:"Sohn",p:"ixo"},{f:"hija",t:"Tochter",p:"ixa"},
+    ],
+    "Reisen": [
+      {f:"aeropuerto",t:"Flughafen",p:"aeropwerto"},{f:"estación",t:"Bahnhof",p:"estaθjon"},
+      {f:"hotel",t:"Hotel",p:"otel"},{f:"calle",t:"Straße",p:"kaʎe"},{f:"ciudad",t:"Stadt",p:"θjudad"},
+      {f:"billete",t:"Ticket",p:"biʎete"},{f:"pasaporte",t:"Reisepass",p:"pasaporte"},
+      {f:"taxi",t:"Taxi",p:"taksi"},{f:"tren",t:"Zug",p:"tren"},{f:"playa",t:"Strand",p:"plaʝa"},
+    ],
+    "Zeit": [
+      {f:"hoy",t:"Heute",p:"oi"},{f:"mañana",t:"Morgen",p:"maɲana"},{f:"ayer",t:"Gestern",p:"ajer"},
+      {f:"mañana",t:"Morgen (Tageszeit)",p:"maɲana"},{f:"tarde",t:"Nachmittag",p:"tarde"},
+      {f:"noche",t:"Nacht",p:"notʃe"},{f:"semana",t:"Woche",p:"semana"},
+      {f:"mes",t:"Monat",p:"mes"},{f:"año",t:"Jahr",p:"aɲo"},{f:"hora",t:"Stunde",p:"ora"},
+    ],
+    "Berufe": [
+      {f:"médico",t:"Arzt",p:"mediko"},{f:"maestro",t:"Lehrer",p:"maestro"},
+      {f:"ingeniero",t:"Ingenieur",p:"inxeniero"},{f:"abogado",t:"Anwalt",p:"aboɣado"},
+      {f:"cocinero",t:"Koch",p:"koθinero"},{f:"estudiante",t:"Student",p:"estudjante"},
+    ],
+  },
+  en: {
+    "Grundlagen": [
+      {f:"hello",t:"Hallo",p:"hɛloʊ"},{f:"thank you",t:"Danke",p:"θæŋk juː"},{f:"please",t:"Bitte",p:"pliːz"},
+      {f:"yes",t:"Ja",p:"jɛs"},{f:"no",t:"Nein",p:"noʊ"},{f:"sorry",t:"Entschuldigung",p:"ˈsɒri"},
+      {f:"good morning",t:"Guten Morgen",p:"ɡʊd ˈmɔːrnɪŋ"},{f:"good evening",t:"Guten Abend",p:"ɡʊd ˈiːvnɪŋ"},
+      {f:"goodbye",t:"Auf Wiedersehen",p:"ɡʊdˈbaɪ"},{f:"how are you",t:"Wie geht es dir",p:"haʊ ɑːr juː"},
+      {f:"fine",t:"Gut",p:"faɪn"},{f:"I don't understand",t:"Ich verstehe nicht",p:"aɪ doʊnt ˌʌndərˈstænd"},
+    ],
+    "Zahlen": [
+      {f:"one",t:"Eins",p:"wʌn"},{f:"two",t:"Zwei",p:"tuː"},{f:"three",t:"Drei",p:"θriː"},
+      {f:"four",t:"Vier",p:"fɔːr"},{f:"five",t:"Fünf",p:"faɪv"},{f:"six",t:"Sechs",p:"sɪks"},
+      {f:"seven",t:"Sieben",p:"ˈsɛvən"},{f:"eight",t:"Acht",p:"eɪt"},{f:"nine",t:"Neun",p:"naɪn"},
+      {f:"ten",t:"Zehn",p:"tɛn"},{f:"hundred",t:"Hundert",p:"ˈhʌndrəd"},{f:"thousand",t:"Tausend",p:"ˈθaʊzənd"},
+    ],
+    "Farben": [
+      {f:"red",t:"Rot",p:"rɛd"},{f:"blue",t:"Blau",p:"bluː"},{f:"green",t:"Grün",p:"ɡriːn"},
+      {f:"yellow",t:"Gelb",p:"ˈjɛloʊ"},{f:"white",t:"Weiß",p:"waɪt"},{f:"black",t:"Schwarz",p:"blæk"},
+      {f:"orange",t:"Orange",p:"ˈɒrɪndʒ"},{f:"purple",t:"Lila",p:"ˈpɜːrpl"},{f:"pink",t:"Rosa",p:"pɪŋk"},
+    ],
+    "Essen & Trinken": [
+      {f:"bread",t:"Brot",p:"brɛd"},{f:"water",t:"Wasser",p:"ˈwɔːtər"},{f:"milk",t:"Milch",p:"mɪlk"},
+      {f:"meat",t:"Fleisch",p:"miːt"},{f:"fish",t:"Fisch",p:"fɪʃ"},{f:"vegetables",t:"Gemüse",p:"ˈvɛdʒtəbəlz"},
+      {f:"fruit",t:"Obst",p:"fruːt"},{f:"coffee",t:"Kaffee",p:"ˈkɒfi"},{f:"tea",t:"Tee",p:"tiː"},
+      {f:"wine",t:"Wein",p:"waɪn"},{f:"beer",t:"Bier",p:"bɪər"},{f:"juice",t:"Saft",p:"dʒuːs"},
+    ],
+    "Familie": [
+      {f:"mother",t:"Mutter",p:"ˈmʌðər"},{f:"father",t:"Vater",p:"ˈfɑːðər"},{f:"brother",t:"Bruder",p:"ˈbrʌðər"},
+      {f:"sister",t:"Schwester",p:"ˈsɪstər"},{f:"grandmother",t:"Großmutter",p:"ˈɡrænˌmʌðər"},
+      {f:"grandfather",t:"Großvater",p:"ˈɡrænˌfɑːðər"},{f:"son",t:"Sohn",p:"sʌn"},{f:"daughter",t:"Tochter",p:"ˈdɔːtər"},
+    ],
+    "Reisen": [
+      {f:"airport",t:"Flughafen",p:"ˈɛərˌpɔːrt"},{f:"train station",t:"Bahnhof",p:"treɪn ˈsteɪʃən"},
+      {f:"hotel",t:"Hotel",p:"hoʊˈtɛl"},{f:"street",t:"Straße",p:"striːt"},{f:"city",t:"Stadt",p:"ˈsɪti"},
+      {f:"ticket",t:"Ticket",p:"ˈtɪkɪt"},{f:"passport",t:"Reisepass",p:"ˈpæspɔːrt"},
+      {f:"taxi",t:"Taxi",p:"ˈtæksi"},{f:"train",t:"Zug",p:"treɪn"},{f:"beach",t:"Strand",p:"biːtʃ"},
+    ],
+    "Zeit": [
+      {f:"today",t:"Heute",p:"təˈdeɪ"},{f:"tomorrow",t:"Morgen",p:"təˈmɒroʊ"},{f:"yesterday",t:"Gestern",p:"ˈjɛstərdeɪ"},
+      {f:"morning",t:"Morgen (Tageszeit)",p:"ˈmɔːrnɪŋ"},{f:"evening",t:"Abend",p:"ˈiːvnɪŋ"},
+      {f:"night",t:"Nacht",p:"naɪt"},{f:"week",t:"Woche",p:"wiːk"},
+      {f:"month",t:"Monat",p:"mʌnθ"},{f:"year",t:"Jahr",p:"jɪər"},{f:"hour",t:"Stunde",p:"ˈaʊər"},
+    ],
+    "Berufe": [
+      {f:"doctor",t:"Arzt",p:"ˈdɒktər"},{f:"teacher",t:"Lehrer",p:"ˈtiːtʃər"},
+      {f:"engineer",t:"Ingenieur",p:"ˌɛndʒɪˈnɪər"},{f:"lawyer",t:"Anwalt",p:"ˈlɔɪər"},
+      {f:"chef",t:"Koch",p:"ʃɛf"},{f:"student",t:"Student",p:"ˈstjuːdənt"},
+    ],
+  }
+};
+
+const LANG_NAMES = { ru:"Russisch", it:"Italienisch", es:"Spanisch", en:"Englisch" };
+const LANG_VOICE = { ru:"ru-RU", it:"it-IT", es:"es-ES", en:"en-GB" };
+const LANG_EMOJI = { ru:"🇷🇺", it:"🇮🇹", es:"🇪🇸", en:"🇬🇧" };
+
+// ============================================================
+// API KEY MANAGEMENT
+// ============================================================
+function getApiKey() { return localStorage.getItem('lingua_api_key') || ''; }
+
+function updateApiDot() {
+  const dot = document.getElementById('api-dot');
+  if (dot) dot.className = 'api-key-indicator' + (getApiKey() ? ' ok' : '');
+}
+
+function openApiModal() {
+  document.getElementById('api-key-input').value = getApiKey();
+  document.getElementById('api-modal').classList.remove('hidden');
+}
+
+function closeApiModal() {
+  document.getElementById('api-modal').classList.add('hidden');
+}
+
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (key) {
+    localStorage.setItem('lingua_api_key', key);
+    showToast('✓ API-Key gespeichert!');
+  } else {
+    localStorage.removeItem('lingua_api_key');
+    showToast('API-Key entfernt.');
+  }
+  updateApiDot();
+  closeApiModal();
+}
+
+// Close modal on backdrop click
+document.getElementById('api-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeApiModal();
+});
+
+// Helper: make authenticated API call
+async function callClaude(payload) {
+  const key = getApiKey();
+  if (!key) {
+    openApiModal();
+    throw new Error('Kein API-Key gesetzt. Bitte API-Key eingeben.');
+  }
+  let res;
+  try {
+    res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify(payload)
+    });
+  } catch(netErr) {
+    throw new Error('Netzwerkfehler – bitte Internetverbindung prüfen.');
+  }
+  
+  let data;
+  try { data = await res.json(); } catch(e) { throw new Error(`Ungültige Antwort vom Server (HTTP ${res.status})`); }
+
+  if (!res.ok) {
+    const msg = data?.error?.message || '';
+    if (res.status === 401) throw new Error('API-Key ungültig. Bitte neuen Key eingeben.');
+    if (res.status === 403) throw new Error('Zugriff verweigert – prüfe Billing unter console.anthropic.com.');
+    if (res.status === 429) throw new Error('Zu viele Anfragen – bitte kurz warten.');
+    if (res.status === 400) throw new Error('Anfragefehler: ' + (msg || 'Unbekannt'));
+    throw new Error(msg || `API-Fehler (HTTP ${res.status})`);
+  }
+
+  // Extract text from content array
+  const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+  if (!text) throw new Error('Leere Antwort erhalten – bitte erneut versuchen.');
+  return text;
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let state = JSON.parse(localStorage.getItem('lingua_state') || 'null') || {
+  lang: 'ru',
+  learned: {},
+  quizCorrect: 0,
+  quizTotal: 0,
+  streak: 0,
+  lastDate: null,
+};
+
+function saveState() { localStorage.setItem('lingua_state', JSON.stringify(state)); }
+
+// Streak logic
+function updateStreak() {
+  const today = new Date().toDateString();
+  if (state.lastDate === today) return;
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  state.streak = state.lastDate === yesterday ? state.streak + 1 : 1;
+  state.lastDate = today;
+  saveState();
+}
+updateStreak();
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function switchSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const btn = document.querySelector(`.nav-btn[data-section="${id}"]`);
+  if (btn) btn.classList.add('active');
+  if (id === 'vocab') initVocab();
+  if (id === 'quiz') startQuiz();
+  if (id === 'free') initFree();
+  if (id === 'home') updateHomeStats();
+}
+
+document.querySelectorAll('.nav-btn').forEach(b => {
+  b.addEventListener('click', () => switchSection(b.dataset.section));
+});
+
+// ============================================================
+// LANGUAGE SELECTION
+// ============================================================
+document.querySelectorAll('.lang-pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('.lang-pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    state.lang = p.dataset.lang;
+    saveState();
+    document.getElementById('home-lang-emoji').textContent = LANG_EMOJI[state.lang];
+    const active = document.querySelector('.section.active')?.id;
+    if (active === 'vocab') initVocab();
+    if (active === 'quiz') startQuiz();
+    if (active === 'free') initFree();
+    updateHomeStats();
+  });
+});
+
+// ============================================================
+// HOME STATS
+// ============================================================
+function updateHomeStats() {
+  const lang = state.lang;
+  const learned = Object.keys(state.learned[lang] || {}).filter(k => state.learned[lang][k]).length;
+  document.getElementById('stat-learned').textContent = learned;
+  document.getElementById('stat-streak').textContent = state.streak;
+  const pct = state.quizTotal > 0 ? Math.round(state.quizCorrect / state.quizTotal * 100) : 0;
+  document.getElementById('stat-correct').textContent = pct + '%';
+  document.getElementById('stat-total').textContent = state.quizTotal;
+  document.getElementById('home-lang-emoji').textContent = LANG_EMOJI[lang];
+  document.querySelector(`.lang-pill[data-lang="${lang}"]`)?.classList.add('active');
+}
+updateHomeStats();
+
+// ============================================================
+// VOCAB TRAINER
+// ============================================================
+let vocabQueue = [], vocabIndex = 0, vocabRevealed = false;
+
+function getAllWords(lang) {
+  const all = [];
+  for (const topic of Object.values(VOCAB[lang])) all.push(...topic);
+  return all;
+}
+
+function initVocab() {
+  const lang = state.lang;
+  vocabQueue = [...getAllWords(lang)].sort(() => Math.random() - .5);
+  vocabIndex = 0;
+  vocabRevealed = false;
+  showVocabCard();
+}
+
+function showVocabCard() {
+  if (vocabIndex >= vocabQueue.length) {
+    document.getElementById('vocab-word').textContent = '🎉 Alle Karten durch!';
+    document.getElementById('vocab-phonetic').textContent = '';
+    document.getElementById('vocab-translation').textContent = '';
+    document.getElementById('vocab-counter').textContent = vocabQueue.length + ' / ' + vocabQueue.length;
+    document.getElementById('vocab-progress').style.width = '100%';
+    return;
+  }
+  const card = vocabQueue[vocabIndex];
+  const el = document.getElementById('vocab-card');
+  el.classList.remove('revealed');
+  document.getElementById('vocab-word').textContent = card.f;
+  document.getElementById('vocab-phonetic').textContent = card.p ? '[' + card.p + ']' : '';
+  document.getElementById('vocab-translation').textContent = card.t;
+  document.getElementById('vocab-counter').textContent = (vocabIndex + 1) + ' / ' + vocabQueue.length;
+  document.getElementById('vocab-progress').style.width = ((vocabIndex / vocabQueue.length) * 100) + '%';
+  vocabRevealed = false;
+}
+
+function revealVocab() {
+  document.getElementById('vocab-card').classList.add('revealed');
+  vocabRevealed = true;
+}
+
+function vocabAnswer(result) {
+  if (!vocabRevealed && result !== 'skip') { revealVocab(); return; }
+  const card = vocabQueue[vocabIndex];
+  if (!state.learned[state.lang]) state.learned[state.lang] = {};
+  if (result === true) state.learned[state.lang][card.f] = true;
+  vocabIndex++;
+  saveState();
+  showVocabCard();
+}
+
+function speakCurrent() {
+  if (vocabQueue.length === 0) return;
+  speak(vocabQueue[vocabIndex].f, state.lang);
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+let quizItems = [], quizCurrent = 0, quizAnswered = false, quizSessionScore = 0;
+
+function startQuiz() {
+  const lang = state.lang;
+  const all = getAllWords(lang).sort(() => Math.random() - .5);
+  quizItems = all.slice(0, 20);
+  quizCurrent = 0;
+  quizAnswered = false;
+  quizSessionScore = 0;
+  document.getElementById('quiz-score-badge').textContent = '0 Punkte';
+  document.getElementById('quiz-next-btn').style.display = 'none';
+  document.getElementById('quiz-lang-label').textContent = LANG_NAMES[lang] + ' → Deutsch';
+  showQuizQuestion();
+}
+
+function showQuizQuestion() {
+  if (quizCurrent >= quizItems.length) {
+    document.getElementById('quiz-question').textContent = '🏆 Quiz abgeschlossen!';
+    document.getElementById('quiz-options').innerHTML = '';
+    document.getElementById('quiz-feedback').textContent = `${quizSessionScore} / ${quizItems.length} richtig`;
+    document.getElementById('quiz-next-btn').style.display = 'none';
+    return;
+  }
+  const q = quizItems[quizCurrent];
+  document.getElementById('quiz-question').textContent = q.f;
+  document.getElementById('quiz-q-counter').textContent = `Frage ${quizCurrent + 1} / ${quizItems.length}`;
+  document.getElementById('quiz-progress').style.width = ((quizCurrent / quizItems.length) * 100) + '%';
+  document.getElementById('quiz-feedback').textContent = '';
+  quizAnswered = false;
+  document.getElementById('quiz-next-btn').style.display = 'none';
+
+  // Build options
+  const all = getAllWords(state.lang);
+  const wrongs = all.filter(x => x.t !== q.t).sort(() => Math.random() - .5).slice(0, 3);
+  const options = [...wrongs, q].sort(() => Math.random() - .5);
+  const container = document.getElementById('quiz-options');
+  container.innerHTML = '';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = opt.t;
+    btn.onclick = () => checkQuiz(btn, opt.t === q.t, q.t);
+    container.appendChild(btn);
+  });
+}
+
+function checkQuiz(btn, correct, correctAnswer) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  document.getElementById('quiz-next-btn').style.display = 'block';
+  if (correct) {
+    btn.classList.add('correct');
+    document.getElementById('quiz-feedback').textContent = '✓ Richtig!';
+    quizSessionScore++;
+    state.quizCorrect++;
+  } else {
+    btn.classList.add('wrong');
+    document.getElementById('quiz-feedback').textContent = `✗ Falsch. Richtig: ${correctAnswer}`;
+    document.querySelectorAll('.quiz-opt').forEach(b => {
+      if (b.textContent === correctAnswer) b.classList.add('correct');
+    });
+  }
+  state.quizTotal++;
+  document.getElementById('quiz-score-badge').textContent = quizSessionScore + ' Punkte';
+  saveState();
+}
+
+function nextQuizQuestion() {
+  quizCurrent++;
+  showQuizQuestion();
+}
+
+// ============================================================
+// FREE LEARNING
+// ============================================================
+let currentTopic = null;
+
+function initFree() {
+  const lang = state.lang;
+  const topics = Object.keys(VOCAB[lang]);
+  const grid = document.getElementById('topic-grid');
+  grid.innerHTML = '';
+  topics.forEach(topic => {
+    const btn = document.createElement('button');
+    btn.className = 'topic-btn' + (topic === currentTopic ? ' active' : '');
+    btn.textContent = topic;
+    btn.onclick = () => {
+      currentTopic = topic;
+      document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      showFreeVocab(lang, topic);
+    };
+    grid.appendChild(btn);
+  });
+  if (currentTopic && VOCAB[lang][currentTopic]) showFreeVocab(lang, currentTopic);
+  else if (topics.length > 0) { currentTopic = topics[0]; grid.children[0]?.classList.add('active'); showFreeVocab(lang, topics[0]); }
+}
+
+function showFreeVocab(lang, topic) {
+  const words = VOCAB[lang][topic] || [];
+  const list = document.getElementById('free-vocab-list');
+  list.innerHTML = '';
+  words.forEach(w => {
+    const item = document.createElement('div');
+    item.className = 'vocab-item';
+    item.innerHTML = `
+      <div>
+        <div class="vi-foreign">${w.f}</div>
+        <div class="vi-translation">${w.t} ${w.p ? '· <em>' + w.p + '</em>' : ''}</div>
+      </div>
+      <button class="vi-speak" onclick="speak('${w.f.replace(/'/g,"\\'")}','${lang}')">🔊</button>
+    `;
+    list.appendChild(item);
+  });
+}
+
+// ============================================================
+// TRANSLATOR
+// ============================================================
+async function doTranslate() {
+  const text = document.getElementById('trans-input').value.trim();
+  if (!text) return;
+  const from = document.getElementById('trans-from').value;
+  const to = document.getElementById('trans-to').value;
+  const fromName = { de:'Deutsch', ru:'Russisch', it:'Italienisch', es:'Spanisch', en:'Englisch' }[from];
+  const toName = { de:'Deutsch', ru:'Russisch', it:'Italienisch', es:'Spanisch', en:'Englisch' }[to];
+
+  document.getElementById('trans-loading').style.display = 'block';
+  document.getElementById('trans-output').value = '';
+
+  try {
+    const result = await callClaude({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      system:`Du bist ein präziser Übersetzer. Übersetze den gegebenen Text von ${fromName} nach ${toName}. Gib NUR die Übersetzung aus, ohne Erklärungen, Anmerkungen oder Formatierung.`,
+      messages:[{role:'user',content:text}]
+    });
+    document.getElementById('trans-output').value = result;
+  } catch(e) {
+    document.getElementById('trans-output').value = '⚠ ' + (e.message || 'Unbekannter Fehler');
+  }
+  document.getElementById('trans-loading').style.display = 'none';
+}
+
+function swapLangs() {
+  const fromSel = document.getElementById('trans-from');
+  const toSel = document.getElementById('trans-to');
+  const fromVal = fromSel.value;
+  fromSel.value = toSel.value;
+  toSel.value = fromVal;
+  const inp = document.getElementById('trans-input').value;
+  const out = document.getElementById('trans-output').value;
+  document.getElementById('trans-input').value = out;
+  document.getElementById('trans-output').value = inp;
+}
+
+function speakTranslation() {
+  const text = document.getElementById('trans-output').value;
+  const lang = document.getElementById('trans-to').value;
+  if (text) speak(text, lang);
+}
+
+function copyTranslation() {
+  const text = document.getElementById('trans-output').value;
+  if (text) { navigator.clipboard.writeText(text); showToast('Kopiert!'); }
+}
+
+// ============================================================
+// AI ASSISTANT
+// ============================================================
+let chatHistory = [];
+let aiMode = 'conversation';
+let recognition = null;
+
+const MODE_PROMPTS = {
+  conversation: (lang) => `Du bist ein freundlicher ${LANG_NAMES[lang]}-Sprachassistent. Führe ein natürliches Gespräch auf ${LANG_NAMES[lang]}, korrigiere subtil Fehler des Lerners und erkläre auf Deutsch wenn nötig. Bleib motivierend und geduldig.`,
+  grammar: (lang) => `Du bist ein ${LANG_NAMES[lang]}-Grammatikexperte. Erkläre Grammatikregeln klar und mit Beispielen. Antworte auf Deutsch, zeige Beispiele auf ${LANG_NAMES[lang]}.`,
+  pronunciation: (lang) => `Du bist ein Aussprachecoach für ${LANG_NAMES[lang]}. Gib Aussprache-Tipps, erkläre Laute und typische Fehler. Antworte auf Deutsch.`,
+  correction: (lang) => `Du bist ein ${LANG_NAMES[lang]}-Korrekturhelfer. Der Nutzer schreibt Sätze auf ${LANG_NAMES[lang]}, du korrigierst sie und erklärst die Fehler auf Deutsch.`,
+};
+
+document.querySelectorAll('.ai-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.ai-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    aiMode = chip.dataset.mode;
+  });
+});
+
+function quickPrompt(text) {
+  document.getElementById('chat-input').value = text;
+  sendChat();
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  addMsg('user', text);
+  chatHistory.push({ role:'user', content:text });
+
+  const thinking = addMsg('ai', '<span class="spinner"></span>');
+
+  try {
+    const reply = await callClaude({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      system: MODE_PROMPTS[aiMode](state.lang),
+      messages: chatHistory
+    });
+    thinking.querySelector('.msg-bubble').innerHTML = reply.replace(/\n/g,'<br>');
+    chatHistory.push({ role:'assistant', content:reply });
+    speak(reply, state.lang);
+  } catch(e) {
+    thinking.querySelector('.msg-bubble').textContent = '⚠ ' + (e.message || 'Verbindungsfehler.');
+  }
+
+  const win = document.getElementById('chat-window');
+  win.scrollTop = win.scrollHeight;
+}
+
+function addMsg(role, html) {
+  const win = document.getElementById('chat-window');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `<div class="msg-avatar">${role==='ai'?'✦':'Du'}</div><div class="msg-bubble">${html}</div>`;
+  win.appendChild(div);
+  win.scrollTop = win.scrollHeight;
+  return div;
+}
+
+// ============================================================
+// SPEECH: TTS
+// ============================================================
+function speak(text, lang) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = LANG_VOICE[lang] || 'de-DE';
+  utt.rate = 0.9;
+  window.speechSynthesis.speak(utt);
+}
+
+// ============================================================
+// SPEECH: STT (Mikrofon)
+// ============================================================
+function toggleMic() {
+  const btn = document.getElementById('mic-btn');
+  if (recognition && btn.classList.contains('listening')) {
+    recognition.stop();
+    btn.classList.remove('listening');
+    return;
+  }
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    showToast('Spracherkennung nicht verfügbar in diesem Browser.');
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = LANG_VOICE[state.lang];
+  recognition.interimResults = false;
+  recognition.onresult = e => {
+    const transcript = e.results[0][0].transcript;
+    document.getElementById('chat-input').value = transcript;
+    btn.classList.remove('listening');
+  };
+  recognition.onerror = () => btn.classList.remove('listening');
+  recognition.onend = () => btn.classList.remove('listening');
+  recognition.start();
+  btn.classList.add('listening');
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// PWA SERVICE WORKER
+// ============================================================
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// INIT
+initVocab();
+updateApiDot();
+// Show API key modal on first launch if no key set
+if (!getApiKey()) setTimeout(openApiModal, 800);
+</script>
+</body>
+</html>
