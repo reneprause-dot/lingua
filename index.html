@@ -30,6 +30,7 @@
   --sq: #e41e20;
   --de: #ffcc00;
   --th: #a8173a;
+  --da: #c60c30;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 html { height:100%; }
@@ -80,6 +81,7 @@ header {
 .lang-pill[data-lang="sq"] { --pill-color:var(--sq); }
 .lang-pill[data-lang="de"] { --pill-color:var(--de); }
 .lang-pill[data-lang="th"] { --pill-color:var(--th); }
+.lang-pill[data-lang="da"] { --pill-color:var(--da); }
 .settings-btn {
   background:var(--surface2); border:1px solid var(--border); border-radius:8px;
   padding:.35rem .6rem; cursor:pointer; font-size:1rem; color:var(--muted);
@@ -503,6 +505,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
         <button class="lang-pill" data-lang="de">🇩🇪 DE</button>
         <button class="lang-pill" data-lang="th">🇹🇭 TH</button>
+        <button class="lang-pill" data-lang="da">🇩🇰 DA</button>
       </div>
       <button class="settings-btn" onclick="openSettings()" title="Einstellungen">
         <span class="api-dot-inline" id="api-dot"></span>⚙
@@ -542,6 +545,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
           <button class="lang-select-card" onclick="selectLanguage('sq')"><div class="lsc-flag">🇦🇱</div><div class="lsc-name">Albanisch</div><div class="lsc-sub">Shqip · Isolat</div></button>
           <button class="lang-select-card" onclick="selectLanguage('de')"><div class="lsc-flag">🇩🇪</div><div class="lsc-name">Deutsch</div><div class="lsc-sub">Deutsch · Germanisch</div></button>
           <button class="lang-select-card" onclick="selectLanguage('th')"><div class="lsc-flag">🇹🇭</div><div class="lsc-name">Thailändisch</div><div class="lsc-sub">ภาษาไทย · Tai-Kadai</div></button>
+          <button class="lang-select-card" onclick="selectLanguage('da')"><div class="lsc-flag">🇩🇰</div><div class="lsc-name">Dänisch</div><div class="lsc-sub">Dansk · Germanisch</div></button>
         </div>
       </div>
 
@@ -733,6 +737,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
               <option value="tr">🇹🇷 Türkisch</option>
               <option value="sq">🇦🇱 Albanisch</option>
               <option value="th">🇹🇭 Thailändisch</option>
+              <option value="da">🇩🇰 Dänisch</option>
             </select>
           </div>
           <textarea class="translate-textarea" id="trans-input" placeholder="Text eingeben..."></textarea>
@@ -755,6 +760,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
               <option value="tr">🇹🇷 Türkisch</option>
               <option value="sq">🇦🇱 Albanisch</option>
               <option value="th">🇹🇭 Thailändisch</option>
+              <option value="da">🇩🇰 Dänisch</option>
             </select>
           </div>
           <textarea class="translate-textarea" id="trans-output" placeholder="Übersetzung erscheint hier..." readonly></textarea>
@@ -847,6 +853,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <button class="lang-pill" data-settings-lang="sq" onclick="setLangFromSettings('sq')">🇦🇱 Albanisch</button>
         <button class="lang-pill" data-settings-lang="de" onclick="setLangFromSettings('de')">🇩🇪 Deutsch</button>
         <button class="lang-pill" data-settings-lang="th" onclick="setLangFromSettings('th')">🇹🇭 Thailändisch</button>
+        <button class="lang-pill" data-settings-lang="da" onclick="setLangFromSettings('da')">🇩🇰 Dänisch</button>
       </div>
     </div>
 
@@ -2273,12 +2280,228 @@ const VOCAB = {
       {f:"สมุดทะเบียน",t:"Amulett",p:"sa-mut-tha-bian"},{f:"พระมหากษัตริย์",t:"König",p:"phra-ma-ha-ka-sat"},
       {f:"เจดีย์",t:"Chedi / Stupa",p:"che-di"},{f:"ฉัตร",t:"Königlicher Schirm",p:"chat"},
     ],
+  },
+  da: {
+    "Grundlagen": [
+      {f:"hej",t:"Hallo",p:"hai"},{f:"tak",t:"Danke",p:"tag"},{f:"vær så venlig",t:"Bitte",p:"ver so ven-li"},
+      {f:"ja",t:"Ja",p:"ja"},{f:"nej",t:"Nein",p:"nai"},{f:"undskyld",t:"Entschuldigung",p:"un-sgyul"},
+      {f:"godmorgen",t:"Guten Morgen",p:"go-mor-en"},{f:"goddag",t:"Guten Tag",p:"go-da"},
+      {f:"godaften",t:"Guten Abend",p:"go-af-ten"},{f:"farvel",t:"Auf Wiedersehen",p:"far-vel"},
+      {f:"hvordan har du det",t:"Wie geht es dir",p:"vor-dan har du de"},{f:"godt",t:"Gut",p:"got"},
+      {f:"jeg forstår ikke",t:"Ich verstehe nicht",p:"yai fo-stor ike"},{f:"hvor",t:"Wo",p:"vor"},
+      {f:"hvornår",t:"Wann",p:"vor-nor"},{f:"hvorfor",t:"Warum",p:"vor-for"},
+      {f:"hvad koster det",t:"Was kostet das",p:"val kos-ter de"},{f:"hjælp",t:"Hilfe",p:"yelp"},
+      {f:"tal langsommere",t:"Sprechen Sie langsamer",p:"tal lang-so-mere"},{f:"jeg hedder",t:"Ich heiße",p:"yai he-der"},
+      {f:"velkommen",t:"Willkommen",p:"vel-ko-men"},{f:"godnat",t:"Gute Nacht",p:"go-nat"},
+      {f:"jeg forstår",t:"Ich verstehe",p:"yai fo-stor"},{f:"jeg ved det ikke",t:"Ich weiß nicht",p:"yai ve de ike"},
+    ],
+    "Zahlen": [
+      {f:"en / et",t:"Eins",p:"en / et"},{f:"to",t:"Zwei",p:"to"},{f:"tre",t:"Drei",p:"tre"},
+      {f:"fire",t:"Vier",p:"fi-re"},{f:"fem",t:"Fünf",p:"fem"},{f:"seks",t:"Sechs",p:"seks"},
+      {f:"syv",t:"Sieben",p:"syv"},{f:"otte",t:"Acht",p:"o-te"},{f:"ni",t:"Neun",p:"ni"},
+      {f:"ti",t:"Zehn",p:"ti"},{f:"elleve",t:"Elf",p:"el-ve"},{f:"tolv",t:"Zwölf",p:"tol"},
+      {f:"tyve",t:"Zwanzig",p:"ty-ve"},{f:"tredive",t:"Dreißig",p:"tre-ve"},{f:"fyrre",t:"Vierzig",p:"fyr-re"},
+      {f:"halvtreds",t:"Fünfzig",p:"hal-tres"},{f:"hundrede",t:"Hundert",p:"hun-re-de"},{f:"tusind",t:"Tausend",p:"tu-sen"},
+      {f:"første",t:"Erste/r",p:"fors-te"},{f:"anden",t:"Zweite/r",p:"an-en"},{f:"tredje",t:"Dritte/r",p:"tre-ye"},
+    ],
+    "Farben": [
+      {f:"rød",t:"Rot",p:"röd"},{f:"blå",t:"Blau",p:"blo"},{f:"grøn",t:"Grün",p:"grön"},
+      {f:"gul",t:"Gelb",p:"gul"},{f:"hvid",t:"Weiß",p:"vi"},{f:"sort",t:"Schwarz",p:"sort"},
+      {f:"orange",t:"Orange",p:"o-ran-she"},{f:"lilla",t:"Violett / Lila",p:"li-la"},{f:"lyserød",t:"Rosa",p:"ly-se-röd"},
+      {f:"grå",t:"Grau",p:"gro"},{f:"brun",t:"Braun",p:"brun"},{f:"guld",t:"Golden",p:"gul"},
+      {f:"sølv",t:"Silber",p:"söl"},{f:"mørkeblå",t:"Dunkelblau",p:"mor-ke-blo"},
+    ],
+    "Essen & Trinken": [
+      {f:"brød",t:"Brot",p:"bröd"},{f:"vand",t:"Wasser",p:"van"},{f:"mælk",t:"Milch",p:"melk"},
+      {f:"kød",t:"Fleisch",p:"köd"},{f:"fisk",t:"Fisch",p:"fisk"},{f:"grøntsager",t:"Gemüse",p:"grön-sa-er"},
+      {f:"frugt",t:"Obst",p:"frugt"},{f:"suppe",t:"Suppe",p:"su-pe"},{f:"te",t:"Tee",p:"te"},
+      {f:"kaffe",t:"Kaffee",p:"ka-fe"},{f:"øl",t:"Bier",p:"öl"},{f:"vin",t:"Wein",p:"vin"},
+      {f:"æble",t:"Apfel",p:"eb-le"},{f:"kartoffel",t:"Kartoffel",p:"kar-to-fel"},
+      {f:"kylling",t:"Hühnchen",p:"kyl-ing"},{f:"æg",t:"Ei",p:"eg"},{f:"ost",t:"Käse",p:"ost"},
+      {f:"smør",t:"Butter",p:"smör"},{f:"sukker",t:"Zucker",p:"su-ker"},{f:"salt",t:"Salz",p:"salt"},
+      {f:"ris",t:"Reis",p:"ris"},{f:"pasta",t:"Nudeln",p:"pas-ta"},{f:"tomat",t:"Tomate",p:"to-mat"},
+      {f:"løg",t:"Zwiebel",p:"löy"},{f:"hvidløg",t:"Knoblauch",p:"vi-löy"},
+      {f:"jordbær",t:"Erdbeere",p:"yor-ber"},{f:"is",t:"Eis",p:"is"},
+      {f:"kage",t:"Kuchen",p:"ka-e"},{f:"juice",t:"Saft",p:"jus"},{f:"olie",t:"Öl",p:"o-lie"},
+      {f:"honning",t:"Honig",p:"ho-ning"},{f:"smørrebrød",t:"Belegte Brote (dänisch)",p:"smör-re-bröd"},
+      {f:"frikadeller",t:"Frikadellen",p:"fri-ka-de-ler"},{f:"flæskesteg",t:"Schweinebraten",p:"fles-ke-stai"},
+      {f:"rødgrød",t:"Rote Grütze",p:"röd-gröd"},{f:"wienerbrød",t:"Plundergebäck",p:"vi-ner-bröd"},
+    ],
+    "Familie": [
+      {f:"mor",t:"Mutter",p:"mor"},{f:"far",t:"Vater",p:"far"},
+      {f:"bror",t:"Bruder",p:"bror"},{f:"søster",t:"Schwester",p:"sös-ter"},
+      {f:"mormor / farmor",t:"Großmutter",p:"mor-mor / far-mor"},{f:"morfar / farfar",t:"Großvater",p:"mor-far / far-far"},
+      {f:"søn",t:"Sohn",p:"sön"},{f:"datter",t:"Tochter",p:"da-ter"},
+      {f:"mand / ægtemand",t:"Ehemann",p:"man / eg-te-man"},{f:"kone / ægtefrue",t:"Ehefrau",p:"ko-ne"},
+      {f:"onkel",t:"Onkel",p:"on-kel"},{f:"tante",t:"Tante",p:"tan-te"},
+      {f:"nevø",t:"Neffe",p:"ne-vö"},{f:"niece",t:"Nichte",p:"ni-ese"},
+      {f:"fætter / kusine",t:"Cousin / Cousine",p:"fe-ter / ku-si-ne"},
+      {f:"forældre",t:"Eltern",p:"fo-rel-dre"},{f:"barn",t:"Kind",p:"barn"},{f:"baby",t:"Baby",p:"bai-bi"},
+    ],
+    "Reisen": [
+      {f:"lufthavn",t:"Flughafen",p:"luft-havn"},{f:"togstation",t:"Bahnhof",p:"to-sta-sjon"},
+      {f:"hotel",t:"Hotel",p:"ho-tel"},{f:"gade",t:"Straße",p:"ga-de"},{f:"by",t:"Stadt",p:"by"},
+      {f:"billet",t:"Ticket",p:"bi-let"},{f:"pas",t:"Reisepass",p:"pas"},
+      {f:"taxa",t:"Taxi",p:"tak-sa"},{f:"tog",t:"Zug",p:"to"},{f:"fly",t:"Flugzeug",p:"fly"},
+      {f:"bus",t:"Bus",p:"bus"},{f:"bil",t:"Auto",p:"bil"},{f:"skib",t:"Schiff",p:"ski"},
+      {f:"kort",t:"Landkarte",p:"kort"},{f:"grænse",t:"Grenze",p:"gren-se"},
+      {f:"visum",t:"Visum",p:"vi-sum"},{f:"bagage",t:"Gepäck",p:"ba-ga-she"},{f:"værelse",t:"Zimmer",p:"ve-rel-se"},
+      {f:"reservation",t:"Buchung",p:"re-ser-va-sjon"},{f:"museum",t:"Museum",p:"mu-se-um"},
+      {f:"strand",t:"Strand",p:"stran"},{f:"bjerg",t:"Berg",p:"byer"},{f:"flod",t:"Fluss",p:"flod"},
+      {f:"hav",t:"Meer",p:"hav"},{f:"skov",t:"Wald",p:"sko"},
+    ],
+    "Körper": [
+      {f:"hoved",t:"Kopf",p:"ho-ved"},{f:"hånd",t:"Hand",p:"hon"},{f:"fod",t:"Fuß",p:"fo"},
+      {f:"øje",t:"Auge",p:"ö-ye"},{f:"øre",t:"Ohr",p:"ö-re"},{f:"mund",t:"Mund",p:"mun"},
+      {f:"næse",t:"Nase",p:"ne-se"},{f:"hjerte",t:"Herz",p:"yer-te"},{f:"mave",t:"Bauch",p:"ma-ve"},
+      {f:"ryg",t:"Rücken",p:"ryg"},{f:"skulder",t:"Schulter",p:"skul-er"},{f:"knæ",t:"Knie",p:"kne"},
+      {f:"finger",t:"Finger",p:"fing-er"},{f:"tand",t:"Zahn",p:"tan"},{f:"hår",t:"Haare",p:"hor"},
+      {f:"hud",t:"Haut",p:"hu"},{f:"blod",t:"Blut",p:"blo"},{f:"arm",t:"Arm",p:"arm"},
+      {f:"ben",t:"Bein",p:"ben"},{f:"hals",t:"Hals",p:"hals"},{f:"ansigt",t:"Gesicht",p:"an-sigt"},
+    ],
+    "Zeit": [
+      {f:"i dag",t:"Heute",p:"i da"},{f:"i morgen",t:"Morgen",p:"i mor-en"},{f:"i går",t:"Gestern",p:"i gor"},
+      {f:"morgen",t:"Morgen (Tageszeit)",p:"mor-en"},{f:"eftermiddag",t:"Nachmittag",p:"ef-ter-mi-da"},
+      {f:"aften",t:"Abend",p:"af-ten"},{f:"nat",t:"Nacht",p:"nat"},
+      {f:"uge",t:"Woche",p:"u-e"},{f:"måned",t:"Monat",p:"mo-ned"},{f:"år",t:"Jahr",p:"or"},
+      {f:"time",t:"Stunde",p:"ti-me"},{f:"minut",t:"Minute",p:"mi-nut"},{f:"sekund",t:"Sekunde",p:"se-kun"},
+      {f:"mandag",t:"Montag",p:"man-da"},{f:"tirsdag",t:"Dienstag",p:"tirs-da"},
+      {f:"onsdag",t:"Mittwoch",p:"ons-da"},{f:"torsdag",t:"Donnerstag",p:"tors-da"},
+      {f:"fredag",t:"Freitag",p:"fre-da"},{f:"lørdag",t:"Samstag",p:"lör-da"},{f:"søndag",t:"Sonntag",p:"sön-da"},
+      {f:"januar",t:"Januar",p:"ya-nu-ar"},{f:"februar",t:"Februar",p:"feb-ru-ar"},{f:"marts",t:"März",p:"mars"},
+      {f:"april",t:"April",p:"a-pril"},{f:"maj",t:"Mai",p:"mai"},{f:"juni",t:"Juni",p:"yu-ni"},
+      {f:"juli",t:"Juli",p:"yu-li"},{f:"august",t:"August",p:"ow-gust"},{f:"september",t:"September",p:"sep-tem-ber"},
+      {f:"oktober",t:"Oktober",p:"ok-to-ber"},{f:"november",t:"November",p:"no-vem-ber"},{f:"december",t:"Dezember",p:"de-sem-ber"},
+    ],
+    "Berufe": [
+      {f:"læge",t:"Arzt",p:"le-e"},{f:"lærer",t:"Lehrer",p:"le-rer"},
+      {f:"ingeniør",t:"Ingenieur",p:"in-ge-ni-ör"},{f:"advokat",t:"Anwalt",p:"ad-vo-kat"},
+      {f:"kok",t:"Koch",p:"kok"},{f:"studerende",t:"Student",p:"stu-de-ren-de"},
+      {f:"sygeplejerske",t:"Krankenschwester",p:"sy-e-plai-yer-ske"},{f:"brandmand",t:"Feuerwehrmann",p:"bran-man"},
+      {f:"politibetjent",t:"Polizist",p:"po-li-ti-be-tyent"},{f:"arkitekt",t:"Architekt",p:"ar-ki-tekt"},
+      {f:"journalist",t:"Journalist",p:"jour-na-list"},{f:"skuespiller",t:"Schauspieler",p:"skue-spil-er"},
+      {f:"sanger",t:"Sänger",p:"sang-er"},{f:"pilot",t:"Pilot",p:"pi-lot"},
+      {f:"farmaceut",t:"Apotheker",p:"far-ma-söt"},{f:"chauffør",t:"Fahrer",p:"sho-för"},
+    ],
+    "Wohnen": [
+      {f:"hus",t:"Haus",p:"hus"},{f:"lejlighed",t:"Wohnung",p:"lai-li-hed"},
+      {f:"værelse",t:"Zimmer",p:"ve-rel-se"},{f:"køkken",t:"Küche",p:"kök-en"},
+      {f:"badeværelse",t:"Badezimmer",p:"ba-de-ve-rel-se"},{f:"soveværelse",t:"Schlafzimmer",p:"so-ve-ve-rel-se"},
+      {f:"stue",t:"Wohnzimmer",p:"stu-e"},{f:"dør",t:"Tür",p:"dör"},{f:"vindue",t:"Fenster",p:"vin-du-e"},
+      {f:"bord",t:"Tisch",p:"bor"},{f:"stol",t:"Stuhl",p:"stol"},{f:"seng",t:"Bett",p:"seng"},
+      {f:"skab",t:"Schrank",p:"skab"},{f:"sofa",t:"Sofa",p:"so-fa"},{f:"køleskab",t:"Kühlschrank",p:"köle-skab"},
+      {f:"komfur",t:"Herd",p:"kom-fur"},{f:"elevator",t:"Aufzug",p:"ele-va-tor"},{f:"trappe",t:"Treppe",p:"tra-pe"},
+      {f:"altan",t:"Balkon",p:"al-tan"},
+    ],
+    "Natur & Wetter": [
+      {f:"sol",t:"Sonne",p:"sol"},{f:"måne",t:"Mond",p:"mo-ne"},{f:"stjerne",t:"Stern",p:"styer-ne"},
+      {f:"himmel",t:"Himmel",p:"hi-mel"},{f:"sky",t:"Wolke",p:"sky"},{f:"regn",t:"Regen",p:"rain"},
+      {f:"sne",t:"Schnee",p:"sne"},{f:"vind",t:"Wind",p:"vin"},{f:"storm",t:"Sturm / Gewitter",p:"storm"},
+      {f:"varmt",t:"Warm / Heiß",p:"varmt"},{f:"koldt",t:"Kalt",p:"kolt"},{f:"tåge",t:"Nebel",p:"to-e"},
+      {f:"skov",t:"Wald",p:"sko"},{f:"hav",t:"Meer",p:"hav"},{f:"sø",t:"See",p:"sö"},
+      {f:"flod",t:"Fluss",p:"flod"},{f:"blomst",t:"Blume",p:"blomst"},{f:"træ",t:"Baum",p:"tre"},
+      {f:"græs",t:"Gras",p:"gres"},{f:"bjerg",t:"Berg",p:"byer"},{f:"ø",t:"Insel",p:"ö"},
+    ],
+    "Tiere": [
+      {f:"hund",t:"Hund",p:"hun"},{f:"kat",t:"Katze",p:"kat"},{f:"hest",t:"Pferd",p:"hest"},
+      {f:"ko",t:"Kuh",p:"ko"},{f:"gris",t:"Schwein",p:"gris"},{f:"får",t:"Schaf",p:"for"},
+      {f:"fugl",t:"Vogel",p:"fu-el"},{f:"fisk",t:"Fisch",p:"fisk"},{f:"løve",t:"Löwe",p:"lö-ve"},
+      {f:"tiger",t:"Tiger",p:"ti-er"},{f:"elefant",t:"Elefant",p:"ele-fant"},{f:"bjørn",t:"Bär",p:"byörn"},
+      {f:"ulv",t:"Wolf",p:"ulv"},{f:"ræv",t:"Fuchs",p:"rev"},{f:"hare",t:"Hase",p:"ha-re"},
+      {f:"slange",t:"Schlange",p:"slang-e"},{f:"sommerfugl",t:"Schmetterling",p:"so-mer-fu-el"},
+      {f:"ørn",t:"Adler",p:"örn"},{f:"abe",t:"Affe",p:"a-be"},
+    ],
+    "Adjektive": [
+      {f:"stor",t:"Groß",p:"stor"},{f:"lille",t:"Klein",p:"li-le"},{f:"ny",t:"Neu",p:"ny"},
+      {f:"gammel",t:"Alt",p:"ga-mel"},{f:"smuk / flot",t:"Schön",p:"smuk / flot"},
+      {f:"intelligent",t:"Klug",p:"in-te-li-gent"},{f:"hurtig",t:"Schnell",p:"hur-ti"},
+      {f:"langsom",t:"Langsam",p:"lang-som"},{f:"dyr",t:"Teuer",p:"dyr"},{f:"billig",t:"Günstig",p:"bi-li"},
+      {f:"tung",t:"Schwer",p:"tung"},{f:"let",t:"Leicht",p:"let"},
+      {f:"varm",t:"Warm / Heiß",p:"varm"},{f:"kold",t:"Kalt",p:"kold"},{f:"lækker",t:"Lecker",p:"lek-er"},
+      {f:"træt",t:"Müde",p:"tret"},{f:"glad",t:"Glücklich",p:"glad"},{f:"ked af det",t:"Traurig",p:"ke af de"},
+      {f:"stærk",t:"Stark",p:"sterk"},{f:"svag",t:"Schwach",p:"svag"},{f:"ren",t:"Sauber",p:"ren"},
+      {f:"beskidt",t:"Schmutzig",p:"be-skit"},
+    ],
+    "Verben": [
+      {f:"gå",t:"Gehen",p:"go"},{f:"løbe",t:"Rennen / Laufen",p:"lö-be"},
+      {f:"spise",t:"Essen",p:"spi-se"},{f:"drikke",t:"Trinken",p:"dri-ke"},
+      {f:"sove",t:"Schlafen",p:"so-ve"},{f:"arbejde",t:"Arbeiten",p:"ar-bai-de"},
+      {f:"tale",t:"Sprechen",p:"ta-le"},{f:"lytte",t:"Zuhören",p:"lyt-te"},
+      {f:"se",t:"Sehen",p:"se"},{f:"læse",t:"Lesen",p:"le-se"},
+      {f:"skrive",t:"Schreiben",p:"skri-ve"},{f:"elske",t:"Lieben",p:"el-ske"},
+      {f:"vide",t:"Wissen",p:"vi-de"},{f:"tænke",t:"Denken",p:"ten-ke"},
+      {f:"hjælpe",t:"Helfen",p:"yel-pe"},{f:"købe",t:"Kaufen",p:"kö-be"},
+      {f:"åbne",t:"Öffnen",p:"ob-ne"},{f:"lukke",t:"Schließen",p:"lu-ke"},
+      {f:"begynde",t:"Beginnen",p:"be-gy-ne"},{f:"afslutte",t:"Beenden",p:"af-slu-te"},
+      {f:"give",t:"Geben",p:"gi-ve"},{f:"tage",t:"Nehmen",p:"ta-e"},
+      {f:"komme",t:"Kommen",p:"ko-me"},{f:"vente",t:"Warten",p:"ven-te"},
+      {f:"forstå",t:"Verstehen",p:"fo-stor"},{f:"lære",t:"Lernen",p:"le-re"},
+    ],
+    "Technologie": [
+      {f:"telefon",t:"Telefon",p:"tele-fon"},{f:"computer",t:"Computer",p:"kom-pju-ter"},
+      {f:"internet",t:"Internet",p:"in-ter-net"},{f:"app",t:"App",p:"ap"},
+      {f:"adgangskode",t:"Passwort",p:"ad-gang-sko-de"},{f:"skærm",t:"Bildschirm",p:"skerm"},
+      {f:"tastatur",t:"Tastatur",p:"tas-ta-tur"},{f:"kamera",t:"Kamera",p:"ka-me-ra"},
+      {f:"batteri",t:"Akku / Batterie",p:"ba-te-ri"},{f:"wi-fi",t:"WLAN",p:"wai-fai"},
+      {f:"e-mail",t:"E-Mail",p:"i-mail"},{f:"besked",t:"Nachricht",p:"be-sked"},
+      {f:"sociale medier",t:"Soziale Medien",p:"so-siale me-dier"},{f:"oplader",t:"Ladegerät",p:"op-la-der"},
+    ],
+    "Gesundheit": [
+      {f:"hospital",t:"Krankenhaus",p:"hos-pi-tal"},{f:"apotek",t:"Apotheke",p:"apo-tek"},
+      {f:"medicin",t:"Medikament",p:"me-di-sin"},{f:"smerte",t:"Schmerz",p:"smer-te"},
+      {f:"feber",t:"Fieber",p:"fe-ber"},{f:"hoste",t:"Husten",p:"hos-te"},
+      {f:"forkølelse",t:"Schnupfen",p:"fo-kö-lel-se"},{f:"allergi",t:"Allergie",p:"a-ler-gi"},
+      {f:"operation",t:"Operation",p:"ope-ra-sjon"},{f:"recept",t:"Rezept",p:"re-sept"},
+      {f:"forsikring",t:"Versicherung",p:"for-sik-ring"},{f:"ambulance",t:"Krankenwagen",p:"am-bu-lan-se"},
+    ],
+    "Sport & Freizeit": [
+      {f:"fodbold",t:"Fußball",p:"fod-bol"},{f:"basketball",t:"Basketball",p:"bas-ket-bol"},
+      {f:"svømning",t:"Schwimmen",p:"svöm-ning"},{f:"løb",t:"Laufen / Joggen",p:"löb"},
+      {f:"tennis",t:"Tennis",p:"te-nis"},{f:"ski",t:"Ski",p:"ski"},
+      {f:"biograf",t:"Kino",p:"bio-graf"},{f:"teater",t:"Theater",p:"te-a-ter"},
+      {f:"musik",t:"Musik",p:"mu-sik"},{f:"dans",t:"Tanz",p:"dans"},
+      {f:"tegning",t:"Zeichnen",p:"tai-ning"},{f:"læsning",t:"Lesen (Hobby)",p:"les-ning"},
+      {f:"rejse",t:"Reisen",p:"rai-se"},{f:"fotografering",t:"Fotografie",p:"foto-gra-fe-ring"},
+      {f:"madlavning",t:"Kochen",p:"mad-lav-ning"},{f:"yoga",t:"Yoga",p:"yo-ga"},
+      {f:"cykling",t:"Radfahren",p:"syk-ling"},{f:"vandring",t:"Wandern",p:"van-dring"},
+    ],
+    "Dänische Kultur": [
+      {f:"hygge",t:"Gemütlichkeit / Dänisches Wohlbefinden",p:"hy-ge"},
+      {f:"smørrebrød",t:"Belegte Butterbrote (dän. Tradition)",p:"smör-re-bröd"},
+      {f:"nytår",t:"Neujahr",p:"ny-tor"},{f:"Dannebrog",t:"Dänische Flagge",p:"da-ne-brog"},
+      {f:"vikinger",t:"Wikinger",p:"vi-king-er"},{f:"Christiansborg",t:"Schloss Christiansborg",p:"kris-tians-borg"},
+      {f:"Den lille Havfrue",t:"Die kleine Meerjungfrau",p:"den li-le hav-frue"},
+      {f:"Tivoli",t:"Tivoli (Vergnügungspark)",p:"ti-vo-li"},
+      {f:"pastry",t:"Dänisches Gebäck",p:"pei-stri"},{f:"æbleskiver",t:"Dänische Pfannkuchenbällchen",p:"eb-le-ski-ver"},
+      {f:"jantelov",t:"Janteloven (Gleichheitsprinzip)",p:"yan-te-lo"},
+      {f:"Legoland",t:"Legoland",p:"le-go-lan"},{f:"Hans Christian Andersen",t:"H.C. Andersen (Märchendichter)",p:"hans kris-tian an-er-sen"},
+      {f:"Kronborg",t:"Schloss Kronborg (Hamlet)",p:"kron-borg"},
+    ],
+    "Einkaufen": [
+      {f:"butik",t:"Geschäft / Laden",p:"bu-tik"},{f:"marked",t:"Markt",p:"mar-ked"},
+      {f:"pris",t:"Preis",p:"pris"},{f:"rabat",t:"Rabatt",p:"ra-bat"},
+      {f:"kasse",t:"Kasse",p:"ka-se"},{f:"penge",t:"Geld",p:"peng-e"},
+      {f:"krone",t:"Krone (dän. Währung)",p:"kro-ne"},{f:"mønt",t:"Münze",p:"mönt"},
+      {f:"pung",t:"Geldbeutel",p:"pung"},{f:"kreditkort",t:"Kreditkarte",p:"kre-dit-kort"},
+      {f:"kvittering",t:"Quittung",p:"kvi-te-ring"},{f:"tøj",t:"Kleidung",p:"töy"},
+      {f:"sko",t:"Schuhe",p:"sko"},{f:"taske",t:"Tasche",p:"tas-ke"},
+    ],
+    "Schule & Bildung": [
+      {f:"skole",t:"Schule",p:"sko-le"},{f:"universitet",t:"Universität",p:"u-ni-ver-si-tet"},
+      {f:"klasse",t:"Klasse",p:"kla-se"},{f:"lektion",t:"Unterrichtsstunde",p:"lek-sjon"},
+      {f:"lektier",t:"Hausaufgaben",p:"lek-tier"},{f:"bog",t:"Buch",p:"bo"},
+      {f:"hæfte",t:"Heft",p:"hef-te"},{f:"blyant",t:"Bleistift",p:"bly-ant"},
+      {f:"tavle",t:"Tafel",p:"tav-le"},{f:"eksamen",t:"Prüfung",p:"ek-sa-men"},
+      {f:"karakter",t:"Note",p:"ka-rak-ter"},{f:"bibliotek",t:"Bibliothek",p:"bib-lio-tek"},
+      {f:"matematik",t:"Mathematik",p:"ma-te-ma-tik"},{f:"historie",t:"Geschichte",p:"his-to-rie"},
+      {f:"geografi",t:"Geographie",p:"ge-o-gra-fi"},{f:"kemi",t:"Chemie",p:"ke-mi"},
+    ],
   }
 };
 
-const LANG_NAMES = { ru:"Russisch", it:"Italienisch", es:"Spanisch", en:"Englisch", tr:"Türkisch", sq:"Albanisch", de:"Deutsch", th:"Thailändisch" };
-const LANG_VOICE = { ru:"ru-RU", it:"it-IT", es:"es-ES", en:"en-GB", tr:"tr-TR", sq:"sq-AL", de:"de-DE", th:"th-TH" };
-const LANG_EMOJI = { ru:"🇷🇺", it:"🇮🇹", es:"🇪🇸", en:"🇬🇧", tr:"🇹🇷", sq:"🇦🇱", de:"🇩🇪", th:"🇹🇭" };
+const LANG_NAMES = { ru:"Russisch", it:"Italienisch", es:"Spanisch", en:"Englisch", tr:"Türkisch", sq:"Albanisch", de:"Deutsch", th:"Thailändisch", da:"Dänisch" };
+const LANG_VOICE = { ru:"ru-RU", it:"it-IT", es:"es-ES", en:"en-GB", tr:"tr-TR", sq:"sq-AL", de:"de-DE", th:"th-TH", da:"da-DK" };
+const LANG_EMOJI = { ru:"🇷🇺", it:"🇮🇹", es:"🇪🇸", en:"🇬🇧", tr:"🇹🇷", sq:"🇦🇱", de:"🇩🇪", th:"🇹🇭", da:"🇩🇰" };
 
 // ============================================================
 // UI LANGUAGE SYSTEM
@@ -2288,6 +2511,7 @@ const UI_LANGS = {
   ru:{code:'ru',label:'🇷🇺 Русский'}, it:{code:'it',label:'🇮🇹 Italiano'},
   es:{code:'es',label:'🇪🇸 Español'}, tr:{code:'tr',label:'🇹🇷 Türkçe'},
   sq:{code:'sq',label:'🇦🇱 Shqip'},   th:{code:'th',label:'🇹🇭 ภาษาไทย'},
+  da:{code:'da',label:'🇩🇰 Dansk'},
 };
 const UI_STRINGS = {
   de:{ nav_home:'Start',nav_vocab:'Vokabeln',nav_quiz:'Quiz',nav_free:'Freies Lernen',nav_gen:'KI-Generator',nav_myvocab:'Meine Vokabeln',nav_translate:'Übersetzer',nav_ai:'KI-Assistent',welcome_back:'Willkommen zurück',learning:'Du lernst',change_lang:'🌍 Sprache wechseln',which_lang:'Welche Sprache möchtest du lernen?',choose_lang:'Wähle deine Lernsprache',stat_learned:'Gelernt',stat_streak:'Streak',stat_correct:'% Korrekt',stat_total:'Quiz Total',vocab_title:'Vokabeltraining',quiz_title:'Quiz',free_title:'Freies Lernen',gen_title:'✨ KI-Vokabel-Generator',myvocab_title:'⭐ Meine Vokabeln',translate_title:'Übersetzer',ai_title:'KI-Sprachassistent',reveal:'Klicken zum Aufdecken',again:'✗ Nochmal',listen:'🔊 Anhören',skip:'→ Überspringen',knew:'✓ Gewusst',translate_btn:'Übersetzen',speak_out:'🔊 Vorlesen',copy:'⧉ Kopieren',input:'EINGABE',output:'AUSGABE',send:'Senden',new_quiz:'🔄 Neu starten',next:'Weiter →',correct:'✓ Richtig!',wrong:'✗ Falsch. Richtig:',enter_topic:'Thema eingeben',generate:'✨ Generieren',generating:'KI generiert Vokabeln...',save_all:'⭐ Alle speichern',to_training:'📚 Zum Training',add_word:'➕ Eigenes Wort hinzufügen',foreign_word:'FREMDWORT',translation_lbl:'DEUTSCH',phonetic:'AUSSPRACHE (optional)',add_btn:'+ Hinzufügen',train_mine:'📚 Meine Vokabeln trainieren',delete_all:'🗑 Alle löschen',no_vocab:'Noch keine eigenen Vokabeln. Füge Wörter hinzu oder generiere sie mit dem KI-Generator.',settings:'⚙ Einstellungen',save:'Speichern',delete:'Löschen',export:'⬇ Exportieren',reset:'🗑 Zurücksetzen',ai_welcome:'Hallo! Ich bin dein KI-Sprachassistent. Wähle eine Lernsprache und einen Modus, dann können wir loslegen!',mode_conv:'💬 Konversation',mode_grammar:'📝 Grammatik',mode_pron:'🎤 Aussprache',mode_corr:'✏️ Korrektur',quick_grammar:'📖 Grammatiktipp',quick_phrases:'💡 Sätze des Tages',quick_talk:'🗣 Gespräch starten',hc_vocab_desc:'Lerne neue Wörter mit Karteikarten und Sprachausgabe',hc_quiz_desc:'Teste dein Wissen mit Multiple-Choice-Fragen',hc_free_desc:'Wähle ein Thema und stöbere durch Vokabeln',hc_translate_desc:'Übersetze Begriffe und Sätze sofort',hc_ai_desc:'Übe Gespräche mit KI, Mikrofon & Sprachausgabe',hc_gen_desc:'Thema eingeben – KI generiert sofort 20 Vokabeln',hc_myvocab_desc:'Eigene Wörter speichern und gezielt trainieren',myvocab_desc:'Eigene Wörter hinzufügen, gespeicherte KI-Vokabeln verwalten und trainieren',gen_desc:'Gib ein Thema ein – die KI generiert passende Vokabeln für deine Lernsprache',footer_note:'Dein Fortschritt wird lokal gespeichert',chat_placeholder:'Nachricht eingeben oder 🎤 drücken...',},
@@ -2666,23 +2890,29 @@ function initGenerator() {
   });
 }
 
-async function generateVocab() {
+async function generateVocab(append) {
   const topic = document.getElementById('gen-topic').value.trim();
   if (!topic) { showToast('Bitte ein Thema eingeben!'); return; }
 
   document.getElementById('gen-loading').style.display = 'block';
-  document.getElementById('gen-result').style.display = 'none';
+  if (!append) {
+    document.getElementById('gen-result').style.display = 'none';
+    generatedWords = [];
+  }
   document.getElementById('gen-btn').disabled = true;
 
   const lang = state.lang;
   const langName = LANG_NAMES[lang];
+  const offset = append ? generatedWords.length : 0;
+  const existing = generatedWords.map(function(w){return w.f;}).join(', ');
+  const avoidHint = append && existing ? ' Vermeide diese bereits generierten Woerter: ' + existing.slice(0,200) : '';
 
   try {
     const result = await callClaude({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1200,
-      system: 'Du bist ein Sprachlehrer. Generiere eine Vokabelliste zum Thema auf ' + langName + ' fuer deutschsprachige Lerner. Antworte NUR mit einem JSON-Array, kein Markdown, keine Erklaerungen. Format: [{"f":"Fremdwort","t":"Deutsch","p":"Aussprache"},...] Generiere genau 20 Eintraege. Aussprache ist eine vereinfachte phonetische Umschrift.',
-      messages: [{ role: 'user', content: `Thema: ${topic}` }]
+      max_tokens: 3000,
+      system: 'Du bist ein Sprachlehrer. Generiere eine Vokabelliste zum Thema auf ' + langName + ' fuer deutschsprachige Lerner. Antworte NUR mit einem JSON-Array, kein Markdown, keine Erklaerungen. Format: [{"f":"Fremdwort","t":"Deutsch","p":"Aussprache"},...] Generiere genau 50 neue Eintraege.' + avoidHint + ' Aussprache ist eine vereinfachte phonetische Umschrift.',
+      messages: [{ role: 'user', content: 'Thema: ' + topic }]
     });
 
     let parsed;
@@ -2690,16 +2920,28 @@ async function generateVocab() {
       const clean = result.replace(/```json|```/g, '').trim();
       parsed = JSON.parse(clean);
     } catch(e) {
-      // Try to extract JSON array from response
       const match = result.match(/\[[\s\S]*\]/);
       if (match) parsed = JSON.parse(match[0]);
       else throw new Error('Antwortformat ungültig');
     }
 
-    generatedWords = parsed.map(w => ({ ...w, saved: false }));
-    document.getElementById('gen-result-title').textContent = `✨ ${topic} – ${langName} (${generatedWords.length} Wörter)`;
+    const newWords = parsed.map(function(w){ return Object.assign({}, w, {saved:false}); });
+    if (append) {
+      generatedWords = generatedWords.concat(newWords);
+    } else {
+      generatedWords = newWords;
+    }
+
+    var titleEl = document.getElementById('gen-result-title');
+    if (titleEl) titleEl.textContent = '✨ ' + topic + ' – ' + langName + ' (' + generatedWords.length + ' Wörter)';
     renderGeneratedWords();
     document.getElementById('gen-result').style.display = 'block';
+    // Scroll to new words if appending
+    if (append) {
+      var list = document.getElementById('gen-vocab-list');
+      var rows = list.querySelectorAll('.gen-word-row');
+      if (rows[offset]) rows[offset].scrollIntoView({behavior:'smooth', block:'start'});
+    }
 
   } catch(e) {
     showToast('⚠ ' + (e.message || 'Fehler beim Generieren'));
@@ -2712,7 +2954,7 @@ async function generateVocab() {
 function renderGeneratedWords() {
   const list = document.getElementById('gen-vocab-list');
   list.innerHTML = '';
-  generatedWords.forEach((w, i) => {
+  generatedWords.forEach(function(w, i) {
     const row = document.createElement('div');
     row.className = 'gen-word-row';
     row.innerHTML = '<div style="flex:1;">' +
@@ -2724,6 +2966,12 @@ function renderGeneratedWords() {
       (w.saved ? '✓ Gespeichert' : '⭐ Speichern') + '</button></div>';
     list.appendChild(row);
   });
+  // Add "Load more" button at the bottom
+  var loadMore = document.createElement('div');
+  loadMore.style.cssText = 'text-align:center;padding:1.25rem 0;';
+  loadMore.innerHTML = '<button class="btn" style="gap:.5rem;display:inline-flex;align-items:center;" onclick="generateVocab(true)">' +
+    '<span>⬇ Weitere 50 Vokabeln laden</span></button>';
+  list.appendChild(loadMore);
 }
 
 function saveSingleGenWord(i) {
@@ -3127,8 +3375,8 @@ async function doTranslate() {
   if (!text) return;
   const from = document.getElementById('trans-from').value;
   const to = document.getElementById('trans-to').value;
-  const fromName = { de:'Deutsch', ru:'Russisch', it:'Italienisch', es:'Spanisch', en:'Englisch', tr:'Türkisch', sq:'Albanisch', th:'Thailändisch' }[from];
-  const toName   = { de:'Deutsch', ru:'Russisch', it:'Italienisch', es:'Spanisch', en:'Englisch', tr:'Türkisch', sq:'Albanisch', th:'Thailändisch' }[to];
+  const fromName = { de:'Deutsch', ru:'Russisch', it:'Italienisch', es:'Spanisch', en:'Englisch', tr:'Türkisch', sq:'Albanisch', th:'Thailändisch', da:'Dänisch' }[from];
+  const toName   = { de:'Deutsch', ru:'Russisch', it:'Italienisch', es:'Spanisch', en:'Englisch', tr:'Türkisch', sq:'Albanisch', th:'Thailändisch', da:'Dänisch' }[to];
 
   document.getElementById('trans-loading').style.display = 'block';
   document.getElementById('trans-output').value = '';
