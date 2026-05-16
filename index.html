@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" content="LINGUA v2.0 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" content="LINGUA v2.2 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v2.0 · by René Prause</title>
+<title>LINGUA v2.2 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -32,6 +32,8 @@
   --th: #a8173a;
   --da: #c60c30;
   --ro: #002B7F;
+  --fr: #0055A4;
+  --sv: #006AA7;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 html { height:100%; }
@@ -84,6 +86,8 @@ header {
 .lang-pill[data-lang="th"] { --pill-color:var(--th); }
 .lang-pill[data-lang="da"] { --pill-color:var(--da); }
 .lang-pill[data-lang="ro"] { --pill-color:var(--ro); }
+.lang-pill[data-lang="fr"] { --pill-color:var(--fr); }
+.lang-pill[data-lang="sv"] { --pill-color:var(--sv); }
 .settings-btn {
   background:var(--surface2); border:1px solid var(--border); border-radius:8px;
   padding:.35rem .6rem; cursor:pointer; font-size:1rem; color:var(--muted);
@@ -505,6 +509,66 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
    NEW FEATURES CSS
    ============================================================ */
 
+/* ============================================================
+   NEUE FEATURES v2.2: ONBOARDING · SUCHE · KONJUGATION
+   ============================================================ */
+
+/* ONBOARDING OVERLAY */
+.onboarding-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:900;
+  display:flex; align-items:center; justify-content:center; padding:1.5rem;
+  backdrop-filter:blur(12px);
+}
+.onboarding-overlay.hidden { display:none; }
+.onboarding-box {
+  background:var(--surface); border:1px solid var(--border); border-radius:24px;
+  padding:2rem; max-width:420px; width:100%; text-align:center;
+  animation:fadeIn .4s ease;
+}
+.onboarding-emoji { font-size:4rem; margin-bottom:1rem; display:block; }
+.onboarding-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1.5rem; margin-bottom:.5rem; line-height:1.2; }
+.onboarding-text { font-size:.85rem; color:var(--muted); line-height:1.7; margin-bottom:1.5rem; }
+.onboarding-dots { display:flex; justify-content:center; gap:.5rem; margin-bottom:1.5rem; }
+.onboarding-dot { width:8px; height:8px; border-radius:50%; background:var(--border); transition:all .3s; }
+.onboarding-dot.active { background:var(--accent); width:24px; border-radius:4px; }
+.onboarding-feature-grid { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin-bottom:1.5rem; text-align:left; }
+.onboarding-feature { background:var(--surface2); border-radius:10px; padding:.65rem .75rem; font-size:.78rem; }
+.onboarding-feature-icon { font-size:1.2rem; margin-bottom:.2rem; display:block; }
+.onboarding-feature-name { font-family:'Syne',sans-serif; font-weight:700; font-size:.75rem; }
+.onboarding-feature-desc { color:var(--muted); font-size:.68rem; }
+
+/* SEARCH */
+.search-wrapper { position:relative; margin-bottom:1.25rem; }
+.search-input {
+  width:100%; background:var(--surface2); border:1.5px solid var(--border);
+  border-radius:12px; color:var(--text); font-size:.9rem; padding:.7rem 1rem .7rem 2.5rem;
+  outline:none; font-family:'DM Mono',monospace; transition:border-color .2s; box-sizing:border-box;
+}
+.search-input:focus { border-color:var(--accent); }
+.search-icon { position:absolute; left:.8rem; top:50%; transform:translateY(-50%); color:var(--muted); font-size:.95rem; pointer-events:none; }
+.search-clear { position:absolute; right:.75rem; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; font-size:1rem; display:none; padding:0; }
+.search-result-count { font-size:.72rem; color:var(--muted); margin-bottom:.75rem; }
+.search-highlight { background:rgba(108,99,255,.25); color:var(--accent); border-radius:2px; padding:0 1px; }
+
+/* CONJUGATION */
+.conj-table { width:100%; border-collapse:collapse; margin-top:.75rem; }
+.conj-table th { background:var(--surface2); font-family:'Syne',sans-serif; font-size:.72rem; font-weight:700; padding:.5rem .75rem; text-align:left; color:var(--muted); border-bottom:1px solid var(--border); }
+.conj-table td { padding:.5rem .75rem; font-size:.82rem; border-bottom:1px solid var(--border); }
+.conj-table tr:last-child td { border-bottom:none; }
+.conj-table .pronoun { color:var(--muted); font-size:.78rem; }
+.conj-table .form { font-family:'Instrument Serif',serif; font-size:1rem; }
+.conj-table .translation { color:var(--muted); font-size:.72rem; }
+.conj-tense-tabs { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1rem; }
+.conj-tense-btn { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:.35rem .75rem; font-size:.72rem; font-family:'Syne',sans-serif; font-weight:600; cursor:pointer; color:var(--muted); transition:all .2s; }
+.conj-tense-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+.conj-verb-input { display:flex; gap:.5rem; margin-bottom:1rem; flex-wrap:wrap; }
+.conj-verb-field { flex:1; min-width:160px; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:.85rem; padding:.6rem 1rem; outline:none; font-family:'DM Mono',monospace; transition:border-color .2s; }
+.conj-verb-field:focus { border-color:var(--accent); }
+.conj-quiz-input { width:100%; background:var(--surface2); border:2px solid var(--border); border-radius:10px; color:var(--text); font-family:'Instrument Serif',serif; font-size:1.3rem; padding:.6rem 1rem; outline:none; text-align:center; transition:border-color .2s; box-sizing:border-box; }
+.conj-quiz-input.correct { border-color:var(--accent3); background:rgba(67,233,123,.1); }
+.conj-quiz-input.wrong   { border-color:var(--accent2); background:rgba(255,107,107,.1); }
+.conj-pronoun-badge { display:inline-block; background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:.2rem .6rem; font-size:.75rem; color:var(--muted); margin-bottom:.5rem; font-family:'Syne',sans-serif; font-weight:700; }
+
 /* THEME TOGGLE */
 :root.light {
   --bg:#f4f4f8; --surface:#ffffff; --surface2:#eeeef6; --border:#d0d0e0;
@@ -588,19 +652,21 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;">v2.0</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;">v2.2</span></div>
     <div class="header-right">
       <div class="lang-pills">
-        <button class="lang-pill active" data-lang="ru">🇷🇺 RU</button>
-        <button class="lang-pill" data-lang="it">🇮🇹 IT</button>
-        <button class="lang-pill" data-lang="es">🇪🇸 ES</button>
-        <button class="lang-pill" data-lang="en">🇬🇧 EN</button>
-        <button class="lang-pill" data-lang="tr">🇹🇷 TR</button>
-        <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
-        <button class="lang-pill" data-lang="de">🇩🇪 DE</button>
-        <button class="lang-pill" data-lang="th">🇹🇭 TH</button>
+        <button class="lang-pill active" data-lang="sq">🇦🇱 SQ</button>
         <button class="lang-pill" data-lang="da">🇩🇰 DA</button>
+        <button class="lang-pill" data-lang="de">🇩🇪 DE</button>
+        <button class="lang-pill" data-lang="en">🇬🇧 EN</button>
+        <button class="lang-pill" data-lang="fr">🇫🇷 FR</button>
+        <button class="lang-pill" data-lang="it">🇮🇹 IT</button>
         <button class="lang-pill" data-lang="ro">🇷🇴 RO</button>
+        <button class="lang-pill" data-lang="ru">🇷🇺 RU</button>
+        <button class="lang-pill" data-lang="sv">🇸🇪 SV</button>
+        <button class="lang-pill" data-lang="es">🇪🇸 ES</button>
+        <button class="lang-pill" data-lang="th">🇹🇭 TH</button>
+        <button class="lang-pill" data-lang="tr">🇹🇷 TR</button>
       </div>
       <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Hell/Dunkel">🌙</button>
       <button class="settings-btn" onclick="openSettings()" title="Einstellungen">
@@ -611,9 +677,11 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 
   <nav>
     <button class="nav-btn active" data-section="home"><span class="nav-icon">⌂</span> Start</button>
+    <button class="nav-btn" data-section="search"><span class="nav-icon">🔍</span> Suche</button>
     <button class="nav-btn" data-section="vocab"><span class="nav-icon">📚</span> Vokabeln</button>
     <button class="nav-btn" data-section="srs"><span class="nav-icon">🧠</span> SRS</button>
     <button class="nav-btn" data-section="write"><span class="nav-icon">✍</span> Schreiben</button>
+    <button class="nav-btn" data-section="conjugate"><span class="nav-icon">🔀</span> Konjugation</button>
     <button class="nav-btn" data-section="quiz"><span class="nav-icon">❓</span> Quiz</button>
     <button class="nav-btn" data-section="free"><span class="nav-icon">🗂</span> Freies Lernen</button>
     <button class="nav-btn" data-section="path"><span class="nav-icon">🗺</span> Lernpfad</button>
@@ -638,16 +706,18 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
           <div style="font-size:.85rem;color:var(--muted);" id="ui-choose-lang">Wähle deine Lernsprache</div>
         </div>
         <div class="lang-select-grid">
-          <button class="lang-select-card" onclick="selectLanguage('ru')"><div class="lsc-flag">🇷🇺</div><div class="lsc-name">Russisch</div><div class="lsc-sub">Русский · Kyrillisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('it')"><div class="lsc-flag">🇮🇹</div><div class="lsc-name">Italienisch</div><div class="lsc-sub">Italiano · Romanisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('es')"><div class="lsc-flag">🇪🇸</div><div class="lsc-name">Spanisch</div><div class="lsc-sub">Español · Romanisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('en')"><div class="lsc-flag">🇬🇧</div><div class="lsc-name">Englisch</div><div class="lsc-sub">English · Germanisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('tr')"><div class="lsc-flag">🇹🇷</div><div class="lsc-name">Türkisch</div><div class="lsc-sub">Türkçe · Altaisch</div></button>
           <button class="lang-select-card" onclick="selectLanguage('sq')"><div class="lsc-flag">🇦🇱</div><div class="lsc-name">Albanisch</div><div class="lsc-sub">Shqip · Isolat</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('de')"><div class="lsc-flag">🇩🇪</div><div class="lsc-name">Deutsch</div><div class="lsc-sub">Deutsch · Germanisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('th')"><div class="lsc-flag">🇹🇭</div><div class="lsc-name">Thailändisch</div><div class="lsc-sub">ภาษาไทย · Tai-Kadai</div></button>
           <button class="lang-select-card" onclick="selectLanguage('da')"><div class="lsc-flag">🇩🇰</div><div class="lsc-name">Dänisch</div><div class="lsc-sub">Dansk · Germanisch</div></button>
+          <button class="lang-select-card" onclick="selectLanguage('de')"><div class="lsc-flag">🇩🇪</div><div class="lsc-name">Deutsch</div><div class="lsc-sub">Deutsch · Germanisch</div></button>
+          <button class="lang-select-card" onclick="selectLanguage('en')"><div class="lsc-flag">🇬🇧</div><div class="lsc-name">Englisch</div><div class="lsc-sub">English · Germanisch</div></button>
+          <button class="lang-select-card" onclick="selectLanguage('fr')"><div class="lsc-flag">🇫🇷</div><div class="lsc-name">Französisch</div><div class="lsc-sub">Français · Romanisch</div></button>
+          <button class="lang-select-card" onclick="selectLanguage('it')"><div class="lsc-flag">🇮🇹</div><div class="lsc-name">Italienisch</div><div class="lsc-sub">Italiano · Romanisch</div></button>
           <button class="lang-select-card" onclick="selectLanguage('ro')"><div class="lsc-flag">🇷🇴</div><div class="lsc-name">Rumänisch</div><div class="lsc-sub">Română · Romanisch</div></button>
+          <button class="lang-select-card" onclick="selectLanguage('ru')"><div class="lsc-flag">🇷🇺</div><div class="lsc-name">Russisch</div><div class="lsc-sub">Русский · Kyrillisch</div></button>
+          <button class="lang-select-card" onclick="selectLanguage('sv')"><div class="lsc-flag">🇸🇪</div><div class="lsc-name">Schwedisch</div><div class="lsc-sub">Svenska · Germanisch</div></button>
+          <button class="lang-select-card" onclick="selectLanguage('es')"><div class="lsc-flag">🇪🇸</div><div class="lsc-name">Spanisch</div><div class="lsc-sub">Español · Romanisch</div></button>
+          <button class="lang-select-card" onclick="selectLanguage('th')"><div class="lsc-flag">🇹🇭</div><div class="lsc-name">Thailändisch</div><div class="lsc-sub">ภาษาไทย · Tai-Kadai</div></button>
+          <button class="lang-select-card" onclick="selectLanguage('tr')"><div class="lsc-flag">🇹🇷</div><div class="lsc-name">Türkisch</div><div class="lsc-sub">Türkçe · Altaisch</div></button>
         </div>
       </div>
 
@@ -985,6 +1055,100 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
       <div id="path-steps"></div>
     </div>
 
+    <!-- SUCHE -->
+    <div class="section" id="search">
+      <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:1rem;" id="ui-search-title">🔍 Vokabelsuche</div>
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="search-input" type="text"
+          placeholder="Wort suchen auf Deutsch oder in der Lernsprache..."
+          oninput="doSearch(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem;" id="search-lang-filter">
+        <button class="btn active" id="sf-all" onclick="setSearchLang('all')" style="font-size:.72rem;padding:.3rem .65rem;">Alle Sprachen</button>
+      </div>
+      <div class="search-result-count" id="search-count"></div>
+      <div id="search-results" class="vocab-list"></div>
+      <div id="search-empty" style="text-align:center;padding:3rem;color:var(--muted);display:none;">
+        <div style="font-size:2.5rem;">🔎</div>
+        <div style="margin-top:.5rem;" id="ui-search-empty">Kein Ergebnis gefunden.</div>
+      </div>
+      <div id="search-placeholder" style="text-align:center;padding:3rem;color:var(--muted);">
+        <div style="font-size:2.5rem;">💬</div>
+        <div style="margin-top:.5rem;" id="ui-search-hint">Tippe oben um zu suchen — in allen Sprachen gleichzeitig.</div>
+      </div>
+    </div>
+
+    <!-- KONJUGATION -->
+    <div class="section" id="conjugate">
+      <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:.5rem;" id="ui-conj-title">🔀 Konjugationsübungen</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:1.25rem;" id="ui-conj-desc">Verben konjugieren und üben — KI generiert vollständige Tabellen.</div>
+
+      <!-- Tab: Tabelle vs. Quiz -->
+      <div style="display:flex;gap:.5rem;margin-bottom:1.25rem;">
+        <button class="conj-tense-btn active" id="conj-tab-table" onclick="switchConjTab('table')">📋 Tabelle</button>
+        <button class="conj-tense-btn" id="conj-tab-quiz" onclick="switchConjTab('quiz')">🎯 Quiz</button>
+      </div>
+
+      <!-- TABLE VIEW -->
+      <div id="conj-table-view">
+        <div class="conj-verb-input">
+          <input class="conj-verb-field" id="conj-verb-input" type="text"
+            placeholder="Verb eingeben z.B. sein, gehen, avoir..."
+            onkeydown="if(event.key==='Enter')generateConjugation()">
+          <button class="btn primary" onclick="generateConjugation()" id="conj-gen-btn">🔀 Konjugieren</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;" id="conj-quick-verbs"></div>
+        <div class="conj-tense-tabs" id="conj-tense-tabs"></div>
+        <div id="conj-loading" style="display:none;text-align:center;padding:2rem;color:var(--muted);">
+          <span class="spinner"></span> <span style="margin-left:.5rem;" id="ui-conj-loading">KI erstellt Konjugationstabelle...</span>
+        </div>
+        <div id="conj-result" style="display:none;">
+          <div class="card" style="padding:0;overflow:hidden;">
+            <table class="conj-table" id="conj-table-el"></table>
+          </div>
+          <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;">
+            <button class="btn" onclick="saveConjugation()" id="ui-btn-conj-save">⭐ Speichern</button>
+            <button class="btn success" onclick="switchConjTab('quiz')" id="ui-btn-conj-quiz">🎯 Quiz starten</button>
+          </div>
+        </div>
+        <div id="conj-saved-list" style="margin-top:1.5rem;"></div>
+      </div>
+
+      <!-- QUIZ VIEW -->
+      <div id="conj-quiz-view" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;" id="conj-quiz-verb-label">—</div>
+          <span class="badge badge-accent" id="conj-quiz-counter">0 / 0</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="conj-quiz-progress" style="width:0%"></div></div>
+        <div class="vocab-card" style="cursor:default;margin:1rem 0;min-height:140px;justify-content:center;flex-direction:column;gap:.5rem;">
+          <div class="conj-pronoun-badge" id="conj-quiz-pronoun">ich</div>
+          <div style="font-size:.78rem;color:var(--muted);" id="conj-quiz-tense-label">Präsens</div>
+          <div style="font-size:.9rem;color:var(--muted);margin-bottom:.25rem;" id="conj-quiz-german"></div>
+        </div>
+        <input class="conj-quiz-input" id="conj-quiz-input" type="text"
+          placeholder="Konjugierte Form eingeben..."
+          onkeydown="if(event.key==='Enter')checkConjQuiz()">
+        <div style="font-size:.8rem;min-height:1.5rem;text-align:center;margin:.5rem 0;" id="conj-quiz-feedback"></div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;">
+          <button class="btn primary" onclick="checkConjQuiz()" style="flex:1;" id="ui-btn-conj-check">✓ Prüfen</button>
+          <button class="btn" onclick="skipConjQuiz()" id="ui-btn-conj-skip">→ Überspringen</button>
+          <button class="btn danger" onclick="switchConjTab('table')" id="ui-btn-conj-back">← Tabelle</button>
+        </div>
+        <div id="conj-quiz-done" style="display:none;text-align:center;padding:2rem;">
+          <div style="font-size:3rem;">🎉</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;margin:.5rem 0;" id="ui-conj-quiz-done">Quiz abgeschlossen!</div>
+          <div style="color:var(--muted);font-size:.82rem;" id="conj-quiz-result-text"></div>
+          <div style="display:flex;gap:.5rem;justify-content:center;margin-top:1rem;">
+            <button class="btn primary" onclick="restartConjQuiz()" id="ui-btn-conj-restart">🔄 Wiederholen</button>
+            <button class="btn" onclick="switchConjTab('table')" id="ui-btn-conj-new">+ Neues Verb</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ÜBERSETZER -->
     <div class="section" id="translate">
       <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:1.25rem;" id="ui-translate-title">Übersetzer</div>
@@ -1002,8 +1166,18 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
               <option value="tr">🇹🇷 Türkisch</option>
               <option value="sq">🇦🇱 Albanisch</option>
               <option value="th">🇹🇭 Thailändisch</option>
+              <option value="sq">🇦🇱 Albanisch</option>
               <option value="da">🇩🇰 Dänisch</option>
+              <option value="de">🇩🇪 Deutsch</option>
+              <option value="en">🇬🇧 Englisch</option>
+              <option value="fr">🇫🇷 Französisch</option>
+              <option value="it">🇮🇹 Italienisch</option>
               <option value="ro">🇷🇴 Rumänisch</option>
+              <option value="ru">🇷🇺 Russisch</option>
+              <option value="sv">🇸🇪 Schwedisch</option>
+              <option value="es">🇪🇸 Spanisch</option>
+              <option value="th">🇹🇭 Thailändisch</option>
+              <option value="tr">🇹🇷 Türkisch</option>
             </select>
           </div>
           <textarea class="translate-textarea" id="trans-input" placeholder="Text eingeben..."></textarea>
@@ -1026,8 +1200,18 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
               <option value="tr">🇹🇷 Türkisch</option>
               <option value="sq">🇦🇱 Albanisch</option>
               <option value="th">🇹🇭 Thailändisch</option>
+              <option value="sq">🇦🇱 Albanisch</option>
               <option value="da">🇩🇰 Dänisch</option>
+              <option value="de">🇩🇪 Deutsch</option>
+              <option value="en">🇬🇧 Englisch</option>
+              <option value="fr">🇫🇷 Französisch</option>
+              <option value="it">🇮🇹 Italienisch</option>
               <option value="ro">🇷🇴 Rumänisch</option>
+              <option value="ru" selected>🇷🇺 Russisch</option>
+              <option value="sv">🇸🇪 Schwedisch</option>
+              <option value="es">🇪🇸 Spanisch</option>
+              <option value="th">🇹🇭 Thailändisch</option>
+              <option value="tr">🇹🇷 Türkisch</option>
             </select>
           </div>
           <textarea class="translate-textarea" id="trans-output" placeholder="Übersetzung erscheint hier..." readonly></textarea>
@@ -1071,7 +1255,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   </main>
 
   <footer>
-    LINGUA v2.0 · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA v2.2 · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · 2026</span>
   </footer>
 </div>
@@ -1148,16 +1332,18 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:1rem;">
       <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;margin-bottom:.75rem;" id="set-learn-lang-title">🎓 Lernsprache</div>
       <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-        <button class="lang-pill" data-settings-lang="ru" onclick="setLangFromSettings('ru')">🇷🇺 Russisch</button>
-        <button class="lang-pill" data-settings-lang="it" onclick="setLangFromSettings('it')">🇮🇹 Italienisch</button>
-        <button class="lang-pill" data-settings-lang="es" onclick="setLangFromSettings('es')">🇪🇸 Spanisch</button>
-        <button class="lang-pill" data-settings-lang="en" onclick="setLangFromSettings('en')">🇬🇧 Englisch</button>
-        <button class="lang-pill" data-settings-lang="tr" onclick="setLangFromSettings('tr')">🇹🇷 Türkisch</button>
         <button class="lang-pill" data-settings-lang="sq" onclick="setLangFromSettings('sq')">🇦🇱 Albanisch</button>
-        <button class="lang-pill" data-settings-lang="de" onclick="setLangFromSettings('de')">🇩🇪 Deutsch</button>
-        <button class="lang-pill" data-settings-lang="th" onclick="setLangFromSettings('th')">🇹🇭 Thailändisch</button>
         <button class="lang-pill" data-settings-lang="da" onclick="setLangFromSettings('da')">🇩🇰 Dänisch</button>
+        <button class="lang-pill" data-settings-lang="de" onclick="setLangFromSettings('de')">🇩🇪 Deutsch</button>
+        <button class="lang-pill" data-settings-lang="en" onclick="setLangFromSettings('en')">🇬🇧 Englisch</button>
+        <button class="lang-pill" data-settings-lang="fr" onclick="setLangFromSettings('fr')">🇫🇷 Französisch</button>
+        <button class="lang-pill" data-settings-lang="it" onclick="setLangFromSettings('it')">🇮🇹 Italienisch</button>
         <button class="lang-pill" data-settings-lang="ro" onclick="setLangFromSettings('ro')">🇷🇴 Rumänisch</button>
+        <button class="lang-pill" data-settings-lang="ru" onclick="setLangFromSettings('ru')">🇷🇺 Russisch</button>
+        <button class="lang-pill" data-settings-lang="sv" onclick="setLangFromSettings('sv')">🇸🇪 Schwedisch</button>
+        <button class="lang-pill" data-settings-lang="es" onclick="setLangFromSettings('es')">🇪🇸 Spanisch</button>
+        <button class="lang-pill" data-settings-lang="th" onclick="setLangFromSettings('th')">🇹🇭 Thailändisch</button>
+        <button class="lang-pill" data-settings-lang="tr" onclick="setLangFromSettings('tr')">🇹🇷 Türkisch</button>
       </div>
     </div>
 
@@ -1188,11 +1374,23 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA v2.0 · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA v2.2 · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · 2026</span>
     </div>
 
     </div><!-- end scrollable -->
+  </div>
+</div>
+
+<!-- ONBOARDING OVERLAY -->
+<div class="onboarding-overlay hidden" id="onboarding-overlay">
+  <div class="onboarding-box">
+    <div id="onboarding-step-content"></div>
+    <div class="onboarding-dots" id="onboarding-dots"></div>
+    <div style="display:flex;gap:.5rem;justify-content:center;">
+      <button class="btn" id="onboarding-skip" onclick="skipOnboarding()" style="color:var(--muted);font-size:.78rem;">Überspringen</button>
+      <button class="btn primary" id="onboarding-next" onclick="nextOnboardingStep()" style="min-width:120px;">Weiter →</button>
+    </div>
   </div>
 </div>
 
@@ -3798,11 +3996,363 @@ const VOCAB = {
       {f:"țuică",t:"Pflaumenschnaps",p:"țui-că"},{f:"câluș",t:"UNESCO Volkstanz",p:"că-luș"},
     ],
   };
+
+  // FRENCH vocabulary
+  VOCAB['fr'] = {
+    "Grundlagen": [
+      {f:"bonjour",t:"Guten Tag / Hallo",p:"bon-zhur"},{f:"bonsoir",t:"Guten Abend",p:"bon-swar"},
+      {f:"bonjour / salut",t:"Guten Morgen / Hallo",p:"sa-lü"},{f:"au revoir",t:"Auf Wiedersehen",p:"o re-vwar"},
+      {f:"merci",t:"Danke",p:"mer-si"},{f:"s'il vous plaît",t:"Bitte",p:"sil vu ple"},
+      {f:"oui",t:"Ja",p:"wi"},{f:"non",t:"Nein",p:"nõ"},{f:"excusez-moi",t:"Entschuldigung",p:"eks-kü-ze mwa"},
+      {f:"bien",t:"Gut",p:"bjẽ"},{f:"je ne comprends pas",t:"Ich verstehe nicht",p:"zhe ne kõ-prã pa"},
+      {f:"comment allez-vous",t:"Wie geht es Ihnen",p:"ko-mã ta-le vu"},
+      {f:"je m'appelle",t:"Ich heiße",p:"zhe ma-pel"},{f:"où",t:"Wo",p:"u"},
+      {f:"quand",t:"Wann",p:"kã"},{f:"pourquoi",t:"Warum",p:"pur-kwa"},
+      {f:"combien ça coûte",t:"Wie viel kostet das",p:"kõ-bjẽ sa kut"},
+      {f:"au secours",t:"Hilfe",p:"o se-kur"},{f:"bienvenue",t:"Willkommen",p:"bjẽ-ve-ny"},
+      {f:"bonne nuit",t:"Gute Nacht",p:"bon nüi"},{f:"je comprends",t:"Ich verstehe",p:"zhe kõ-prã"},
+      {f:"je ne sais pas",t:"Ich weiß nicht",p:"zhe ne se pa"},{f:"parlez plus lentement",t:"Sprechen Sie langsamer",p:"par-le plü lãt-mã"},
+    ],
+    "Zahlen": [
+      {f:"un / une",t:"Eins",p:"ẽ / yn"},{f:"deux",t:"Zwei",p:"dø"},{f:"trois",t:"Drei",p:"trwa"},
+      {f:"quatre",t:"Vier",p:"katr"},{f:"cinq",t:"Fünf",p:"sẽk"},{f:"six",t:"Sechs",p:"sis"},
+      {f:"sept",t:"Sieben",p:"set"},{f:"huit",t:"Acht",p:"üit"},{f:"neuf",t:"Neun",p:"nøf"},
+      {f:"dix",t:"Zehn",p:"dis"},{f:"onze",t:"Elf",p:"õz"},{f:"douze",t:"Zwölf",p:"duz"},
+      {f:"vingt",t:"Zwanzig",p:"vẽ"},{f:"trente",t:"Dreißig",p:"trãt"},{f:"quarante",t:"Vierzig",p:"ka-rãt"},
+      {f:"cinquante",t:"Fünfzig",p:"sẽ-kãt"},{f:"cent",t:"Hundert",p:"sã"},{f:"mille",t:"Tausend",p:"mil"},
+      {f:"premier",t:"Erste/r",p:"pre-mje"},{f:"deuxième",t:"Zweite/r",p:"dø-zjem"},{f:"troisième",t:"Dritte/r",p:"trwa-zjem"},
+    ],
+    "Farben": [
+      {f:"rouge",t:"Rot",p:"ruzh"},{f:"bleu",t:"Blau",p:"blø"},{f:"vert",t:"Grün",p:"ver"},
+      {f:"jaune",t:"Gelb",p:"zhon"},{f:"blanc",t:"Weiß",p:"blã"},{f:"noir",t:"Schwarz",p:"nwar"},
+      {f:"orange",t:"Orange",p:"o-rãzh"},{f:"violet",t:"Violett",p:"vjo-le"},{f:"rose",t:"Rosa",p:"roz"},
+      {f:"gris",t:"Grau",p:"gri"},{f:"marron / brun",t:"Braun",p:"ma-rõ"},{f:"doré",t:"Golden",p:"do-re"},
+      {f:"argenté",t:"Silber",p:"ar-zhã-te"},{f:"bleu marine",t:"Marineblau",p:"blø ma-rin"},
+    ],
+    "Essen & Trinken": [
+      {f:"pain",t:"Brot",p:"pẽ"},{f:"eau",t:"Wasser",p:"o"},{f:"lait",t:"Milch",p:"le"},
+      {f:"viande",t:"Fleisch",p:"vjãd"},{f:"poisson",t:"Fisch",p:"pwa-sõ"},{f:"légumes",t:"Gemüse",p:"le-güm"},
+      {f:"fruits",t:"Obst",p:"früi"},{f:"soupe",t:"Suppe",p:"sup"},{f:"thé",t:"Tee",p:"te"},
+      {f:"café",t:"Kaffee",p:"ka-fe"},{f:"bière",t:"Bier",p:"bjer"},{f:"vin",t:"Wein",p:"vẽ"},
+      {f:"pomme",t:"Apfel",p:"pom"},{f:"pomme de terre",t:"Kartoffel",p:"pom de ter"},
+      {f:"poulet",t:"Hühnchen",p:"pu-le"},{f:"œuf",t:"Ei",p:"øf"},{f:"fromage",t:"Käse",p:"fro-mazh"},
+      {f:"beurre",t:"Butter",p:"bør"},{f:"sucre",t:"Zucker",p:"sükr"},{f:"sel",t:"Salz",p:"sel"},
+      {f:"riz",t:"Reis",p:"ri"},{f:"pâtes",t:"Nudeln",p:"pat"},{f:"tomate",t:"Tomate",p:"to-mat"},
+      {f:"oignon",t:"Zwiebel",p:"o-njõ"},{f:"ail",t:"Knoblauch",p:"aj"},
+      {f:"fraise",t:"Erdbeere",p:"frez"},{f:"glace",t:"Eis",p:"glas"},
+      {f:"gâteau",t:"Kuchen",p:"ga-to"},{f:"jus",t:"Saft",p:"zhü"},
+      {f:"huile",t:"Öl",p:"üil"},{f:"miel",t:"Honig",p:"mjel"},
+      {f:"croissant",t:"Croissant",p:"krwa-sã"},{f:"baguette",t:"Baguette",p:"ba-get"},
+      {f:"crêpe",t:"Crêpe (Pfannkuchen)",p:"krep"},{f:"quiche",t:"Quiche",p:"kiʃ"},
+      {f:"escargot",t:"Weinbergschnecke",p:"es-kar-go"},{f:"foie gras",t:"Gänsestopfleber",p:"fwa gra"},
+    ],
+    "Familie": [
+      {f:"mère",t:"Mutter",p:"mer"},{f:"père",t:"Vater",p:"per"},
+      {f:"frère",t:"Bruder",p:"frer"},{f:"sœur",t:"Schwester",p:"sør"},
+      {f:"grand-mère",t:"Großmutter",p:"grã-mer"},{f:"grand-père",t:"Großvater",p:"grã-per"},
+      {f:"fils",t:"Sohn",p:"fis"},{f:"fille",t:"Tochter",p:"fij"},
+      {f:"mari",t:"Ehemann",p:"ma-ri"},{f:"femme / épouse",t:"Ehefrau",p:"fam"},
+      {f:"oncle",t:"Onkel",p:"õkl"},{f:"tante",t:"Tante",p:"tãt"},
+      {f:"neveu",t:"Neffe",p:"ne-vø"},{f:"nièce",t:"Nichte",p:"njes"},
+      {f:"cousin / cousine",t:"Cousin / Cousine",p:"ku-zẽ / ku-zin"},
+      {f:"parents",t:"Eltern",p:"pa-rã"},{f:"enfant",t:"Kind",p:"ã-fã"},{f:"bébé",t:"Baby",p:"be-be"},
+    ],
+    "Reisen": [
+      {f:"aéroport",t:"Flughafen",p:"a-e-ro-por"},{f:"gare",t:"Bahnhof",p:"gar"},
+      {f:"hôtel",t:"Hotel",p:"o-tel"},{f:"rue",t:"Straße",p:"rü"},{f:"ville",t:"Stadt",p:"vil"},
+      {f:"billet",t:"Ticket",p:"bi-je"},{f:"passeport",t:"Reisepass",p:"pas-por"},
+      {f:"taxi",t:"Taxi",p:"tak-si"},{f:"train",t:"Zug",p:"trẽ"},{f:"avion",t:"Flugzeug",p:"a-vjõ"},
+      {f:"bus",t:"Bus",p:"büs"},{f:"voiture",t:"Auto",p:"vwa-tür"},{f:"bateau",t:"Schiff / Boot",p:"ba-to"},
+      {f:"carte",t:"Landkarte",p:"kart"},{f:"frontière",t:"Grenze",p:"frõ-tjer"},
+      {f:"visa",t:"Visum",p:"vi-za"},{f:"bagage",t:"Gepäck",p:"ba-gazh"},{f:"chambre",t:"Zimmer",p:"shãbr"},
+      {f:"réservation",t:"Buchung / Reservierung",p:"re-zer-va-sjõ"},
+      {f:"musée",t:"Museum",p:"mü-ze"},{f:"plage",t:"Strand",p:"plazh"},
+      {f:"montagne",t:"Berg",p:"mõ-tan"},{f:"rivière / fleuve",t:"Fluss",p:"ri-vjer"},{f:"mer",t:"Meer",p:"mer"},
+    ],
+    "Körper": [
+      {f:"tête",t:"Kopf",p:"tet"},{f:"main",t:"Hand",p:"mẽ"},{f:"pied",t:"Fuß",p:"pje"},
+      {f:"œil / yeux",t:"Auge / Augen",p:"øj / jø"},{f:"oreille",t:"Ohr",p:"o-rej"},{f:"bouche",t:"Mund",p:"bush"},
+      {f:"nez",t:"Nase",p:"ne"},{f:"cœur",t:"Herz",p:"kør"},{f:"ventre",t:"Bauch",p:"vãtr"},
+      {f:"dos",t:"Rücken",p:"do"},{f:"épaule",t:"Schulter",p:"e-pol"},{f:"genou",t:"Knie",p:"zhø-nu"},
+      {f:"doigt",t:"Finger",p:"dwa"},{f:"dent",t:"Zahn",p:"dã"},{f:"cheveux",t:"Haare",p:"shø-vø"},
+      {f:"peau",t:"Haut",p:"po"},{f:"sang",t:"Blut",p:"sã"},{f:"bras",t:"Arm",p:"bra"},
+      {f:"jambe",t:"Bein",p:"zhãb"},{f:"cou",t:"Hals",p:"ku"},{f:"visage",t:"Gesicht",p:"vi-zazh"},
+    ],
+    "Zeit": [
+      {f:"aujourd'hui",t:"Heute",p:"o-zhur-düi"},{f:"demain",t:"Morgen",p:"de-mẽ"},{f:"hier",t:"Gestern",p:"jer"},
+      {f:"matin",t:"Morgen (Tageszeit)",p:"ma-tẽ"},{f:"après-midi",t:"Nachmittag",p:"a-pre mi-di"},
+      {f:"soir",t:"Abend",p:"swar"},{f:"nuit",t:"Nacht",p:"nüi"},
+      {f:"semaine",t:"Woche",p:"se-men"},{f:"mois",t:"Monat",p:"mwa"},{f:"an / année",t:"Jahr",p:"an / a-ne"},
+      {f:"heure",t:"Stunde",p:"ør"},{f:"minute",t:"Minute",p:"mi-nüt"},{f:"seconde",t:"Sekunde",p:"se-gõd"},
+      {f:"lundi",t:"Montag",p:"lẽ-di"},{f:"mardi",t:"Dienstag",p:"mar-di"},
+      {f:"mercredi",t:"Mittwoch",p:"mer-kre-di"},{f:"jeudi",t:"Donnerstag",p:"zhø-di"},
+      {f:"vendredi",t:"Freitag",p:"vãdr-di"},{f:"samedi",t:"Samstag",p:"sam-di"},{f:"dimanche",t:"Sonntag",p:"di-mãsh"},
+      {f:"janvier",t:"Januar",p:"zhã-vje"},{f:"février",t:"Februar",p:"fev-rje"},{f:"mars",t:"März",p:"mars"},
+      {f:"avril",t:"April",p:"a-vril"},{f:"mai",t:"Mai",p:"me"},{f:"juin",t:"Juni",p:"zhüẽ"},
+      {f:"juillet",t:"Juli",p:"zhüi-je"},{f:"août",t:"August",p:"u"},{f:"septembre",t:"September",p:"sep-tãbr"},
+      {f:"octobre",t:"Oktober",p:"ok-tobr"},{f:"novembre",t:"November",p:"no-vãbr"},{f:"décembre",t:"Dezember",p:"de-sãbr"},
+    ],
+    "Berufe": [
+      {f:"médecin",t:"Arzt",p:"med-sẽ"},{f:"professeur",t:"Lehrer",p:"pro-fe-sør"},
+      {f:"ingénieur",t:"Ingenieur",p:"ẽ-zhe-njør"},{f:"avocat",t:"Anwalt",p:"a-vo-ka"},
+      {f:"cuisinier",t:"Koch",p:"küi-zi-nje"},{f:"étudiant",t:"Student",p:"e-tü-djã"},
+      {f:"infirmière",t:"Krankenschwester",p:"ẽ-fir-mjer"},{f:"pompier",t:"Feuerwehrmann",p:"põ-pje"},
+      {f:"policier",t:"Polizist",p:"po-li-sje"},{f:"architecte",t:"Architekt",p:"ar-shi-tekt"},
+      {f:"journaliste",t:"Journalist",p:"zhur-na-list"},{f:"acteur",t:"Schauspieler",p:"ak-tør"},
+      {f:"chanteur",t:"Sänger",p:"shã-tør"},{f:"pilote",t:"Pilot",p:"pi-lot"},
+      {f:"pharmacien",t:"Apotheker",p:"far-ma-sjẽ"},{f:"chauffeur",t:"Fahrer",p:"sho-før"},
+    ],
+    "Wohnen": [
+      {f:"maison",t:"Haus",p:"me-zõ"},{f:"appartement",t:"Wohnung",p:"a-par-te-mã"},
+      {f:"chambre",t:"Zimmer",p:"shãbr"},{f:"cuisine",t:"Küche",p:"küi-zin"},
+      {f:"salle de bain",t:"Badezimmer",p:"sal de bẽ"},{f:"chambre à coucher",t:"Schlafzimmer",p:"shãbr a ku-she"},
+      {f:"salon",t:"Wohnzimmer",p:"sa-lõ"},{f:"porte",t:"Tür",p:"port"},{f:"fenêtre",t:"Fenster",p:"fe-netr"},
+      {f:"table",t:"Tisch",p:"tabl"},{f:"chaise",t:"Stuhl",p:"shez"},{f:"lit",t:"Bett",p:"li"},
+      {f:"armoire",t:"Schrank",p:"ar-mwar"},{f:"canapé",t:"Sofa",p:"ka-na-pe"},
+      {f:"réfrigérateur",t:"Kühlschrank",p:"re-fri-zhe-ra-tør"},{f:"cuisinière",t:"Herd",p:"küi-zi-njer"},
+      {f:"ascenseur",t:"Aufzug",p:"a-sã-sør"},{f:"escalier",t:"Treppe",p:"es-ka-lje"},{f:"balcon",t:"Balkon",p:"bal-kõ"},
+    ],
+    "Natur & Wetter": [
+      {f:"soleil",t:"Sonne",p:"so-lej"},{f:"lune",t:"Mond",p:"lün"},{f:"étoile",t:"Stern",p:"e-twal"},
+      {f:"ciel",t:"Himmel",p:"sjel"},{f:"nuage",t:"Wolke",p:"nüazh"},{f:"pluie",t:"Regen",p:"plüi"},
+      {f:"neige",t:"Schnee",p:"nezh"},{f:"vent",t:"Wind",p:"vã"},{f:"orage",t:"Gewitter / Sturm",p:"o-razh"},
+      {f:"chaud",t:"Warm / Heiß",p:"sho"},{f:"froid",t:"Kalt",p:"frwa"},{f:"brouillard",t:"Nebel",p:"brü-jar"},
+      {f:"forêt",t:"Wald",p:"fo-re"},{f:"mer",t:"Meer",p:"mer"},{f:"lac",t:"See",p:"lak"},
+      {f:"rivière",t:"Fluss",p:"ri-vjer"},{f:"fleur",t:"Blume",p:"flør"},{f:"arbre",t:"Baum",p:"arbr"},
+      {f:"herbe",t:"Gras",p:"erb"},{f:"montagne",t:"Berg",p:"mõ-tan"},{f:"île",t:"Insel",p:"il"},
+    ],
+    "Tiere": [
+      {f:"chien",t:"Hund",p:"shjẽ"},{f:"chat",t:"Katze",p:"sha"},{f:"cheval",t:"Pferd",p:"she-val"},
+      {f:"vache",t:"Kuh",p:"vash"},{f:"cochon",t:"Schwein",p:"ko-shõ"},{f:"mouton",t:"Schaf",p:"mu-tõ"},
+      {f:"oiseau",t:"Vogel",p:"wa-zo"},{f:"poisson",t:"Fisch",p:"pwa-sõ"},{f:"lion",t:"Löwe",p:"ljõ"},
+      {f:"tigre",t:"Tiger",p:"tigr"},{f:"éléphant",t:"Elefant",p:"e-le-fã"},{f:"ours",t:"Bär",p:"urs"},
+      {f:"loup",t:"Wolf",p:"lu"},{f:"renard",t:"Fuchs",p:"re-nar"},{f:"lapin",t:"Hase / Kaninchen",p:"la-pẽ"},
+      {f:"serpent",t:"Schlange",p:"ser-pã"},{f:"papillon",t:"Schmetterling",p:"pa-pi-jõ"},
+      {f:"aigle",t:"Adler",p:"egl"},{f:"singe",t:"Affe",p:"sẽzh"},
+    ],
+    "Adjektive": [
+      {f:"grand",t:"Groß",p:"grã"},{f:"petit",t:"Klein",p:"pe-ti"},{f:"nouveau / nouvelle",t:"Neu",p:"nu-vo"},
+      {f:"vieux / vieille",t:"Alt",p:"vjø / vjej"},{f:"beau / belle",t:"Schön",p:"bo / bel"},
+      {f:"intelligent",t:"Klug",p:"ẽ-te-li-zhã"},{f:"rapide",t:"Schnell",p:"ra-pid"},
+      {f:"lent",t:"Langsam",p:"lã"},{f:"cher / chère",t:"Teuer",p:"sher"},
+      {f:"pas cher / bon marché",t:"Günstig",p:"pã sher"},{f:"lourd",t:"Schwer",p:"lur"},
+      {f:"léger",t:"Leicht",p:"le-zhe"},{f:"chaud",t:"Warm / Heiß",p:"sho"},{f:"froid",t:"Kalt",p:"frwa"},
+      {f:"délicieux",t:"Lecker",p:"de-li-sjø"},{f:"fatigué",t:"Müde",p:"fa-ti-ge"},
+      {f:"heureux / heureuse",t:"Glücklich",p:"ø-rø"},{f:"triste",t:"Traurig",p:"trist"},
+      {f:"fort",t:"Stark",p:"for"},{f:"faible",t:"Schwach",p:"febl"},
+      {f:"propre",t:"Sauber",p:"propr"},{f:"sale",t:"Schmutzig",p:"sal"},
+    ],
+    "Verben": [
+      {f:"aller",t:"Gehen",p:"a-le"},{f:"courir",t:"Rennen / Laufen",p:"ku-rir"},
+      {f:"manger",t:"Essen",p:"mã-zhe"},{f:"boire",t:"Trinken",p:"bwar"},
+      {f:"dormir",t:"Schlafen",p:"dor-mir"},{f:"travailler",t:"Arbeiten",p:"tra-va-je"},
+      {f:"parler",t:"Sprechen",p:"par-le"},{f:"écouter",t:"Zuhören",p:"e-ku-te"},
+      {f:"voir",t:"Sehen",p:"vwar"},{f:"lire",t:"Lesen",p:"lir"},
+      {f:"écrire",t:"Schreiben",p:"e-krir"},{f:"aimer",t:"Lieben / Mögen",p:"e-me"},
+      {f:"savoir",t:"Wissen",p:"sa-vwar"},{f:"penser",t:"Denken",p:"pã-se"},
+      {f:"aider",t:"Helfen",p:"e-de"},{f:"acheter",t:"Kaufen",p:"ash-te"},
+      {f:"ouvrir",t:"Öffnen",p:"u-vrir"},{f:"fermer",t:"Schließen",p:"fer-me"},
+      {f:"commencer",t:"Beginnen",p:"ko-mã-se"},{f:"finir",t:"Beenden",p:"fi-nir"},
+      {f:"donner",t:"Geben",p:"do-ne"},{f:"prendre",t:"Nehmen",p:"prãdr"},
+      {f:"venir",t:"Kommen",p:"ve-nir"},{f:"attendre",t:"Warten",p:"a-tãdr"},
+      {f:"comprendre",t:"Verstehen",p:"kõ-prãdr"},{f:"apprendre",t:"Lernen",p:"a-prãdr"},
+    ],
+    "Technologie": [
+      {f:"téléphone",t:"Telefon",p:"te-le-fon"},{f:"ordinateur",t:"Computer",p:"or-di-na-tør"},
+      {f:"internet",t:"Internet",p:"ẽ-ter-net"},{f:"application",t:"App",p:"a-pli-ka-sjõ"},
+      {f:"mot de passe",t:"Passwort",p:"mo de pas"},{f:"écran",t:"Bildschirm",p:"e-krã"},
+      {f:"clavier",t:"Tastatur",p:"kla-vje"},{f:"appareil photo",t:"Kamera",p:"a-pa-rej fo-to"},
+      {f:"batterie",t:"Akku / Batterie",p:"ba-tri"},{f:"wi-fi",t:"WLAN",p:"wi-fi"},
+      {f:"courriel / e-mail",t:"E-Mail",p:"ku-rjel"},{f:"message",t:"Nachricht",p:"me-sazh"},
+      {f:"réseaux sociaux",t:"Soziale Medien",p:"re-zo so-sjo"},
+    ],
+    "Kultur Frankreich": [
+      {f:"Tour Eiffel",t:"Eiffelturm",p:"tur e-fel"},{f:"Le Louvre",t:"Das Louvre",p:"le luvr"},
+      {f:"baguette",t:"Baguette (Weißbrot)",p:"ba-get"},{f:"croissant",t:"Hörnchen",p:"krwa-sã"},
+      {f:"la laïcité",t:"Laizismus / Trennung Kirche-Staat",p:"la lai-si-te"},
+      {f:"Versailles",t:"Schloss Versailles",p:"ver-saj"},{f:"Provence",t:"Provence (Region)",p:"pro-vãs"},
+      {f:"pétanque",t:"Boule-Spiel",p:"pe-tãk"},{f:"mime",t:"Pantomime",p:"mim"},
+      {f:"le Tour de France",t:"Tour de France (Radrennen)",p:"le tur de frãs"},
+      {f:"Napoléon",t:"Napoleon Bonaparte",p:"na-po-le-õ"},{f:"liberté",t:"Freiheit",p:"li-ber-te"},
+      {f:"égalité",t:"Gleichheit",p:"e-ga-li-te"},{f:"fraternité",t:"Brüderlichkeit",p:"fra-ter-ni-te"},
+    ],
+  };
+
+  // SWEDISH vocabulary
+  VOCAB['sv'] = {
+    "Grundlagen": [
+      {f:"hej",t:"Hallo",p:"hej"},{f:"god dag",t:"Guten Tag",p:"gu-dag"},{f:"god morgon",t:"Guten Morgen",p:"gu mo-ron"},
+      {f:"god kväll",t:"Guten Abend",p:"gu kvel"},{f:"tack",t:"Danke",p:"tak"},{f:"snälla",t:"Bitte",p:"snel-a"},
+      {f:"ja",t:"Ja",p:"ja"},{f:"nej",t:"Nein",p:"nej"},{f:"förlåt",t:"Entschuldigung",p:"för-lot"},
+      {f:"bra",t:"Gut",p:"bra"},{f:"hej då",t:"Auf Wiedersehen",p:"hej do"},
+      {f:"hur mår du",t:"Wie geht es dir",p:"hur mor du"},{f:"jag förstår inte",t:"Ich verstehe nicht",p:"jag för-stor in-te"},
+      {f:"jag heter",t:"Ich heiße",p:"jag he-ter"},{f:"var",t:"Wo",p:"var"},
+      {f:"när",t:"Wann",p:"ner"},{f:"varför",t:"Warum",p:"var-för"},
+      {f:"vad kostar det",t:"Was kostet das",p:"vad kos-tar det"},{f:"hjälp",t:"Hilfe",p:"yelp"},
+      {f:"välkommen",t:"Willkommen",p:"vel-ko-men"},{f:"god natt",t:"Gute Nacht",p:"gu nat"},
+      {f:"jag förstår",t:"Ich verstehe",p:"jag för-stor"},{f:"jag vet inte",t:"Ich weiß nicht",p:"jag vet in-te"},
+    ],
+    "Zahlen": [
+      {f:"ett / en",t:"Eins",p:"et / en"},{f:"två",t:"Zwei",p:"tvo"},{f:"tre",t:"Drei",p:"tre"},
+      {f:"fyra",t:"Vier",p:"fy-ra"},{f:"fem",t:"Fünf",p:"fem"},{f:"sex",t:"Sechs",p:"seks"},
+      {f:"sju",t:"Sieben",p:"shu"},{f:"åtta",t:"Acht",p:"o-ta"},{f:"nio",t:"Neun",p:"ni-u"},
+      {f:"tio",t:"Zehn",p:"ti-u"},{f:"elva",t:"Elf",p:"el-va"},{f:"tolv",t:"Zwölf",p:"tol"},
+      {f:"tjugo",t:"Zwanzig",p:"shu-gu"},{f:"trettio",t:"Dreißig",p:"tre-tiu"},{f:"fyrtio",t:"Vierzig",p:"för-tiu"},
+      {f:"femtio",t:"Fünfzig",p:"fem-tiu"},{f:"hundra",t:"Hundert",p:"hun-dra"},{f:"tusen",t:"Tausend",p:"tu-sen"},
+      {f:"första",t:"Erste/r",p:"förs-ta"},{f:"andra",t:"Zweite/r",p:"an-dra"},{f:"tredje",t:"Dritte/r",p:"tre-dje"},
+    ],
+    "Farben": [
+      {f:"röd",t:"Rot",p:"röd"},{f:"blå",t:"Blau",p:"blo"},{f:"grön",t:"Grün",p:"grön"},
+      {f:"gul",t:"Gelb",p:"gul"},{f:"vit",t:"Weiß",p:"vit"},{f:"svart",t:"Schwarz",p:"svart"},
+      {f:"orange",t:"Orange",p:"o-ran-je"},{f:"lila",t:"Violett / Lila",p:"li-la"},{f:"rosa",t:"Rosa",p:"ro-sa"},
+      {f:"grå",t:"Grau",p:"gro"},{f:"brun",t:"Braun",p:"brun"},{f:"guld",t:"Golden",p:"gul"},
+      {f:"silver",t:"Silber",p:"sil-ver"},{f:"mörkblå",t:"Dunkelblau",p:"mörk-blo"},
+    ],
+    "Essen & Trinken": [
+      {f:"bröd",t:"Brot",p:"bröd"},{f:"vatten",t:"Wasser",p:"va-ten"},{f:"mjölk",t:"Milch",p:"mjölk"},
+      {f:"kött",t:"Fleisch",p:"chöt"},{f:"fisk",t:"Fisch",p:"fisk"},{f:"grönsaker",t:"Gemüse",p:"grön-sa-ker"},
+      {f:"frukt",t:"Obst",p:"frukt"},{f:"soppa",t:"Suppe",p:"so-pa"},{f:"te",t:"Tee",p:"te"},
+      {f:"kaffe",t:"Kaffee",p:"ka-fe"},{f:"öl",t:"Bier",p:"öl"},{f:"vin",t:"Wein",p:"vin"},
+      {f:"äpple",t:"Apfel",p:"ep-le"},{f:"potatis",t:"Kartoffel",p:"po-ta-tis"},
+      {f:"kyckling",t:"Hühnchen",p:"chyk-ling"},{f:"ägg",t:"Ei",p:"eg"},{f:"ost",t:"Käse",p:"ost"},
+      {f:"smör",t:"Butter",p:"smör"},{f:"socker",t:"Zucker",p:"so-ker"},{f:"salt",t:"Salz",p:"salt"},
+      {f:"ris",t:"Reis",p:"ris"},{f:"pasta",t:"Nudeln",p:"pas-ta"},{f:"tomat",t:"Tomate",p:"to-mat"},
+      {f:"lök",t:"Zwiebel",p:"lök"},{f:"vitlök",t:"Knoblauch",p:"vit-lök"},
+      {f:"jordgubbe",t:"Erdbeere",p:"yord-gu-be"},{f:"glass",t:"Eis",p:"glas"},
+      {f:"kaka",t:"Kuchen",p:"ka-ka"},{f:"juice",t:"Saft",p:"jus"},
+      {f:"olja",t:"Öl",p:"ol-ja"},{f:"honung",t:"Honig",p:"ho-nung"},
+      {f:"smörgås",t:"Butterbrot / Sandwich",p:"smör-gos"},{f:"köttbullar",t:"Fleischbällchen",p:"chöt-bul-ar"},
+      {f:"gravlax",t:"Graved Lachs",p:"grav-laks"},{f:"surströmming",t:"Gesäuerter Hering",p:"sur-ström-ing"},
+      {f:"kanelbulle",t:"Zimtschnecke",p:"ka-nel-bul-e"},
+    ],
+    "Familie": [
+      {f:"mamma / mor",t:"Mutter",p:"ma-ma"},{f:"pappa / far",t:"Vater",p:"pa-pa"},
+      {f:"bror",t:"Bruder",p:"bror"},{f:"syster",t:"Schwester",p:"syst-er"},
+      {f:"mormor / farmor",t:"Großmutter",p:"mor-mor"},{f:"morfar / farfar",t:"Großvater",p:"mor-far"},
+      {f:"son",t:"Sohn",p:"son"},{f:"dotter",t:"Tochter",p:"do-ter"},
+      {f:"man / make",t:"Ehemann",p:"man"},{f:"fru / hustru",t:"Ehefrau",p:"fru"},
+      {f:"farbror / morbror",t:"Onkel",p:"far-bror"},{f:"faster / moster",t:"Tante",p:"fas-ter"},
+      {f:"nevö",t:"Neffe",p:"ne-vö"},{f:"niece",t:"Nichte",p:"ni-es"},
+      {f:"kusin",t:"Cousin / Cousine",p:"ku-sin"},
+      {f:"föräldrar",t:"Eltern",p:"för-el-drar"},{f:"barn",t:"Kind",p:"barn"},{f:"bebis",t:"Baby",p:"be-bis"},
+    ],
+    "Reisen": [
+      {f:"flygplats",t:"Flughafen",p:"flyg-plats"},{f:"tågstation",t:"Bahnhof",p:"tog-sta-shon"},
+      {f:"hotell",t:"Hotel",p:"ho-tel"},{f:"gata",t:"Straße",p:"ga-ta"},{f:"stad",t:"Stadt",p:"sta"},
+      {f:"biljett",t:"Ticket",p:"bil-jet"},{f:"pass",t:"Reisepass",p:"pas"},
+      {f:"taxi",t:"Taxi",p:"tak-si"},{f:"tåg",t:"Zug",p:"tog"},{f:"flygplan",t:"Flugzeug",p:"flyg-plan"},
+      {f:"buss",t:"Bus",p:"bus"},{f:"bil",t:"Auto",p:"bil"},{f:"båt / skepp",t:"Schiff / Boot",p:"bot"},
+      {f:"karta",t:"Landkarte",p:"kar-ta"},{f:"gräns",t:"Grenze",p:"grens"},
+      {f:"visum",t:"Visum",p:"vi-sum"},{f:"bagage",t:"Gepäck",p:"ba-ga-she"},{f:"rum",t:"Zimmer",p:"rum"},
+      {f:"bokning",t:"Buchung / Reservierung",p:"bok-ning"},
+      {f:"museum",t:"Museum",p:"mu-se-um"},{f:"strand",t:"Strand",p:"strand"},
+      {f:"berg",t:"Berg",p:"bery"},{f:"flod / å",t:"Fluss",p:"flod"},{f:"hav",t:"Meer",p:"hav"},
+    ],
+    "Körper": [
+      {f:"huvud",t:"Kopf",p:"hu-vu"},{f:"hand",t:"Hand",p:"han"},{f:"fot",t:"Fuß",p:"fut"},
+      {f:"öga",t:"Auge",p:"ö-ga"},{f:"öra",t:"Ohr",p:"ö-ra"},{f:"mun",t:"Mund",p:"mun"},
+      {f:"näsa",t:"Nase",p:"ne-sa"},{f:"hjärta",t:"Herz",p:"yer-ta"},{f:"mage",t:"Bauch / Magen",p:"ma-ge"},
+      {f:"rygg",t:"Rücken",p:"ryg"},{f:"axel",t:"Schulter",p:"ak-sel"},{f:"knä",t:"Knie",p:"kne"},
+      {f:"finger",t:"Finger",p:"fing-er"},{f:"tand",t:"Zahn",p:"tan"},{f:"hår",t:"Haare",p:"hor"},
+      {f:"hud",t:"Haut",p:"hu"},{f:"blod",t:"Blut",p:"blo"},{f:"arm",t:"Arm",p:"arm"},
+      {f:"ben",t:"Bein",p:"ben"},{f:"hals",t:"Hals",p:"hals"},{f:"ansikte",t:"Gesicht",p:"an-sik-te"},
+    ],
+    "Zeit": [
+      {f:"idag",t:"Heute",p:"i-dag"},{f:"imorgon",t:"Morgen",p:"i-mo-ron"},{f:"igår",t:"Gestern",p:"i-gor"},
+      {f:"morgon",t:"Morgen (Tageszeit)",p:"mo-ron"},{f:"eftermiddag",t:"Nachmittag",p:"ef-ter-mi-dag"},
+      {f:"kväll",t:"Abend",p:"kvel"},{f:"natt",t:"Nacht",p:"nat"},
+      {f:"vecka",t:"Woche",p:"ve-ka"},{f:"månad",t:"Monat",p:"mo-nad"},{f:"år",t:"Jahr",p:"or"},
+      {f:"timme",t:"Stunde",p:"ti-me"},{f:"minut",t:"Minute",p:"mi-nut"},{f:"sekund",t:"Sekunde",p:"se-kund"},
+      {f:"måndag",t:"Montag",p:"mon-dag"},{f:"tisdag",t:"Dienstag",p:"tis-dag"},
+      {f:"onsdag",t:"Mittwoch",p:"ons-dag"},{f:"torsdag",t:"Donnerstag",p:"tors-dag"},
+      {f:"fredag",t:"Freitag",p:"fre-dag"},{f:"lördag",t:"Samstag",p:"lör-dag"},{f:"söndag",t:"Sonntag",p:"sön-dag"},
+      {f:"januari",t:"Januar",p:"ja-nu-a-ri"},{f:"februari",t:"Februar",p:"feb-ru-a-ri"},{f:"mars",t:"März",p:"mars"},
+      {f:"april",t:"April",p:"a-pril"},{f:"maj",t:"Mai",p:"maj"},{f:"juni",t:"Juni",p:"ju-ni"},
+      {f:"juli",t:"Juli",p:"ju-li"},{f:"augusti",t:"August",p:"au-gus-ti"},{f:"september",t:"September",p:"sep-tem-ber"},
+      {f:"oktober",t:"Oktober",p:"ok-to-ber"},{f:"november",t:"November",p:"no-vem-ber"},{f:"december",t:"Dezember",p:"de-sem-ber"},
+    ],
+    "Berufe": [
+      {f:"läkare",t:"Arzt",p:"le-ka-re"},{f:"lärare",t:"Lehrer",p:"le-ra-re"},
+      {f:"ingenjör",t:"Ingenieur",p:"in-je-njör"},{f:"advokat",t:"Anwalt",p:"ad-vo-kat"},
+      {f:"kock",t:"Koch",p:"kok"},{f:"student",t:"Student",p:"stu-dent"},
+      {f:"sjuksköterska",t:"Krankenschwester",p:"shuk-shö-ter-ska"},{f:"brandman",t:"Feuerwehrmann",p:"brand-man"},
+      {f:"polis",t:"Polizist",p:"po-lis"},{f:"arkitekt",t:"Architekt",p:"ar-ki-tekt"},
+      {f:"journalist",t:"Journalist",p:"zhur-na-list"},{f:"skådespelare",t:"Schauspieler",p:"sko-de-spel-are"},
+      {f:"sångare",t:"Sänger",p:"song-a-re"},{f:"pilot",t:"Pilot",p:"pi-lot"},
+      {f:"apotekare",t:"Apotheker",p:"apo-te-ka-re"},{f:"chaufför",t:"Fahrer",p:"sho-för"},
+    ],
+    "Wohnen": [
+      {f:"hus",t:"Haus",p:"hus"},{f:"lägenhet",t:"Wohnung",p:"le-gen-het"},
+      {f:"rum",t:"Zimmer",p:"rum"},{f:"kök",t:"Küche",p:"chök"},
+      {f:"badrum",t:"Badezimmer",p:"bad-rum"},{f:"sovrum",t:"Schlafzimmer",p:"sov-rum"},
+      {f:"vardagsrum",t:"Wohnzimmer",p:"var-dags-rum"},{f:"dörr",t:"Tür",p:"dör"},
+      {f:"fönster",t:"Fenster",p:"fön-ster"},{f:"bord",t:"Tisch",p:"bor"},
+      {f:"stol",t:"Stuhl",p:"stol"},{f:"säng",t:"Bett",p:"seng"},
+      {f:"skåp",t:"Schrank",p:"skop"},{f:"soffa",t:"Sofa",p:"so-fa"},
+      {f:"kylskåp",t:"Kühlschrank",p:"chyl-skop"},{f:"spis",t:"Herd",p:"spis"},
+      {f:"hiss",t:"Aufzug",p:"his"},{f:"trappa",t:"Treppe",p:"tra-pa"},{f:"balkong",t:"Balkon",p:"bal-kong"},
+    ],
+    "Natur & Wetter": [
+      {f:"sol",t:"Sonne",p:"sol"},{f:"måne",t:"Mond",p:"mo-ne"},{f:"stjärna",t:"Stern",p:"ster-na"},
+      {f:"himmel",t:"Himmel",p:"hi-mel"},{f:"moln",t:"Wolke",p:"moln"},{f:"regn",t:"Regen",p:"reyn"},
+      {f:"snö",t:"Schnee",p:"snö"},{f:"vind",t:"Wind",p:"vind"},{f:"åska / storm",t:"Gewitter / Sturm",p:"os-ka"},
+      {f:"varmt",t:"Warm / Heiß",p:"varmt"},{f:"kallt",t:"Kalt",p:"kalt"},{f:"dimma",t:"Nebel",p:"di-ma"},
+      {f:"skog",t:"Wald",p:"skog"},{f:"hav",t:"Meer",p:"hav"},{f:"sjö",t:"See",p:"shö"},
+      {f:"flod / å",t:"Fluss",p:"flod"},{f:"blomma",t:"Blume",p:"blo-ma"},{f:"träd",t:"Baum",p:"tred"},
+      {f:"gräs",t:"Gras",p:"gres"},{f:"berg",t:"Berg",p:"bery"},{f:"ö",t:"Insel",p:"ö"},
+    ],
+    "Adjektive": [
+      {f:"stor",t:"Groß",p:"stor"},{f:"liten",t:"Klein",p:"li-ten"},{f:"ny",t:"Neu",p:"ny"},
+      {f:"gammal",t:"Alt",p:"ga-mal"},{f:"vacker / snygg",t:"Schön",p:"va-ker"},
+      {f:"intelligent / klok",t:"Klug",p:"klo-k"},{f:"snabb",t:"Schnell",p:"snab"},
+      {f:"långsam",t:"Langsam",p:"long-sam"},{f:"dyr",t:"Teuer",p:"dyr"},
+      {f:"billig",t:"Günstig",p:"bi-lig"},{f:"tung",t:"Schwer",p:"tung"},{f:"lätt",t:"Leicht",p:"let"},
+      {f:"varm",t:"Warm / Heiß",p:"varm"},{f:"kall",t:"Kalt",p:"kal"},{f:"god / läcker",t:"Lecker",p:"le-ker"},
+      {f:"trött",t:"Müde",p:"tröt"},{f:"glad",t:"Glücklich",p:"glad"},{f:"ledsen",t:"Traurig",p:"led-sen"},
+      {f:"stark",t:"Stark",p:"stark"},{f:"svag",t:"Schwach",p:"svag"},
+      {f:"ren",t:"Sauber",p:"ren"},{f:"smutsig",t:"Schmutzig",p:"smut-sig"},
+    ],
+    "Verben": [
+      {f:"gå",t:"Gehen",p:"go"},{f:"springa",t:"Rennen / Laufen",p:"spring-a"},
+      {f:"äta",t:"Essen",p:"e-ta"},{f:"dricka",t:"Trinken",p:"dri-ka"},
+      {f:"sova",t:"Schlafen",p:"so-va"},{f:"arbeta",t:"Arbeiten",p:"ar-be-ta"},
+      {f:"tala / prata",t:"Sprechen",p:"ta-la"},{f:"lyssna",t:"Zuhören",p:"lys-na"},
+      {f:"se",t:"Sehen",p:"se"},{f:"läsa",t:"Lesen",p:"le-sa"},
+      {f:"skriva",t:"Schreiben",p:"skri-va"},{f:"älska",t:"Lieben",p:"el-ska"},
+      {f:"veta",t:"Wissen",p:"ve-ta"},{f:"tänka",t:"Denken",p:"ten-ka"},
+      {f:"hjälpa",t:"Helfen",p:"yel-pa"},{f:"köpa",t:"Kaufen",p:"chö-pa"},
+      {f:"öppna",t:"Öffnen",p:"öp-na"},{f:"stänga",t:"Schließen",p:"sten-ga"},
+      {f:"börja",t:"Beginnen",p:"bör-ja"},{f:"sluta",t:"Beenden",p:"slu-ta"},
+      {f:"ge",t:"Geben",p:"je"},{f:"ta",t:"Nehmen",p:"ta"},
+      {f:"komma",t:"Kommen",p:"ko-ma"},{f:"vänta",t:"Warten",p:"ven-ta"},
+      {f:"förstå",t:"Verstehen",p:"för-sto"},{f:"lära sig",t:"Lernen",p:"le-ra sej"},
+    ],
+    "Technologie": [
+      {f:"telefon",t:"Telefon",p:"te-le-fon"},{f:"dator",t:"Computer",p:"da-tor"},
+      {f:"internet",t:"Internet",p:"in-ter-net"},{f:"app",t:"App",p:"ap"},
+      {f:"lösenord",t:"Passwort",p:"lö-sen-ord"},{f:"skärm",t:"Bildschirm",p:"sherm"},
+      {f:"tangentbord",t:"Tastatur",p:"tan-jent-bord"},{f:"kamera",t:"Kamera",p:"ka-me-ra"},
+      {f:"batteri",t:"Akku / Batterie",p:"ba-te-ri"},{f:"wifi",t:"WLAN",p:"wai-fai"},
+      {f:"e-post / mejl",t:"E-Mail",p:"e-post"},{f:"meddelande",t:"Nachricht",p:"me-de-lan-de"},
+      {f:"sociala medier",t:"Soziale Medien",p:"so-sia-la me-dier"},
+    ],
+    "Schwedische Kultur": [
+      {f:"ABBA",t:"ABBA (schwed. Popgruppe)",p:"a-ba"},{f:"IKEA",t:"IKEA (Möbelhaus)",p:"i-ke-a"},
+      {f:"fika",t:"Kaffeepause mit Gebäck",p:"fi-ka"},{f:"midsommar",t:"Mittsommerfest",p:"mid-so-mar"},
+      {f:"Pippi Långstrump",t:"Pippi Langstrumpf",p:"pi-pi long-strum"},{f:"Nobel",t:"Nobelpreis",p:"no-bel"},
+      {f:"Vasa",t:"Kriegsschiff Vasa (Museum)",p:"va-sa"},{f:"Dalahäst",t:"Dala-Pferd (Folklorefigur)",p:"da-la-hest"},
+      {f:"smörgåsbord",t:"Büfett (Smörgåsbord)",p:"smör-gos-bord"},
+      {f:"lagom",t:"Genau richtig (Lebensphilosophie)",p:"la-gom"},
+      {f:"Stieg Larsson",t:"Stieg Larsson (Millennium-Autor)",p:"stig lars-son"},
+      {f:"Volvo",t:"Volvo (Automarke)",p:"vol-vo"},{f:"Spotify",t:"Spotify",p:"spo-ti-fai"},
+      {f:"surströmming",t:"Gesäuerter Hering",p:"sur-ström-ing"},
+    ],
+  };
 })();
 
-const LANG_NAMES = { ru:"Russisch", it:"Italienisch", es:"Spanisch", en:"Englisch", tr:"Türkisch", sq:"Albanisch", de:"Deutsch", th:"Thailändisch", da:"Dänisch", ro:"Rumänisch" };
-const LANG_VOICE = { ru:"ru-RU", it:"it-IT", es:"es-ES", en:"en-GB", tr:"tr-TR", sq:"sq-AL", de:"de-DE", th:"th-TH", da:"da-DK", ro:"ro-RO" };
-const LANG_EMOJI = { ru:"🇷🇺", it:"🇮🇹", es:"🇪🇸", en:"🇬🇧", tr:"🇹🇷", sq:"🇦🇱", de:"🇩🇪", th:"🇹🇭", da:"🇩🇰", ro:"🇷🇴" };
+const LANG_NAMES = { sq:"Albanisch", da:"Dänisch", de:"Deutsch", en:"Englisch", fr:"Französisch", it:"Italienisch", ro:"Rumänisch", ru:"Russisch", sv:"Schwedisch", es:"Spanisch", th:"Thailändisch", tr:"Türkisch" };
+const LANG_VOICE = { sq:"sq-AL", da:"da-DK", de:"de-DE", en:"en-GB", fr:"fr-FR", it:"it-IT", ro:"ro-RO", ru:"ru-RU", sv:"sv-SE", es:"es-ES", th:"th-TH", tr:"tr-TR" };
+const LANG_EMOJI = { sq:"🇦🇱", da:"🇩🇰", de:"🇩🇪", en:"🇬🇧", fr:"🇫🇷", it:"🇮🇹", ro:"🇷🇴", ru:"🇷🇺", sv:"🇸🇪", es:"🇪🇸", th:"🇹🇭", tr:"🇹🇷" };
 
 // ============================================================
 // UI LANGUAGE SYSTEM
@@ -4680,8 +5230,8 @@ async function doTranslate() {
   if (!text) return;
   const from = document.getElementById('trans-from').value;
   const to = document.getElementById('trans-to').value;
-  const fromName = { de:'Deutsch', ru:'Russisch', it:'Italienisch', es:'Spanisch', en:'Englisch', tr:'Türkisch', sq:'Albanisch', th:'Thailändisch', da:'Dänisch', ro:'Rumänisch' }[from];
-  const toName   = { de:'Deutsch', ru:'Russisch', it:'Italienisch', es:'Spanisch', en:'Englisch', tr:'Türkisch', sq:'Albanisch', th:'Thailändisch', da:'Dänisch', ro:'Rumänisch' }[to];
+  const fromName = { sq:'Albanisch', da:'Dänisch', de:'Deutsch', en:'Englisch', fr:'Französisch', it:'Italienisch', ro:'Rumänisch', ru:'Russisch', sv:'Schwedisch', es:'Spanisch', th:'Thailändisch', tr:'Türkisch' }[from];
+  const toName   = { sq:'Albanisch', da:'Dänisch', de:'Deutsch', en:'Englisch', fr:'Französisch', it:'Italienisch', ro:'Rumänisch', ru:'Russisch', sv:'Schwedisch', es:'Spanisch', th:'Thailändisch', tr:'Türkisch' }[to];
 
   document.getElementById('trans-loading').style.display = 'block';
   document.getElementById('trans-output').value = '';
@@ -5109,8 +5659,7 @@ var BADGES_DEF = [
   {id:'perfect_quiz',  icon:'💯', name:'Perfektes Quiz',    desc:'Quiz ohne Fehler abgeschlossen', check:function(s){return (s.perfectQuizzes||0)>=1;}},
   {id:'five_langs',    icon:'🌍', name:'Weltenbürger',      desc:'5 Sprachen ausprobiert',      check:function(s){return Object.keys(s.learned||{}).length>=5;}},
   {id:'custom_vocab',  icon:'✏️', name:'Eigener Forscher',  desc:'10 eigene Vokabeln hinzugefügt', check:function(){
-    var total = 0;
-    ['ru','it','es','en','tr','sq','de','th','da'].forEach(function(l){total += getMyVocab(l).length;});
+    Object.keys(LANG_NAMES).forEach(function(l) { data.myVocab[l] = getMyVocab(l); });
     return total >= 10;
   }},
 ];
@@ -5203,8 +5752,8 @@ function renderStreakCalendar() {
 function renderAccuracyChart() {
   var chart = document.getElementById('accuracy-chart');
   if (!chart) return;
-  var langs = ['ru','it','es','en','tr','sq','de','th','da'];
-  var names = {ru:'Russisch',it:'Italienisch',es:'Spanisch',en:'Englisch',tr:'Türkisch',sq:'Albanisch',de:'Deutsch',th:'Thailändisch',da:'Dänisch'};
+  var langs = ['sq','da','de','en','fr','it','ro','ru','sv','es','th','tr'];
+  var names = {sq:'Albanisch',da:'Dänisch',de:'Deutsch',en:'Englisch',fr:'Französisch',it:'Italienisch',ro:'Rumänisch',ru:'Russisch',sv:'Schwedisch',es:'Spanisch',th:'Thailändisch',tr:'Türkisch'};
   var data = JSON.parse(localStorage.getItem('lingua_quiz_stats') || '{}');
   chart.innerHTML = '';
   langs.forEach(function(l) {
@@ -5663,6 +6212,476 @@ checkQuiz = function(btn, correct, correctAnswer) {
     mvCount.parentNode.appendChild(importBtn);
   }
 })();
+
+// ============================================================
+// ONBOARDING SYSTEM
+// ============================================================
+var ONBOARDING_STEPS = [
+  {
+    emoji:'👋',
+    title:'Willkommen bei LINGUA v2.2!',
+    text:'Die KI-gestützte Sprachlern-App für 12 Sprachen. Lass uns die wichtigsten Features kurz vorstellen — dauert nur 1 Minute!',
+    features:null,
+    btnText:'Los geht\'s →'
+  },
+  {
+    emoji:'📚',
+    title:'Lerne Vokabeln clever',
+    text:'Wähle deine Sprache und tauche ein. Diese Features stehen dir zur Verfügung:',
+    features:[
+      {icon:'📚', name:'Vokabeltraining', desc:'Klassische Karteikarten'},
+      {icon:'🧠', name:'Spaced Repetition', desc:'Adaptive Wiederholung (SM-2)'},
+      {icon:'✍', name:'Schreibübung', desc:'Tippe die Übersetzung'},
+      {icon:'❓', name:'Quiz', desc:'Multiple Choice'},
+    ],
+    btnText:'Weiter →'
+  },
+  {
+    emoji:'🔀',
+    title:'Verben meistern',
+    text:'Neu in v2.2: Der Konjugationstrainer! Gib ein Verb ein — die KI erstellt eine vollständige Tabelle. Dann kannst du direkt üben.',
+    features:[
+      {icon:'🔀', name:'Konjugationstabelle', desc:'KI-generiert, alle Zeiten'},
+      {icon:'🎯', name:'Konjugations-Quiz', desc:'Lücken ausfüllen'},
+      {icon:'🔍', name:'Vokabelsuche', desc:'4.000+ Wörter durchsuchen'},
+      {icon:'🗺', name:'Lernpfad', desc:'Strukturierte Lektionen'},
+    ],
+    btnText:'Weiter →'
+  },
+  {
+    emoji:'🏆',
+    title:'Bleib motiviert!',
+    text:'Sammle XP, schalte Abzeichen frei, halte deinen Streak am Laufen und verfolge deinen Fortschritt in den Statistiken.',
+    features:[
+      {icon:'⚡', name:'XP & Level', desc:'7 Stufen bis zum Großmeister'},
+      {icon:'🔥', name:'Streak', desc:'Täglich lernen zahlt sich aus'},
+      {icon:'📊', name:'Statistiken', desc:'Dein Lernfortschritt'},
+      {icon:'🎨', name:'Farbpaletten', desc:'8 Themes + individuell'},
+    ],
+    btnText:'Fertig — loslegen! 🚀'
+  }
+];
+var onboardingStep = 0;
+
+function showOnboarding() {
+  if (localStorage.getItem('lingua_onboarded')) return;
+  onboardingStep = 0;
+  renderOnboardingStep();
+  document.getElementById('onboarding-overlay').classList.remove('hidden');
+}
+
+function renderOnboardingStep() {
+  var s = ONBOARDING_STEPS[onboardingStep];
+  var total = ONBOARDING_STEPS.length;
+  var btn = document.getElementById('onboarding-next');
+  if (btn) btn.textContent = s.btnText;
+  // Dots
+  var dots = document.getElementById('onboarding-dots');
+  if (dots) {
+    dots.innerHTML = '';
+    for (var i = 0; i < total; i++) {
+      var d = document.createElement('div');
+      d.className = 'onboarding-dot' + (i === onboardingStep ? ' active' : '');
+      dots.appendChild(d);
+    }
+  }
+  // Content
+  var content = document.getElementById('onboarding-step-content');
+  if (!content) return;
+  var featuresHTML = '';
+  if (s.features) {
+    featuresHTML = '<div class="onboarding-feature-grid">';
+    s.features.forEach(function(f) {
+      featuresHTML += '<div class="onboarding-feature"><span class="onboarding-feature-icon">' + f.icon + '</span>' +
+        '<div class="onboarding-feature-name">' + f.name + '</div>' +
+        '<div class="onboarding-feature-desc">' + f.desc + '</div></div>';
+    });
+    featuresHTML += '</div>';
+  }
+  content.innerHTML = '<span class="onboarding-emoji">' + s.emoji + '</span>' +
+    '<div class="onboarding-title">' + s.title + '</div>' +
+    '<div class="onboarding-text">' + s.text + '</div>' +
+    featuresHTML;
+  // Hide skip on last step
+  var skip = document.getElementById('onboarding-skip');
+  if (skip) skip.style.display = onboardingStep === total - 1 ? 'none' : 'inline-flex';
+}
+
+function nextOnboardingStep() {
+  onboardingStep++;
+  if (onboardingStep >= ONBOARDING_STEPS.length) {
+    finishOnboarding();
+  } else {
+    renderOnboardingStep();
+  }
+}
+
+function skipOnboarding() { finishOnboarding(); }
+
+function finishOnboarding() {
+  localStorage.setItem('lingua_onboarded', '1');
+  document.getElementById('onboarding-overlay').classList.add('hidden');
+  // Show lang picker if no lang chosen yet
+  if (!state.lang || !localStorage.getItem('lingua_state')) {
+    showLangPicker && showLangPicker();
+  }
+}
+
+// ============================================================
+// SEARCH SYSTEM
+// ============================================================
+var searchLangFilter = 'all';
+var searchTimer = null;
+
+function initSearchLangFilter() {
+  var container = document.getElementById('search-lang-filter');
+  if (!container) return;
+  container.innerHTML = '<button class="btn' + (searchLangFilter==='all'?' active':'') + '" id="sf-all" onclick="setSearchLang(\'all\')" style="font-size:.72rem;padding:.3rem .65rem;">Alle</button>';
+  Object.keys(LANG_NAMES).sort().forEach(function(code) {
+    var btn = document.createElement('button');
+    btn.className = 'btn' + (searchLangFilter===code?' active':'');
+    btn.style.cssText = 'font-size:.72rem;padding:.3rem .65rem;';
+    btn.textContent = LANG_EMOJI[code] + ' ' + LANG_NAMES[code];
+    btn.onclick = (function(c){ return function(){ setSearchLang(c); }; })(code);
+    container.appendChild(btn);
+  });
+}
+
+function setSearchLang(lang) {
+  searchLangFilter = lang;
+  initSearchLangFilter();
+  var q = document.getElementById('search-input');
+  if (q && q.value.trim()) doSearch(q.value);
+}
+
+function doSearch(query) {
+  query = (query || '').trim();
+  var clearBtn = document.getElementById('search-clear');
+  if (clearBtn) clearBtn.style.display = query ? 'block' : 'none';
+  var results = document.getElementById('search-results');
+  var empty = document.getElementById('search-empty');
+  var placeholder = document.getElementById('search-placeholder');
+  var count = document.getElementById('search-count');
+  if (!query) {
+    if (results) results.innerHTML = '';
+    if (empty) empty.style.display = 'none';
+    if (placeholder) placeholder.style.display = 'block';
+    if (count) count.textContent = '';
+    return;
+  }
+  if (placeholder) placeholder.style.display = 'none';
+  // Collect matching words
+  var matches = [];
+  var q = query.toLowerCase();
+  var langs = searchLangFilter === 'all' ? Object.keys(VOCAB) : [searchLangFilter];
+  langs.forEach(function(lang) {
+    if (!VOCAB[lang]) return;
+    Object.keys(VOCAB[lang]).forEach(function(topic) {
+      VOCAB[lang][topic].forEach(function(w) {
+        if (w.f.toLowerCase().includes(q) || w.t.toLowerCase().includes(q) || (w.p && w.p.toLowerCase().includes(q))) {
+          matches.push({lang:lang, topic:topic, w:w});
+        }
+      });
+    });
+  });
+  // Render
+  if (count) count.textContent = matches.length + ' Ergebnis' + (matches.length!==1?'se':'') + ' gefunden';
+  if (!matches.length) {
+    if (results) results.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  if (!results) return;
+  results.innerHTML = '';
+  var shown = matches.slice(0, 80);
+  shown.forEach(function(m) {
+    var item = document.createElement('div');
+    item.className = 'vocab-item';
+    var hl = function(str) {
+      var re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+      return str.replace(re, '<span class="search-highlight">$1</span>');
+    };
+    item.innerHTML = '<div style="flex:1;">' +
+      '<div class="vi-foreign">' + hl(m.w.f) + ' <span style="font-size:.65rem;color:var(--muted);font-family:Syne,sans-serif;margin-left:.3rem;">' + LANG_EMOJI[m.lang] + ' ' + m.topic + '</span></div>' +
+      '<div class="vi-translation">' + hl(m.w.t) + (m.w.p ? ' · <em style="color:var(--muted)">' + m.w.p + '</em>' : '') + '</div>' +
+      '</div>' +
+      '<button class="vi-speak" onclick="speak(\'' + m.w.f.replace(/'/g,"\\'") + '\',\'' + m.lang + '\')">🔊</button>';
+    results.appendChild(item);
+  });
+  if (matches.length > 80) {
+    var more = document.createElement('div');
+    more.style.cssText = 'text-align:center;padding:.75rem;color:var(--muted);font-size:.75rem;';
+    more.textContent = '... und ' + (matches.length - 80) + ' weitere Ergebnisse. Suche verfeinern.';
+    results.appendChild(more);
+  }
+}
+
+function clearSearch() {
+  var inp = document.getElementById('search-input');
+  if (inp) { inp.value = ''; inp.focus(); }
+  doSearch('');
+}
+
+// ============================================================
+// CONJUGATION SYSTEM
+// ============================================================
+var conjData = null; // current loaded conjugation
+var conjQuizQueue = [];
+var conjQuizIndex = 0;
+var conjQuizCorrect = 0;
+var conjActiveTab = 'table';
+var savedConjugations = [];
+
+// Quick verb suggestions per language
+var QUICK_VERBS = {
+  de: ['sein','haben','gehen','kommen','machen','sagen','wollen','können','müssen','fahren'],
+  fr: ['être','avoir','aller','faire','venir','vouloir','pouvoir','savoir','partir','prendre'],
+  es: ['ser','estar','tener','ir','hacer','poder','querer','saber','venir','hablar'],
+  en: ['to be','to have','to go','to come','to make','to want','to can','to see','to give','to take'],
+  it: ['essere','avere','andare','fare','venire','volere','potere','sapere','dare','stare'],
+  ru: ['быть','идти','говорить','делать','знать','хотеть','мочь','видеть','думать','любить'],
+  sq: ['jam','kam','shkoj','vij','bëj','dua','mund','di','jap','marr'],
+  da: ['være','have','gå','komme','gøre','ville','kunne','vide','sige','tage'],
+  sv: ['vara','ha','gå','komma','göra','vilja','kunna','veta','säga','ta'],
+  ro: ['a fi','a avea','a merge','a veni','a face','a vrea','a putea','a ști','a da','a lua'],
+  th: ['เป็น','มี','ไป','มา','ทำ','ต้องการ','สามารถ','รู้','พูด','เห็น'],
+  tr: ['olmak','sahip olmak','gitmek','gelmek','yapmak','istemek','bilmek','görmek','konuşmak','vermek'],
+};
+
+function initConjugation() {
+  renderQuickVerbs();
+  renderSavedConjugations();
+}
+
+function renderQuickVerbs() {
+  var container = document.getElementById('conj-quick-verbs');
+  if (!container) return;
+  var lang = state.lang;
+  var verbs = QUICK_VERBS[lang] || QUICK_VERBS['de'];
+  container.innerHTML = '<span style="font-size:.72rem;color:var(--muted);margin-right:.25rem;">Schnell:</span>';
+  verbs.slice(0, 8).forEach(function(v) {
+    var btn = document.createElement('button');
+    btn.className = 'conj-tense-btn';
+    btn.textContent = v;
+    btn.onclick = function() {
+      var inp = document.getElementById('conj-verb-input');
+      if (inp) inp.value = v;
+      generateConjugation();
+    };
+    container.appendChild(btn);
+  });
+}
+
+async function generateConjugation() {
+  var verb = (document.getElementById('conj-verb-input') || {}).value;
+  if (!verb || !verb.trim()) { showToast('Bitte ein Verb eingeben'); return; }
+  verb = verb.trim();
+  var lang = state.lang;
+  var langName = LANG_NAMES[lang] || lang;
+  document.getElementById('conj-loading').style.display = 'block';
+  document.getElementById('conj-result').style.display = 'none';
+  document.getElementById('conj-quiz-done').style.display = 'none';
+  var genBtn = document.getElementById('conj-gen-btn');
+  if (genBtn) genBtn.disabled = true;
+  try {
+    var result = await callClaude({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2000,
+      system: 'Du bist ein Sprachexperte. Konjugiere das angegebene Verb auf ' + langName + ' in den wichtigsten Zeitformen. Antworte NUR mit einem JSON-Objekt ohne Markdown. Format: {"verb":"...", "language":"...", "tenses":{"Zeitform1":[{"pronoun":"...","form":"...","translation":"..."},...], "Zeitform2":[...]}}. Wichtige Zeitformen je nach Sprache: Praesens, Vergangenheit, Zukunft (und relevante weitere). Maximal 4 Zeitformen. Gib fuer jede Zeitform alle Personalformen (ich/du/er/wir/ihr/sie oder Aequivalente in der jeweiligen Sprache) an.',
+      messages: [{role:'user', content: 'Verb: ' + verb + ' auf ' + langName}]
+    });
+    var clean = result.replace(/```json|```/g,'').trim();
+    var parsed = JSON.parse(clean);
+    conjData = parsed;
+    renderConjugationTable(parsed);
+    document.getElementById('conj-result').style.display = 'block';
+    addXP(5);
+    showToast('✓ Konjugationstabelle erstellt!');
+  } catch(e) {
+    showToast('⚠ ' + (e.message || 'Fehler beim Konjugieren'));
+  }
+  document.getElementById('conj-loading').style.display = 'none';
+  if (genBtn) genBtn.disabled = false;
+}
+
+function renderConjugationTable(data) {
+  var tabs = document.getElementById('conj-tense-tabs');
+  var table = document.getElementById('conj-table-el');
+  if (!tabs || !table || !data || !data.tenses) return;
+  var tenses = Object.keys(data.tenses);
+  // Render tabs
+  tabs.innerHTML = '';
+  tenses.forEach(function(tense, i) {
+    var btn = document.createElement('button');
+    btn.className = 'conj-tense-btn' + (i===0?' active':'');
+    btn.textContent = tense;
+    btn.dataset.tense = tense;
+    btn.onclick = function() {
+      document.querySelectorAll('.conj-tense-btn[data-tense]').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      renderTenseTable(data.tenses[tense], table);
+    };
+    tabs.appendChild(btn);
+  });
+  if (tenses.length > 0) renderTenseTable(data.tenses[tenses[0]], table);
+}
+
+function renderTenseTable(rows, table) {
+  if (!table || !rows) return;
+  table.innerHTML = '<thead><tr><th>Pronomen</th><th>' + (conjData.verb || 'Verb') + '</th><th>Übersetzung</th></tr></thead><tbody>';
+  rows.forEach(function(r) {
+    table.innerHTML += '<tr><td class="pronoun">' + (r.pronoun||'') + '</td><td class="form">' + (r.form||'') + '</td><td class="translation">' + (r.translation||'') + '</td></tr>';
+  });
+  table.innerHTML += '</tbody>';
+}
+
+function saveConjugation() {
+  if (!conjData) return;
+  var saved = JSON.parse(localStorage.getItem('lingua_conj_saved') || '[]');
+  var entry = {verb:conjData.verb, language:conjData.language, lang:state.lang, tenses:conjData.tenses, saved:Date.now()};
+  if (!saved.find(function(s){return s.verb===entry.verb && s.lang===entry.lang;})) {
+    saved.unshift(entry);
+    if (saved.length > 20) saved = saved.slice(0,20);
+    localStorage.setItem('lingua_conj_saved', JSON.stringify(saved));
+    showToast('⭐ Konjugation gespeichert!');
+    renderSavedConjugations();
+  } else {
+    showToast('Bereits gespeichert.');
+  }
+}
+
+function renderSavedConjugations() {
+  var container = document.getElementById('conj-saved-list');
+  if (!container) return;
+  var saved = JSON.parse(localStorage.getItem('lingua_conj_saved') || '[]');
+  var langSaved = saved.filter(function(s){ return s.lang === state.lang; });
+  if (!langSaved.length) { container.innerHTML = ''; return; }
+  container.innerHTML = '<div style="font-family:Syne,sans-serif;font-weight:700;font-size:.85rem;margin-bottom:.5rem;">⭐ Gespeicherte Verben</div>';
+  langSaved.forEach(function(s) {
+    var btn = document.createElement('button');
+    btn.className = 'conj-tense-btn';
+    btn.style.marginBottom = '.3rem';
+    btn.textContent = s.verb;
+    btn.onclick = function() {
+      conjData = s;
+      renderConjugationTable(s);
+      document.getElementById('conj-result').style.display = 'block';
+      var inp = document.getElementById('conj-verb-input');
+      if (inp) inp.value = s.verb;
+    };
+    container.appendChild(btn);
+  });
+}
+
+function switchConjTab(tab) {
+  conjActiveTab = tab;
+  var tableView = document.getElementById('conj-table-view');
+  var quizView = document.getElementById('conj-quiz-view');
+  var tabTable = document.getElementById('conj-tab-table');
+  var tabQuiz = document.getElementById('conj-tab-quiz');
+  if (tab === 'table') {
+    if (tableView) tableView.style.display = 'block';
+    if (quizView) quizView.style.display = 'none';
+    if (tabTable) tabTable.classList.add('active');
+    if (tabQuiz) tabQuiz.classList.remove('active');
+  } else {
+    if (tableView) tableView.style.display = 'none';
+    if (quizView) quizView.style.display = 'block';
+    if (tabTable) tabTable.classList.remove('active');
+    if (tabQuiz) tabQuiz.classList.add('active');
+    startConjQuiz();
+  }
+}
+
+function startConjQuiz() {
+  if (!conjData || !conjData.tenses) {
+    showToast('Bitte erst ein Verb konjugieren!');
+    switchConjTab('table');
+    return;
+  }
+  conjQuizQueue = [];
+  Object.keys(conjData.tenses).forEach(function(tense) {
+    conjData.tenses[tense].forEach(function(r) {
+      conjQuizQueue.push({tense:tense, pronoun:r.pronoun, form:r.form, translation:r.translation});
+    });
+  });
+  conjQuizQueue = conjQuizQueue.sort(function(){ return Math.random()-.5; });
+  conjQuizIndex = 0;
+  conjQuizCorrect = 0;
+  document.getElementById('conj-quiz-done').style.display = 'none';
+  var verbLabel = document.getElementById('conj-quiz-verb-label');
+  if (verbLabel) verbLabel.textContent = conjData.verb + ' · ' + (conjData.language || LANG_NAMES[state.lang]);
+  showConjQuizCard();
+}
+
+function showConjQuizCard() {
+  if (conjQuizIndex >= conjQuizQueue.length) {
+    // Done
+    document.getElementById('conj-quiz-done').style.display = 'block';
+    var resultEl = document.getElementById('conj-quiz-result-text');
+    if (resultEl) resultEl.textContent = conjQuizCorrect + ' von ' + conjQuizQueue.length + ' richtig (' + Math.round(conjQuizCorrect/conjQuizQueue.length*100) + '%)';
+    addXP(Math.round(conjQuizCorrect * 3));
+    return;
+  }
+  var q = conjQuizQueue[conjQuizIndex];
+  var counter = document.getElementById('conj-quiz-counter');
+  var progress = document.getElementById('conj-quiz-progress');
+  var pronoun = document.getElementById('conj-quiz-pronoun');
+  var tenseLabel = document.getElementById('conj-quiz-tense-label');
+  var german = document.getElementById('conj-quiz-german');
+  var inp = document.getElementById('conj-quiz-input');
+  var feedback = document.getElementById('conj-quiz-feedback');
+  if (counter) counter.textContent = (conjQuizIndex+1) + ' / ' + conjQuizQueue.length;
+  if (progress) progress.style.width = (conjQuizIndex/conjQuizQueue.length*100)+'%';
+  if (pronoun) pronoun.textContent = q.pronoun;
+  if (tenseLabel) tenseLabel.textContent = q.tense;
+  if (german) german.textContent = q.translation || '';
+  if (inp) { inp.value = ''; inp.className = 'conj-quiz-input'; inp.focus(); }
+  if (feedback) feedback.textContent = '';
+}
+
+function checkConjQuiz() {
+  if (conjQuizIndex >= conjQuizQueue.length) return;
+  var q = conjQuizQueue[conjQuizIndex];
+  var inp = document.getElementById('conj-quiz-input');
+  var feedback = document.getElementById('conj-quiz-feedback');
+  if (!inp) return;
+  var answer = inp.value.trim().toLowerCase();
+  var correct = q.form.toLowerCase().trim();
+  var isOk = answer === correct;
+  inp.className = 'conj-quiz-input ' + (isOk ? 'correct' : 'wrong');
+  if (feedback) feedback.textContent = isOk ? '✓ Richtig!' : '✗ Richtig: ' + q.form;
+  if (feedback) feedback.style.color = isOk ? 'var(--accent3)' : 'var(--accent2)';
+  if (isOk) conjQuizCorrect++;
+  conjQuizIndex++;
+  setTimeout(showConjQuizCard, isOk ? 900 : 1600);
+}
+
+function skipConjQuiz() {
+  var q = conjQuizQueue[conjQuizIndex];
+  var feedback = document.getElementById('conj-quiz-feedback');
+  if (q && feedback) { feedback.textContent = '→ ' + q.form; feedback.style.color = 'var(--muted)'; }
+  conjQuizIndex++;
+  setTimeout(showConjQuizCard, 800);
+}
+
+function restartConjQuiz() {
+  document.getElementById('conj-quiz-done').style.display = 'none';
+  startConjQuiz();
+}
+
+// Override switchSection to init new sections
+var _prevSwitch = switchSection;
+switchSection = function(id) {
+  _prevSwitch(id);
+  if (id === 'search') { initSearchLangFilter(); }
+  if (id === 'conjugate') { initConjugation(); renderQuickVerbs(); }
+};
+
+// ============================================================
+// INIT v2.2
+// ============================================================
 speechRate = parseFloat(localStorage.getItem('lingua_speed') || '0.9');
 autoSpeak = localStorage.getItem('lingua_autospeak') !== 'off';
 uiLang = localStorage.getItem('lingua_ui_lang') || 'de';
@@ -5673,7 +6692,12 @@ initColorSystem();
 updateGoalRing();
 updateXPBar();
 checkBadges();
-if (!getApiKey()) setTimeout(openSettings, 800);
+// Show onboarding for new users, API modal for existing users without key
+if (!localStorage.getItem('lingua_onboarded')) {
+  setTimeout(showOnboarding, 600);
+} else if (!getApiKey()) {
+  setTimeout(openSettings, 800);
+}
 </script>
 </body>
 </html>
