@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" content="LINGUA v2.4 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" content="LINGUA v2.5 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v2.4 · by René Prause</title>
+<title>LINGUA v2.5 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -510,7 +510,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
    ============================================================ */
 
 /* ============================================================
-   NEUE FEATURES v2.4: ONBOARDING · SUCHE · KONJUGATION
+   NEUE FEATURES v2.5: ONBOARDING · SUCHE · KONJUGATION
    ============================================================ */
 
 /* ONBOARDING OVERLAY */
@@ -652,7 +652,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;">v2.4</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;">v2.5</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill active" data-lang="sq">🇦🇱 SQ</button>
@@ -1255,7 +1255,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   </main>
 
   <footer>
-    LINGUA v2.4 · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA v2.5 · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · 2026</span>
   </footer>
 </div>
@@ -1397,7 +1397,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA v2.4 · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA v2.5 · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · 2026</span>
     </div>
 
@@ -4374,7 +4374,7 @@ const VOCAB = {
 })();
 
 // ============================================================
-// VOCAB EXTENSION v2.4 — +500 Wörter pro Sprache
+// VOCAB EXTENSION v2.5 — +500 Wörter pro Sprache
 // ============================================================
 (function() {
   var EXT3 = {
@@ -5091,7 +5091,7 @@ function applyUILanguage() {
   uiLang = localStorage.getItem('lingua_ui_lang') || 'de';
   function setText(id, text) { var el = document.getElementById(id); if (el) el.textContent = text; }
   // Nav
-  var navIcons = {home:'⌂',vocab:'📚',quiz:'❓',free:'🗂',generator:'✨',myvocab:'⭐',translate:'⇄',ai:'✦',srs:'',write:'',stats:'',badges:'',path:'',search:'',conjugate:''};
+  var navIcons = {home:'⌂',vocab:'📚',quiz:'❓',free:'🗂',generator:'✨',myvocab:'⭐',translate:'⇄',ai:'✦',srs:'🧠',write:'✍',stats:'📊',badges:'🏆',path:'🗺',search:'🔍',conjugate:'🔀'};
   var navKeys  = {home:'nav_home',vocab:'nav_vocab',quiz:'nav_quiz',free:'nav_free',generator:'nav_gen',myvocab:'nav_myvocab',translate:'nav_translate',ai:'nav_ai',srs:'nav_srs',write:'nav_write',stats:'nav_stats',badges:'nav_badges',path:'nav_path',search:'nav_search',conjugate:'nav_conjugate'};
   document.querySelectorAll('.nav-btn[data-section]').forEach(function(b) {
     var sec = b.dataset.section;
@@ -6911,7 +6911,7 @@ checkQuiz = function(btn, correct, correctAnswer) {
 var ONBOARDING_STEPS = [
   {
     emoji:'👋',
-    title:'Willkommen bei LINGUA v2.4!',
+    title:'Willkommen bei LINGUA v2.5!',
     text:'Die KI-gestützte Sprachlern-App für 12 Sprachen. Lass uns die wichtigsten Features kurz vorstellen — dauert nur 1 Minute!',
     features:null,
     btnText:'Los geht\'s →'
@@ -6931,7 +6931,7 @@ var ONBOARDING_STEPS = [
   {
     emoji:'🔀',
     title:'Verben meistern',
-    text:'Neu in v2.4: Der Konjugationstrainer! Gib ein Verb ein — die KI erstellt eine vollständige Tabelle. Dann kannst du direkt üben.',
+    text:'Neu in v2.5: Der Konjugationstrainer! Gib ein Verb ein — die KI erstellt eine vollständige Tabelle. Dann kannst du direkt üben.',
     features:[
       {icon:'🔀', name:'Konjugationstabelle', desc:'KI-generiert, alle Zeiten'},
       {icon:'🎯', name:'Konjugations-Quiz', desc:'Lücken ausfüllen'},
@@ -7052,10 +7052,10 @@ function showOnboardingNow() {
 // ============================================================
 // UPDATE CHECK + CHANGELOG
 // ============================================================
-var CURRENT_VERSION = '2.4';
+var CURRENT_VERSION = '2.5';
 var CHANGELOG = {
   '2.4': {
-    title: 'Was ist neu in v2.4?',
+    title: 'Was ist neu in v2.5?',
     items: [
       '🌍 Interface: alle 12 Lernsprachen als App-Sprache wählbar',
       '🇫🇷 Französisch · 🇸🇪 Schwedisch · 🇷🇴 Rumänisch als UI-Sprache neu',
@@ -7474,7 +7474,7 @@ switchSection = function(id) {
 };
 
 // ============================================================
-// INIT v2.4
+// INIT v2.5
 // ============================================================
 speechRate = parseFloat(localStorage.getItem('lingua_speed') || '0.9');
 autoSpeak = localStorage.getItem('lingua_autospeak') !== 'off';
