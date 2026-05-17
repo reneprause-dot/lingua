@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" content="LINGUA v2.6 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" content="LINGUA v2.8 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v2.6 · by René Prause</title>
+<title>LINGUA v2.8 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -510,7 +510,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
    ============================================================ */
 
 /* ============================================================
-   NEUE FEATURES v2.6: ONBOARDING · SUCHE · KONJUGATION
+   NEUE FEATURES v2.8: ONBOARDING · SUCHE · KONJUGATION
    ============================================================ */
 
 /* ONBOARDING OVERLAY */
@@ -652,7 +652,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;">v2.6</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;">v2.8</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill active" data-lang="sq">🇦🇱 SQ</button>
@@ -1213,7 +1213,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   </main>
 
   <footer>
-    LINGUA v2.6 · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA v2.8 · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · 2026</span>
   </footer>
 </div>
@@ -1355,7 +1355,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA v2.6 · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA v2.8 · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · 2026</span>
     </div>
 
@@ -4332,7 +4332,7 @@ const VOCAB = {
 })();
 
 // ============================================================
-// VOCAB EXTENSION v2.6 — +500 Wörter pro Sprache
+// VOCAB EXTENSION v2.8 — +500 Wörter pro Sprache
 // ============================================================
 (function() {
   var EXT3 = {
@@ -5242,6 +5242,8 @@ function applyUILanguage() {
   // Translator dropdowns — always all 12 languages, alphabetically
   populateTranslatorDropdowns();
   renderUILangButtons();
+  // Always re-sync API dot after any UI update
+  updateApiDot();
 }
 
 // ============================================================
@@ -5250,12 +5252,12 @@ function applyUILanguage() {
 let autoSpeak = true;
 let speechRate = 0.9;
 
-function getApiKey() { return localStorage.getItem('lingua_api_key') || ''; }
+function getApiKey() { return (localStorage.getItem('lingua_api_key') || '').trim(); }
 
 function updateApiDot() {
-  const ok = !!getApiKey();
-  ['api-dot','settings-api-dot'].forEach(id => {
-    const el = document.getElementById(id);
+  var ok = getApiKey().length > 0;
+  ['api-dot', 'settings-api-dot'].forEach(function(id) {
+    var el = document.getElementById(id);
     if (el) el.className = 'api-dot-inline' + (ok ? ' ok' : '');
   });
 }
@@ -6969,7 +6971,7 @@ checkQuiz = function(btn, correct, correctAnswer) {
 var ONBOARDING_STEPS = [
   {
     emoji:'👋',
-    title:'Willkommen bei LINGUA v2.6!',
+    title:'Willkommen bei LINGUA v2.8!',
     text:'Die KI-gestützte Sprachlern-App für 12 Sprachen. Lass uns die wichtigsten Features kurz vorstellen — dauert nur 1 Minute!',
     features:null,
     btnText:'Los geht\'s →'
@@ -6989,7 +6991,7 @@ var ONBOARDING_STEPS = [
   {
     emoji:'🔀',
     title:'Verben meistern',
-    text:'Neu in v2.6: Der Konjugationstrainer! Gib ein Verb ein — die KI erstellt eine vollständige Tabelle. Dann kannst du direkt üben.',
+    text:'Neu in v2.8: Der Konjugationstrainer! Gib ein Verb ein — die KI erstellt eine vollständige Tabelle. Dann kannst du direkt üben.',
     features:[
       {icon:'🔀', name:'Konjugationstabelle', desc:'KI-generiert, alle Zeiten'},
       {icon:'🎯', name:'Konjugations-Quiz', desc:'Lücken ausfüllen'},
@@ -7110,10 +7112,10 @@ function showOnboardingNow() {
 // ============================================================
 // UPDATE CHECK + CHANGELOG
 // ============================================================
-var CURRENT_VERSION = '2.6';
+var CURRENT_VERSION = '2.8';
 var CHANGELOG = {
   '2.6': {
-    title: 'Was ist neu in v2.6?',
+    title: 'Was ist neu in v2.8?',
     items: [
       '⇄ Übersetzer: jetzt von jeder Sprache in jede andere (12×12)',
       '🇩🇰 Dänisch als App-Interface-Sprache vollständig ergänzt',
@@ -7545,14 +7547,13 @@ function getTalkPrompt() {
 }
 
 // ============================================================
-// INIT v2.6
+// INIT v2.8
 // ============================================================
 speechRate = parseFloat(localStorage.getItem('lingua_speed') || '0.9');
 autoSpeak = localStorage.getItem('lingua_autospeak') !== 'off';
 uiLang = localStorage.getItem('lingua_ui_lang') || 'de';
 initVocab();
-updateApiDot();
-applyUILanguage();
+applyUILanguage();   // calls updateApiDot() at the end
 populateTranslatorDropdowns();
 initColorSystem();
 updateGoalRing();
