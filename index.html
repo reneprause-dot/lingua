@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" content="LINGUA v2.8 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" content="LINGUA v3.0 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v2.8 · by René Prause</title>
+<title>LINGUA v3.0 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -510,7 +510,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
    ============================================================ */
 
 /* ============================================================
-   NEUE FEATURES v2.8: ONBOARDING · SUCHE · KONJUGATION
+   NEUE FEATURES v3.0: ONBOARDING · SUCHE · KONJUGATION
    ============================================================ */
 
 /* ONBOARDING OVERLAY */
@@ -652,7 +652,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;">v2.8</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;">v3.0</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill active" data-lang="sq">🇦🇱 SQ</button>
@@ -1213,8 +1213,8 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   </main>
 
   <footer>
-    LINGUA v2.8 · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
-    <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · 2026</span>
+    LINGUA v3.0 · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
 
@@ -1249,6 +1249,28 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <button class="btn primary" onclick="saveApiKey()" style="flex:1;" id="set-save">Speichern</button>
         <button class="btn danger" onclick="clearApiKey()" id="set-delete">Löschen</button>
       </div>
+    </div>
+
+    <!-- DEEPL API KEY -->
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:1rem;">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;">
+        <span class="api-dot-inline" id="deepl-api-dot"></span> <span>DeepL API-Key</span>
+        <span style="font-size:.65rem;background:var(--accent);color:#fff;border-radius:4px;padding:.1rem .4rem;margin-left:.25rem;">AUTO-ÜBERSETZUNG</span>
+      </div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;line-height:1.5;">
+        Übersetzt Vokabeln automatisch in deine App-Sprache. Standard-Key bereits eingebettet.
+        <a href="https://www.deepl.com/pro-api" target="_blank" style="color:var(--accent);text-decoration:none;display:block;margin-top:.25rem;">→ deepl.com/pro-api (kostenlos bis 500.000 Zeichen/Monat)</a>
+      </div>
+      <div style="position:relative;">
+        <input class="modal-input" id="deepl-key-input" type="password" placeholder="Eigener Key (optional — Standard-Key aktiv)" style="padding-right:3rem;">
+        <button onclick="toggleDeeplKeyVisibility()" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;">👁</button>
+      </div>
+      <div style="display:flex;gap:.5rem;margin-top:.5rem;">
+        <button class="btn primary" onclick="saveDeeplKey()" style="flex:1;">Speichern</button>
+        <button class="btn" onclick="clearDeeplKey()">Standard</button>
+        <button class="btn success" onclick="testDeeplKey()" style="flex:1;">🔍 Testen</button>
+      </div>
+      <div id="deepl-test-result" style="font-size:.72rem;margin-top:.4rem;min-height:1rem;"></div>
     </div>
 
     <!-- FARBPALETTE -->
@@ -1355,8 +1377,8 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA v2.8 · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
-      <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · 2026</span>
+      LINGUA v3.0 · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
     </div><!-- end scrollable -->
@@ -4332,7 +4354,7 @@ const VOCAB = {
 })();
 
 // ============================================================
-// VOCAB EXTENSION v2.8 — +500 Wörter pro Sprache
+// VOCAB EXTENSION v3.0 — +500 Wörter pro Sprache
 // ============================================================
 (function() {
   var EXT3 = {
@@ -5811,7 +5833,10 @@ function initVocab() {
   vocabQueue = [...getAllWords(lang)].sort(() => Math.random() - .5);
   vocabIndex = 0;
   vocabRevealed = false;
-  showVocabCard();
+  // Erste 30 Wörter vorab übersetzen, dann Karte zeigen
+  preloadDeeplBatch(vocabQueue.slice(0, 30)).then(function() {
+    showVocabCard();
+  });
 }
 
 function showVocabCard() {
@@ -5828,10 +5853,11 @@ function showVocabCard() {
   el.classList.remove('revealed');
   document.getElementById('vocab-word').textContent = card.f;
   document.getElementById('vocab-phonetic').textContent = card.p ? '[' + card.p + ']' : '';
-  document.getElementById('vocab-translation').textContent = card.t;
   document.getElementById('vocab-counter').textContent = (vocabIndex + 1) + ' / ' + vocabQueue.length;
   document.getElementById('vocab-progress').style.width = ((vocabIndex / vocabQueue.length) * 100) + '%';
   vocabRevealed = false;
+  // Übersetzung — DeepL wenn UI-Sprache nicht Deutsch
+  setTranslationEl('vocab-translation', card.t);
 }
 
 function revealVocab() {
@@ -5855,8 +5881,80 @@ function speakCurrent() {
 }
 
 // ============================================================
-// QUIZ
+// DEEPL-ÜBERSETZUNG FÜR VOKABELKARTEN
+// Setzt ein Element asynchron — zuerst Deutsch, dann DeepL-Übersetzung
 // ============================================================
+// Übersetzt eine Liste von Wörtern vorab in einem einzigen Batch-Request
+// Nur Wörter die noch nicht im Cache sind werden übersetzt
+async function preloadDeeplBatch(words) {
+  if (uiLang === 'de') return; // Kein Bedarf
+  var deeplLang = DEEPL_LANG_MAP[uiLang];
+  if (!deeplLang) return;
+
+  // Nur nicht-gecachte Wörter übersetzen
+  var toTranslate = words.filter(function(w) {
+    return !deeplCache[w.t + '|' + deeplLang];
+  }).map(function(w) { return w.t; });
+
+  // Duplikate entfernen
+  toTranslate = toTranslate.filter(function(v, i, a) { return a.indexOf(v) === i; });
+
+  if (toTranslate.length === 0) return;
+
+  try {
+    var key = getDeeplKey();
+    var params = new URLSearchParams();
+    params.append('auth_key', key);
+    params.append('target_lang', deeplLang);
+    params.append('source_lang', 'DE');
+    toTranslate.forEach(function(text) { params.append('text', text); });
+
+    var response = await fetch(DEEPL_API_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: params.toString()
+    });
+    if (!response.ok) return;
+    var data = await response.json();
+    data.translations.forEach(function(tr, i) {
+      deeplCache[toTranslate[i] + '|' + deeplLang] = tr.text;
+    });
+    // Cache persistieren
+    try {
+      var toSave = Object.assign({}, deeplCache);
+      localStorage.setItem('lingua_deepl_cache', JSON.stringify(toSave));
+    } catch(e) {}
+  } catch(e) {
+    console.warn('DeepL Batch-Vorübersetzung fehlgeschlagen:', e.message);
+  }
+}
+
+function setTranslationEl(elId, germanText) {
+  var el = document.getElementById(elId);
+  if (!el) return;
+  if (uiLang === 'de') { el.textContent = germanText; return; }
+  var deeplLang = DEEPL_LANG_MAP[uiLang];
+  if (!deeplLang) { el.textContent = germanText + ' (DE)'; return; }
+  var cached = deeplCache[germanText + '|' + deeplLang];
+  if (cached) {
+    el.textContent = cached;
+  } else {
+    // Fallback: async laden (sollte durch Preload selten nötig sein)
+    el.textContent = germanText;
+    translateWithDeepl(germanText, deeplLang)
+      .then(function(tr) { el.textContent = tr; })
+      .catch(function() {});
+  }
+}
+
+// Gibt übersetzte Version zurück (async, für Quiz/Write-Vergleich)
+async function getTranslation(germanText) {
+  if (uiLang === 'de') return germanText;
+  var deeplLang = DEEPL_LANG_MAP[uiLang];
+  if (!deeplLang) return germanText;
+  try { return await translateWithDeepl(germanText, deeplLang); }
+  catch(e) { return germanText; }
+}
 let quizItems = [], quizCurrent = 0, quizAnswered = false, quizSessionScore = 0;
 
 function startQuiz() {
@@ -5872,33 +5970,38 @@ function startQuiz() {
   showQuizQuestion();
 }
 
-function showQuizQuestion() {
+async function showQuizQuestion() {
   if (quizCurrent >= quizItems.length) {
     document.getElementById('quiz-question').textContent = t('quiz_done');
     document.getElementById('quiz-options').innerHTML = '';
-    document.getElementById('quiz-feedback').textContent = `${quizSessionScore} / ${quizItems.length} richtig`;
+    document.getElementById('quiz-feedback').textContent = quizSessionScore + ' / ' + quizItems.length + ' richtig';
     document.getElementById('quiz-next-btn').style.display = 'none';
     return;
   }
   const q = quizItems[quizCurrent];
   document.getElementById('quiz-question').textContent = q.f;
-  document.getElementById('quiz-q-counter').textContent = `Frage ${quizCurrent + 1} / ${quizItems.length}`;
+  document.getElementById('quiz-q-counter').textContent = 'Frage ' + (quizCurrent + 1) + ' / ' + quizItems.length;
   document.getElementById('quiz-progress').style.width = ((quizCurrent / quizItems.length) * 100) + '%';
   document.getElementById('quiz-feedback').textContent = '';
   quizAnswered = false;
   document.getElementById('quiz-next-btn').style.display = 'none';
 
-  // Build options
+  // Antwortoptionen übersetzen
   const all = getAllWords(state.lang);
   const wrongs = all.filter(x => x.t !== q.t).sort(() => Math.random() - .5).slice(0, 3);
   const options = [...wrongs, q].sort(() => Math.random() - .5);
   const container = document.getElementById('quiz-options');
   container.innerHTML = '';
-  options.forEach(opt => {
+
+  // Alle Optionen übersetzen (parallel)
+  const correctTranslated = await getTranslation(q.t);
+  const optionTexts = await Promise.all(options.map(opt => getTranslation(opt.t)));
+
+  options.forEach((opt, i) => {
     const btn = document.createElement('button');
     btn.className = 'quiz-opt';
-    btn.textContent = opt.t;
-    btn.onclick = () => checkQuiz(btn, opt.t === q.t, q.t);
+    btn.textContent = optionTexts[i];
+    btn.onclick = () => checkQuiz(btn, opt.t === q.t, correctTranslated);
     container.appendChild(btn);
   });
 }
@@ -5981,23 +6084,45 @@ async function doTranslate() {
   const to   = document.getElementById('trans-to').value;
   if (from === to) { showToast('Quell- und Zielsprache sind identisch.'); return; }
 
-  // Use LANG_NAMES for native language names, always up to date
   const fromName = LANG_NAMES[from] || from;
   const toName   = LANG_NAMES[to]   || to;
 
   document.getElementById('trans-loading').style.display = 'block';
   document.getElementById('trans-output').value = '';
 
+  // DeepL nutzen wenn beide Sprachen unterstützt werden
+  var deeplFrom = DEEPL_LANG_MAP[from];
+  var deeplTo   = DEEPL_LANG_MAP[to];
+
   try {
-    const result = await callClaude({
-      model:'claude-sonnet-4-6',
-      max_tokens:1000,
-      system:'Du bist ein praeziser Uebersetzer. Uebersetze den gegebenen Text von ' + fromName + ' nach ' + toName + '. Gib NUR die Uebersetzung aus, ohne Erklaerungen, Anmerkungen oder Formatierung.',
-      messages:[{role:'user',content:text}]
-    });
-    document.getElementById('trans-output').value = result;
+    if (deeplFrom && deeplTo) {
+      // DeepL direkte Übersetzung
+      var key = getDeeplKey();
+      var params = new URLSearchParams();
+      params.append('auth_key', key);
+      params.append('text', text);
+      params.append('target_lang', deeplTo);
+      if (deeplFrom) params.append('source_lang', deeplFrom);
+
+      var response = await fetch(DEEPL_API_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: params.toString()
+      });
+      if (!response.ok) throw new Error('DeepL ' + response.status);
+      var data = await response.json();
+      document.getElementById('trans-output').value = data.translations[0].text;
+    } else {
+      // Fallback: Claude für nicht-DeepL-Sprachen (sq, th)
+      const result = await callClaude({
+        model:'claude-sonnet-4-6', max_tokens:1000,
+        system:'Du bist ein praeziser Uebersetzer. Uebersetze den gegebenen Text von ' + fromName + ' nach ' + toName + '. Gib NUR die Uebersetzung aus, ohne Erklaerungen.',
+        messages:[{role:'user',content:text}]
+      });
+      document.getElementById('trans-output').value = result;
+    }
   } catch(e) {
-    document.getElementById('trans-output').value = '⚠ ' + (e.message || 'Unbekannter Fehler');
+    document.getElementById('trans-output').value = '⚠ ' + (e.message || 'Fehler');
   }
   document.getElementById('trans-loading').style.display = 'none';
 }
@@ -6588,7 +6713,10 @@ function initSRS() {
   srsQueue = due.sort(function() { return Math.random() - .5; }).slice(0, 30);
   srsIndex = 0;
   srsRevealed = false;
-  showSRSCard();
+  // Alle fälligen Wörter vorab übersetzen
+  preloadDeeplBatch(srsQueue).then(function() {
+    showSRSCard();
+  });
 }
 function showSRSCard() {
   var counter = document.getElementById('srs-counter');
@@ -6611,7 +6739,24 @@ function showSRSCard() {
   var transEl = document.getElementById('srs-translation');
   if (wordEl) wordEl.textContent = w.f;
   if (phonEl) phonEl.textContent = w.p ? '[' + w.p + ']' : '';
-  if (transEl) { transEl.textContent = w.t; transEl.style.opacity = '0'; }
+  if (transEl) {
+    transEl.style.opacity = '0';
+    // Übersetzung vorbereiten (gecacht oder laden)
+    if (uiLang === 'de') {
+      transEl.textContent = w.t;
+    } else {
+      var deeplLang = DEEPL_LANG_MAP[uiLang];
+      var ck = w.t + '|' + (deeplLang || '');
+      if (deeplLang && deeplCache[ck]) {
+        transEl.textContent = deeplCache[ck];
+      } else if (deeplLang) {
+        transEl.textContent = w.t;
+        translateWithDeepl(w.t, deeplLang).then(function(tr){ transEl.textContent = tr; }).catch(function(){});
+      } else {
+        transEl.textContent = w.t + ' (DE)';
+      }
+    }
+  }
   if (counter) counter.textContent = (srsIndex + 1) + ' / ' + srsQueue.length;
   var prog = document.getElementById('srs-progress');
   if (prog) prog.style.width = (srsIndex / srsQueue.length * 100) + '%';
@@ -6650,7 +6795,9 @@ function initWrite() {
   var lang = state.lang;
   writeQueue = getAllWords(lang).sort(function() { return Math.random() - .5; }).slice(0, 20);
   writeIndex = 0;
-  showWriteCard();
+  preloadDeeplBatch(writeQueue).then(function() {
+    showWriteCard();
+  });
 }
 function showWriteCard() {
   var counter = document.getElementById('write-counter');
@@ -6676,18 +6823,43 @@ function showWriteCard() {
   if (counter) counter.textContent = (writeIndex+1) + ' / ' + writeQueue.length;
   if (prog) prog.style.width = (writeIndex / writeQueue.length * 100) + '%';
   writeHints = 0;
+  // Hint-Placeholder anpassen
+  if (inp && uiLang !== 'de') {
+    var langName = LANG_NAMES[uiLang] || uiLang;
+    inp.placeholder = 'Übersetzung auf ' + langName + '...';
+  }
+  // Korrekte Antwort vorberechnen und cachen
+  w._cachedTranslation = w.t;
+  if (uiLang !== 'de') {
+    var dl = DEEPL_LANG_MAP[uiLang];
+    if (dl) {
+      var ck = w.t + '|' + dl;
+      if (deeplCache[ck]) {
+        w._cachedTranslation = deeplCache[ck];
+      } else {
+        translateWithDeepl(w.t, dl).then(function(tr){ w._cachedTranslation = tr; }).catch(function(){});
+      }
+    }
+  }
 }
-function checkWrite() {
+async function checkWrite() {
   var w = writeQueue[writeIndex];
   if (!w) return;
   var inp = document.getElementById('write-input');
   var hint = document.getElementById('write-hint');
   if (!inp) return;
   var answer = inp.value.trim().toLowerCase();
-  var correct = w.t.toLowerCase();
-  // Allow minor typos (simple check: remove special chars, compare)
+
+  // Korrekte Antwort ermitteln
+  var correct = w.t;
+  if (uiLang !== 'de') {
+    var dl = DEEPL_LANG_MAP[uiLang];
+    if (dl) {
+      correct = w._cachedTranslation || await getTranslation(w.t);
+    }
+  }
   var normalize = function(s) { return s.replace(/[äöüÄÖÜß]/g, function(c){return {ä:'a',ö:'o',ü:'u',Ä:'A',Ö:'O',Ü:'U',ß:'ss'}[c]||c; }).toLowerCase().trim(); };
-  var isCorrect = normalize(answer) === normalize(correct) || answer === correct;
+  var isCorrect = normalize(answer) === normalize(correct.toLowerCase()) || answer === correct.toLowerCase();
   if (isCorrect) {
     inp.className = 'write-input correct';
     if (hint) hint.textContent = t('write_correct');
@@ -6700,7 +6872,7 @@ function checkWrite() {
     setTimeout(function() { writeIndex++; showWriteCard(); }, 1800);
   } else {
     inp.className = 'write-input wrong';
-    if (hint) hint.textContent = t('write_wrong') + w.t;
+    if (hint) hint.textContent = t('write_wrong') + correct;
     setTimeout(function() { inp.className = 'write-input'; }, 1500);
   }
 }
@@ -6708,7 +6880,7 @@ function hintWrite() {
   var w = writeQueue[writeIndex];
   if (!w) return;
   var hint = document.getElementById('write-hint');
-  var correct = w.t;
+  var correct = w._cachedTranslation || w.t;
   writeHints++;
   var revealed = correct.slice(0, Math.min(writeHints * 2, correct.length));
   var rest = '_'.repeat(Math.max(0, correct.length - revealed.length));
@@ -6716,8 +6888,9 @@ function hintWrite() {
 }
 function skipWrite() {
   var w = writeQueue[writeIndex];
+  var correct = (w && w._cachedTranslation) || (w && w.t) || '';
   if (w && document.getElementById('write-hint'))
-    document.getElementById('write-hint').textContent = t('write_skip') + ' ' + w.t;
+    document.getElementById('write-hint').textContent = t('write_skip') + ' ' + correct;
   setTimeout(function() { writeIndex++; showWriteCard(); }, 1000);
 }
 
@@ -6971,7 +7144,7 @@ checkQuiz = function(btn, correct, correctAnswer) {
 var ONBOARDING_STEPS = [
   {
     emoji:'👋',
-    title:'Willkommen bei LINGUA v2.8!',
+    title:'Willkommen bei LINGUA v3.0!',
     text:'Die KI-gestützte Sprachlern-App für 12 Sprachen. Lass uns die wichtigsten Features kurz vorstellen — dauert nur 1 Minute!',
     features:null,
     btnText:'Los geht\'s →'
@@ -6991,7 +7164,7 @@ var ONBOARDING_STEPS = [
   {
     emoji:'🔀',
     title:'Verben meistern',
-    text:'Neu in v2.8: Der Konjugationstrainer! Gib ein Verb ein — die KI erstellt eine vollständige Tabelle. Dann kannst du direkt üben.',
+    text:'Neu in v3.0: Der Konjugationstrainer! Gib ein Verb ein — die KI erstellt eine vollständige Tabelle. Dann kannst du direkt üben.',
     features:[
       {icon:'🔀', name:'Konjugationstabelle', desc:'KI-generiert, alle Zeiten'},
       {icon:'🎯', name:'Konjugations-Quiz', desc:'Lücken ausfüllen'},
@@ -7112,10 +7285,10 @@ function showOnboardingNow() {
 // ============================================================
 // UPDATE CHECK + CHANGELOG
 // ============================================================
-var CURRENT_VERSION = '2.8';
+var CURRENT_VERSION = '3.0';
 var CHANGELOG = {
   '2.6': {
-    title: 'Was ist neu in v2.8?',
+    title: 'Was ist neu in v3.0?',
     items: [
       '⇄ Übersetzer: jetzt von jeder Sprache in jede andere (12×12)',
       '🇩🇰 Dänisch als App-Interface-Sprache vollständig ergänzt',
@@ -7547,13 +7720,216 @@ function getTalkPrompt() {
 }
 
 // ============================================================
-// INIT v2.8
+// DEEPL ÜBERSETZUNGSSYSTEM
+// ============================================================
+var DEEPL_DEFAULT_KEY = '6e4904b4-bf62-4785-829f-1abdce255680:fx';
+var DEEPL_API_URL = 'https://api-free.deepl.com/v2/translate';
+
+// Cache SOFORT beim Laden aus localStorage befüllen
+var deeplCache = (function() {
+  try {
+    var stored = localStorage.getItem('lingua_deepl_cache');
+    if (stored) return JSON.parse(stored);
+  } catch(e) {}
+  return {};
+})();
+
+// DeepL Sprachcodes
+var DEEPL_LANG_MAP = {
+  de:'DE', en:'EN', fr:'FR', es:'ES', it:'IT', ru:'RU',
+  sv:'SV', da:'DA', ro:'RO', tr:'TR', sq:null, th:null
+};
+
+function getDeeplKey() {
+  var custom = (localStorage.getItem('lingua_deepl_key') || '').trim();
+  return custom || DEEPL_DEFAULT_KEY;
+}
+
+function saveDeeplKey() {
+  var key = (document.getElementById('deepl-key-input').value || '').trim();
+  if (key) {
+    localStorage.setItem('lingua_deepl_key', key);
+    showToast('✓ DeepL-Key gespeichert!');
+  } else {
+    localStorage.removeItem('lingua_deepl_key');
+    showToast('Standard-Key wird verwendet.');
+  }
+  updateDeeplDot();
+}
+
+function clearDeeplKey() {
+  localStorage.removeItem('lingua_deepl_key');
+  var inp = document.getElementById('deepl-key-input');
+  if (inp) inp.value = '';
+  showToast('Standard DeepL-Key wiederhergestellt.');
+  updateDeeplDot();
+}
+
+function toggleDeeplKeyVisibility() {
+  var inp = document.getElementById('deepl-key-input');
+  if (inp) inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function updateDeeplDot() {
+  var dot = document.getElementById('deepl-api-dot');
+  if (!dot) return;
+  // DeepL ist immer aktiv (Default-Key eingebettet)
+  dot.className = 'api-dot-inline ok';
+}
+
+async function testDeeplKey() {
+  var resultEl = document.getElementById('deepl-test-result');
+  if (resultEl) resultEl.textContent = '⏳ Teste...';
+  try {
+    var translation = await translateWithDeepl('Hallo', 'EN');
+    if (resultEl) {
+      resultEl.textContent = '✓ Verbindung OK — "Hallo" → "' + translation + '"';
+      resultEl.style.color = 'var(--accent3)';
+    }
+    showToast('✓ DeepL API funktioniert!');
+  } catch(e) {
+    if (resultEl) {
+      resultEl.textContent = '✗ Fehler: ' + e.message;
+      resultEl.style.color = 'var(--accent2)';
+    }
+  }
+}
+
+async function translateWithDeepl(text, targetLang) {
+  var cacheKey = text + '|' + targetLang;
+  if (deeplCache[cacheKey]) return deeplCache[cacheKey];
+
+  var key = getDeeplKey();
+  var params = new URLSearchParams();
+  params.append('auth_key', key);
+  params.append('text', text);
+  params.append('target_lang', targetLang);
+  params.append('source_lang', 'DE');
+
+  var response = await fetch(DEEPL_API_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: params.toString()
+  });
+
+  if (!response.ok) throw new Error('DeepL Fehler ' + response.status);
+  var data = await response.json();
+  var result = data.translations[0].text;
+
+  // Cache speichern
+  deeplCache[cacheKey] = result;
+  try {
+    var toSave = Object.assign({}, deeplCache);
+    delete toSave._loaded;
+    // Max 5000 Einträge im Cache
+    var keys = Object.keys(toSave);
+    if (keys.length > 5000) {
+      keys.slice(0, keys.length - 5000).forEach(function(k){ delete toSave[k]; });
+    }
+    localStorage.setItem('lingua_deepl_cache', JSON.stringify(toSave));
+  } catch(e) {}
+
+  return result;
+}
+
+// Übersetzt ein Vokabelobjekt {f, t, p} in die UI-Sprache
+// t ist immer Deutsch — wenn UI-Sprache nicht Deutsch ist, DeepL nutzen
+async function getTranslatedWord(word) {
+  if (uiLang === 'de') return word.t;
+  var deeplLang = DEEPL_LANG_MAP[uiLang];
+  if (!deeplLang) return word.t + ' (DE)'; // Albanisch/Thai: kein DeepL-Support
+  try {
+    return await translateWithDeepl(word.t, deeplLang);
+  } catch(e) {
+    return word.t + ' (DE)';
+  }
+}
+
+// Batch-Übersetzung für ein ganzes Topic
+async function translateTopicBatch(words, targetLang) {
+  var deeplLang = DEEPL_LANG_MAP[targetLang];
+  if (!deeplLang || targetLang === 'de') return words.map(function(w){ return w.t; });
+
+  var toTranslate = [];
+  var results = [];
+
+  // Erst Cache prüfen
+  words.forEach(function(w, i) {
+    var cacheKey = w.t + '|' + deeplLang;
+    if (deeplCache[cacheKey]) {
+      results[i] = deeplCache[cacheKey];
+    } else {
+      toTranslate.push({index: i, text: w.t});
+    }
+  });
+
+  if (toTranslate.length === 0) return results;
+
+  // Batch-Request (max 50 pro Call)
+  var batchSize = 50;
+  for (var b = 0; b < toTranslate.length; b += batchSize) {
+    var batch = toTranslate.slice(b, b + batchSize);
+    try {
+      var key = getDeeplKey();
+      var params = new URLSearchParams();
+      params.append('auth_key', key);
+      params.append('target_lang', deeplLang);
+      params.append('source_lang', 'DE');
+      batch.forEach(function(item){ params.append('text', item.text); });
+
+      var response = await fetch(DEEPL_API_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: params.toString()
+      });
+
+      if (response.ok) {
+        var data = await response.json();
+        data.translations.forEach(function(tr, idx) {
+          var item = batch[idx];
+          results[item.index] = tr.text;
+          deeplCache[item.text + '|' + deeplLang] = tr.text;
+        });
+      } else {
+        batch.forEach(function(item){ results[item.index] = words[item.index].t; });
+      }
+    } catch(e) {
+      batch.forEach(function(item){ results[item.index] = words[item.index].t; });
+    }
+  }
+
+  // Cache speichern
+  try {
+    var toSave = Object.assign({}, deeplCache);
+    delete toSave._loaded;
+    localStorage.setItem('lingua_deepl_cache', JSON.stringify(toSave));
+  } catch(e) {}
+
+  return results;
+}
+
+// Initialisierung DeepL-Dot beim Öffnen der Einstellungen
+var _origOpenSettings = openSettings;
+openSettings = function() {
+  _origOpenSettings();
+  updateDeeplDot();
+  var inp = document.getElementById('deepl-key-input');
+  if (inp) {
+    var custom = localStorage.getItem('lingua_deepl_key');
+    inp.value = custom || '';
+    inp.placeholder = custom ? 'Eigener Key gespeichert' : 'Eigener Key (optional — Standard-Key aktiv)';
+  }
+};
+
+// ============================================================
+// INIT v3.0
 // ============================================================
 speechRate = parseFloat(localStorage.getItem('lingua_speed') || '0.9');
 autoSpeak = localStorage.getItem('lingua_autospeak') !== 'off';
 uiLang = localStorage.getItem('lingua_ui_lang') || 'de';
 initVocab();
 applyUILanguage();   // calls updateApiDot() at the end
+updateDeeplDot();
 populateTranslatorDropdowns();
 initColorSystem();
 updateGoalRing();
