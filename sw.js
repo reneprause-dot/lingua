@@ -1,7 +1,18 @@
-const CACHE_NAME = 'lingua-v1';
+const CACHE_NAME = 'lingua-v3';
 const ASSETS = [
   './index.html',
   './manifest.json',
+];
+
+// Domains die immer direkt ans Netzwerk gehen (nie gecacht)
+const NETWORK_ONLY = [
+  'api.anthropic.com',
+  'api-free.deepl.com',
+  'api.deepl.com',
+  'corsproxy.io',
+  'cors-anywhere.herokuapp.com',
+  'fonts.googleapis.com',
+  'fonts.gstatic.com',
 ];
 
 self.addEventListener('install', e => {
@@ -21,11 +32,23 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Network first for API calls, cache first for assets
-  if (e.request.url.includes('api.anthropic.com') || e.request.url.includes('fonts.googleapis.com')) {
-    e.respondWith(fetch(e.request).catch(() => new Response('Offline', { status: 503 })));
+  const url = e.request.url;
+
+  // Externe API-Calls: immer direkt ans Netzwerk, nie cachen
+  const isNetworkOnly = NETWORK_ONLY.some(domain => url.includes(domain));
+  if (isNetworkOnly) {
+    e.respondWith(
+      fetch(e.request).catch(err => {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      })
+    );
     return;
   }
+
+  // Lokale Assets: Cache first, dann Netzwerk
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request))
   );

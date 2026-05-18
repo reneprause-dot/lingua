@@ -974,7 +974,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
       <!-- Daily Goal -->
       <div class="card" style="margin-bottom:1rem;">
         <div class="card-title" id="ui-stats-goal">🎯 Tagesziel</div>
-        <div style="display:flex;align-items:center;gap:1.5rem;">
+        <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1rem;">
           <div class="goal-ring">
             <svg width="80" height="80" viewBox="0 0 80 80">
               <circle class="track" cx="40" cy="40" r="34"/>
@@ -986,15 +986,13 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
             </div>
           </div>
           <div style="flex:1;">
-            <div style="font-size:.85rem;font-weight:600;" id="ui-goal-words">Wörter heute gelernt</div>
+            <div style="font-size:.85rem;font-weight:600;" id="ui-goal-words">Tagesziel</div>
             <div style="font-size:.75rem;color:var(--muted);margin-top:.25rem;" id="ui-goal-streak">Streak: 0 Tage</div>
-            <div style="margin-top:.75rem;display:flex;gap:.5rem;align-items:center;">
-              <span style="font-size:.72rem;color:var(--muted);">Ziel:</span>
-              <input type="number" id="goal-input" min="1" max="100" value="10" style="width:55px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:.2rem .4rem;font-size:.75rem;text-align:center;" oninput="saveGoal(this.value)">
-              <span style="font-size:.72rem;color:var(--muted);" id="ui-goal-per-day">Wörter/Tag</span>
-            </div>
+            <div style="font-size:.68rem;color:var(--muted);margin-top:.2rem;">✅ Streak zählt nur bei erfülltem Ziel</div>
           </div>
         </div>
+        <!-- Ziel-Optionen: Wörter oder Zeit -->
+        <div id="goal-options-container"></div>
       </div>
 
       <!-- Streak Calendar -->
@@ -1002,7 +1000,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <div class="card-title" id="ui-stats-streak">🔥 Streak-Kalender (letzte 28 Tage)</div>
         <div class="streak-grid" id="streak-calendar"></div>
         <div style="display:flex;gap:1rem;margin-top:.75rem;font-size:.72rem;color:var(--muted);">
-          <span>⬜ Kein Lernen</span><span style="color:var(--accent3);">🟩 Gelernt</span>
+          <span>⬜ Ziel nicht erfüllt</span><span style="color:var(--accent3);">🟩 Ziel erreicht</span>
         </div>
       </div>
 
@@ -1370,7 +1368,10 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <button class="btn" onclick="showOnboardingNow()" id="set-show-onboarding" style="flex:1;">
           👋 Einführung jetzt anzeigen
         </button>
-        <button class="btn primary" onclick="checkForUpdate()" id="set-update-btn" style="flex:1;">
+        <button class="btn" onclick="showChangelog(CURRENT_VERSION)" style="flex:1;">
+          🎉 Was ist neu?
+        </button>
+        <button class="btn primary" onclick="checkForUpdate()" id="set-update-btn" style="width:100%;">
           🔄 Update prüfen
         </button>
       </div>
@@ -5457,14 +5458,33 @@ function saveState() { localStorage.setItem('lingua_state', JSON.stringify(state
 
 // Streak logic
 function updateStreak() {
+  // Streak wird NICHT beim Öffnen der App erhöht
+  // Nur checkAndUpdateStreak() nach erfülltem Tagesziel zählt
   const today = new Date().toDateString();
-  if (state.lastDate === today) return;
-  const yesterday = new Date(Date.now() - 86400000).toDateString();
-  state.streak = state.lastDate === yesterday ? state.streak + 1 : 1;
-  state.lastDate = today;
-  saveState();
+  // Streak zurücksetzen wenn gestern kein Ziel erfüllt wurde
+  if (state.lastDate && state.lastDate !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (state.lastDate !== yesterday) {
+      // Mehr als 1 Tag Pause → Streak verloren
+      state.streak = 0;
+      saveState();
+    }
+  }
 }
 updateStreak();
+
+function checkAndUpdateStreak() {
+  // Wird aufgerufen wenn Tagesziel erreicht wird
+  var today = new Date().toDateString();
+  if (state.lastDate === today) return; // Heute schon gezählt
+  var yesterday = new Date(Date.now() - 86400000).toDateString();
+  state.streak = (state.lastDate === yesterday) ? (state.streak || 0) + 1 : 1;
+  state.lastDate = today;
+  saveState();
+  showToast('🔥 Streak: ' + state.streak + ' ' + (state.streak === 1 ? 'Tag' : 'Tage') + '!');
+  updateGoalRing();
+  checkBadges();
+}
 
 // ============================================================
 // NAVIGATION
@@ -5909,12 +5929,20 @@ async function preloadDeeplBatch(words) {
     params.append('source_lang', 'DE');
     toTranslate.forEach(function(text) { params.append('text', text); });
 
-    var response = await fetch(DEEPL_API_URL, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: params.toString()
-    });
-    if (!response.ok) return;
+    var urls = [DEEPL_API_URL, DEEPL_PROXY_URL];
+    var response = null;
+    for (var ui = 0; ui < urls.length; ui++) {
+      try {
+        response = await fetch(urls[ui], {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: params.toString()
+        });
+        if (response.ok) break;
+        response = null;
+      } catch(e) { response = null; }
+    }
+    if (!response || !response.ok) return;
     var data = await response.json();
     data.translations.forEach(function(tr, i) {
       deeplCache[toTranslate[i] + '|' + deeplLang] = tr.text;
@@ -6104,12 +6132,20 @@ async function doTranslate() {
       params.append('target_lang', deeplTo);
       if (deeplFrom) params.append('source_lang', deeplFrom);
 
-      var response = await fetch(DEEPL_API_URL, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: params.toString()
-      });
-      if (!response.ok) throw new Error('DeepL ' + response.status);
+      var urls = [DEEPL_API_URL, DEEPL_PROXY_URL];
+      var response = null;
+      for (var ui = 0; ui < urls.length; ui++) {
+        try {
+          response = await fetch(urls[ui], {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: params.toString()
+          });
+          if (response.ok) break;
+          response = null;
+        } catch(e) { response = null; }
+      }
+      if (!response || !response.ok) throw new Error('DeepL nicht erreichbar');
       var data = await response.json();
       document.getElementById('trans-output').value = data.translations[0].text;
     } else {
@@ -6578,37 +6614,144 @@ function renderBadges() {
 // ============================================================
 // DAILY GOAL & STREAK CALENDAR
 // ============================================================
-function getDailyGoal() { return parseInt(localStorage.getItem('lingua_goal') || '10'); }
-function saveGoal(val) { localStorage.setItem('lingua_goal', Math.max(1, parseInt(val)||10)); updateGoalRing(); }
+// ============================================================
+// TAGESZIEL-SYSTEM (Wörter oder Zeit)
+// ============================================================
+// goalType: 'words' | 'time'
+// goalValue: Anzahl Wörter (5/10/20/50) oder Minuten (5/10/15/30)
+
+function getGoalType()  { return localStorage.getItem('lingua_goal_type')  || 'words'; }
+function getGoalValue() { return parseInt(localStorage.getItem('lingua_goal') || '10'); }
+
+function saveGoalType(type)  {
+  localStorage.setItem('lingua_goal_type', type);
+  if (type === 'time') startSessionTimer();
+  updateGoalRing();
+  renderGoalOptions();
+}
+function saveGoal(val) {
+  localStorage.setItem('lingua_goal', Math.max(1, parseInt(val) || 10));
+  updateGoalRing();
+}
+
+function getDailyGoal() { return getGoalValue(); }
+
 function getTodayKey() { return new Date().toISOString().slice(0,10); }
+
 function getDailyLearned() {
   var data = JSON.parse(localStorage.getItem('lingua_daily') || '{}');
   return data[getTodayKey()] || 0;
 }
+
+function getDailyMinutes() {
+  var data = JSON.parse(localStorage.getItem('lingua_daily_time') || '{}');
+  return data[getTodayKey()] || 0;
+}
+
+function incrementDailyMinutes(mins) {
+  var data = JSON.parse(localStorage.getItem('lingua_daily_time') || '{}');
+  var key = getTodayKey();
+  data[key] = Math.round(((data[key] || 0) + mins) * 10) / 10;
+  localStorage.setItem('lingua_daily_time', JSON.stringify(data));
+  updateGoalRing();
+  checkGoalCompletion();
+}
+
 function incrementDailyLearned() {
   var data = JSON.parse(localStorage.getItem('lingua_daily') || '{}');
   var key = getTodayKey();
   data[key] = (data[key] || 0) + 1;
   localStorage.setItem('lingua_daily', JSON.stringify(data));
   updateGoalRing();
+  checkGoalCompletion();
   checkBadges();
 }
+
+function checkGoalCompletion() {
+  var type = getGoalType();
+  var goal = getGoalValue();
+  var current = type === 'time' ? getDailyMinutes() : getDailyLearned();
+  if (current >= goal) {
+    checkAndUpdateStreak();
+    // Streak-Kalender als erreicht markieren
+    var data = JSON.parse(localStorage.getItem('lingua_daily') || '{}');
+    var key = getTodayKey();
+    if (!data[key]) data[key] = 1; // mindestens 1 markieren
+    localStorage.setItem('lingua_daily', JSON.stringify(data));
+    renderStreakCalendar();
+  }
+}
+
+// Session-Timer für Zeitziel
+var sessionTimerInterval = null;
+var sessionStartTime = null;
+
+function startSessionTimer() {
+  if (sessionTimerInterval) return;
+  sessionStartTime = Date.now();
+  sessionTimerInterval = setInterval(function() {
+    var elapsed = (Date.now() - sessionStartTime) / 60000; // Minuten
+    incrementDailyMinutes(1/6); // alle 10 Sekunden = 1/6 Minute
+  }, 10000);
+}
+
+function stopSessionTimer() {
+  if (sessionTimerInterval) {
+    clearInterval(sessionTimerInterval);
+    sessionTimerInterval = null;
+  }
+}
+
 function updateGoalRing() {
-  var done = getDailyLearned();
-  var goal = getDailyGoal();
+  var type = getGoalType();
+  var goal = getGoalValue();
+  var done = type === 'time' ? getDailyMinutes() : getDailyLearned();
   var pct = Math.min(1, done / goal);
   var circumference = 213.6;
   var offset = circumference * (1 - pct);
   var fill = document.getElementById('goal-ring-fill');
   if (fill) fill.setAttribute('stroke-dashoffset', offset.toFixed(1));
   var todayEl = document.getElementById('goal-today');
-  if (todayEl) todayEl.textContent = done;
+  if (todayEl) todayEl.textContent = type === 'time' ? Math.floor(done) + 'min' : done;
   var goalInp = document.getElementById('goal-input');
   if (goalInp) goalInp.value = goal;
   var goalSub = document.getElementById('ui-goal-sub');
-  if (goalSub) goalSub.textContent = 'von ' + goal;
+  if (goalSub) goalSub.textContent = 'von ' + goal + (type === 'time' ? ' Min.' : ' Wörtern');
   var streakEl = document.getElementById('ui-goal-streak');
   if (streakEl) streakEl.textContent = 'Streak: ' + (state.streak || 0) + ' Tage';
+  // Fortschrittsring Farbe bei Ziel erreicht
+  if (fill) fill.style.stroke = pct >= 1 ? 'var(--accent3)' : '';
+}
+
+function renderGoalOptions() {
+  var container = document.getElementById('goal-options-container');
+  if (!container) return;
+  var type = getGoalType();
+  var val = getGoalValue();
+  var wordOpts = [5, 10, 20, 50];
+  var timeOpts = [5, 10, 15, 30];
+
+  container.innerHTML =
+    // Typ-Auswahl
+    '<div style="display:flex;gap:.5rem;margin-bottom:.75rem;">' +
+      '<button class="btn' + (type==='words'?' primary':'') + '" style="flex:1;" onclick="saveGoalType(\'words\')">📚 Wörter</button>' +
+      '<button class="btn' + (type==='time'?' primary':'') + '" style="flex:1;" onclick="saveGoalType(\'time\')">⏱ Zeit</button>' +
+    '</div>' +
+    // Wert-Auswahl
+    '<div style="display:flex;gap:.4rem;flex-wrap:wrap;">' +
+      (type === 'words' ? wordOpts : timeOpts).map(function(o) {
+        var active = o === val;
+        var label = type === 'time' ? o + ' Min' : o + ' Wörter';
+        return '<button class="btn' + (active ? ' primary' : '') + '" style="flex:1;min-width:60px;" onclick="saveGoal(' + o + ')">' + label + '</button>';
+      }).join('') +
+    '</div>' +
+    // Heutiger Fortschritt
+    '<div style="font-size:.72rem;color:var(--muted);margin-top:.5rem;text-align:center;">' +
+      (type === 'time'
+        ? 'Heute: ' + Math.floor(getDailyMinutes()) + ' / ' + val + ' Minuten'
+        : 'Heute: ' + getDailyLearned() + ' / ' + val + ' Wörter') +
+      (state.streak > 0 ? ' · 🔥 ' + state.streak + ' Tage Streak' : '') +
+    '</div>';
 }
 function renderStreakCalendar() {
   var cal = document.getElementById('streak-calendar');
@@ -7066,7 +7209,7 @@ switchSection = function(id) {
   _origSwitchSection(id);
   if (id === 'srs') initSRS();
   if (id === 'write') initWrite();
-  if (id === 'stats') updateAllStats();
+  if (id === 'stats') { updateAllStats(); renderGoalOptions(); }
   if (id === 'badges') renderBadges();
   if (id === 'path') renderLearningPath();
 };
@@ -7286,24 +7429,22 @@ function showOnboardingNow() {
 // UPDATE CHECK + CHANGELOG
 // ============================================================
 var CURRENT_VERSION = '3.0';
+// BUILD-COUNTER: Bei jedem Upload um 1 erhöhen → Changelog erscheint automatisch beim Nutzer
+var BUILD = 3;
+
 var CHANGELOG = {
-  '2.6': {
+  '3.0': {
     title: 'Was ist neu in v3.0?',
+    emoji: '🚀',
     items: [
-      '⇄ Übersetzer: jetzt von jeder Sprache in jede andere (12×12)',
-      '🇩🇰 Dänisch als App-Interface-Sprache vollständig ergänzt',
-      '🌐 Navigation wird bei Sprachwechsel sofort korrekt übersetzt',
-      '🔧 Übersetzer-Dropdowns ohne Duplikate, dynamisch befüllt',
-      '✅ Alle 12 Sprachen vollständig in Navigation & Einstellungen',
-    ]
-  },
-  '2.5': {
-    title: 'Was war neu in v2.5?',
-    items: [
-      '🌍 Interface: alle 12 Lernsprachen als App-Sprache wählbar',
-      '📚 +500 neue Vokabeln pro Sprache (Kochen, Sport, Wissenschaft, Politik)',
-      '✅ Doppelte Icons in Navigation entfernt',
-      '🔍 Suche & 🔀 Konjugation mehrsprachig übersetzt',
+      '🌍 DeepL-Integration — automatische Übersetzung in deine App-Sprache',
+      '🇷🇺 Russische App-Sprache + Deutsch lernen jetzt vollständig unterstützt',
+      '📦 Vokabeln, SRS, Quiz & Schreiben zeigen Übersetzung in App-Sprache',
+      '⚡ Batch-Vorladen — alle Übersetzungen vor Übungsbeginn gecacht',
+      '🔄 Service Worker aktualisiert — API-Calls werden nicht mehr blockiert',
+      '⇄ Übersetzer nutzt jetzt DeepL (schneller & präziser)',
+      '💾 DeepL-Cache in localStorage — jedes Wort nur einmal übersetzt',
+      '🔑 DeepL Standard-Key eingebettet — sofort nutzbar ohne Eingabe',
     ]
   },
 };
@@ -7311,43 +7452,53 @@ var CHANGELOG = {
 function checkForUpdate() {
   var btn = document.getElementById('set-update-btn');
   if (btn) { btn.textContent = '⏳ Prüfe...'; btn.disabled = true; }
-  // Reload the page to get latest version from server
-  setTimeout(function() {
-    showToast('🔄 App wird aktualisiert...');
-    setTimeout(function() {
-      window.location.reload(true);
-    }, 800);
-  }, 600);
+  showToast('🔄 App wird aktualisiert...');
+  setTimeout(function() { window.location.reload(true); }, 800);
 }
 
 function showChangelog(version) {
-  var log = CHANGELOG[version];
-  if (!log) return;
-  // Build a simple modal-style toast sequence
+  var log = CHANGELOG[version] || {
+    title: 'LINGUA wurde aktualisiert!',
+    emoji: '🔄',
+    items: [
+      '✅ Verbesserungen und Fehlerbehebungen',
+      '⚡ Performance optimiert',
+      '🔧 Stabilität verbessert',
+    ]
+  };
   var overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:800;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(10px);';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(12px);';
   var box = document.createElement('div');
-  box.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.75rem;max-width:380px;width:100%;animation:fadeIn .35s ease;';
-  var itemsHTML = log.items.map(function(i) {
-    return '<div style="padding:.4rem 0;font-size:.82rem;border-bottom:1px solid var(--border);display:flex;gap:.5rem;align-items:flex-start;">' +
-      '<span style="flex-shrink:0;">' + i.slice(0,2) + '</span>' +
-      '<span style="color:var(--muted);">' + i.slice(2) + '</span></div>';
+  box.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.75rem;max-width:400px;width:100%;animation:fadeIn .35s ease;max-height:90vh;overflow-y:auto;';
+  var itemsHTML = log.items.map(function(item) {
+    var emoji = item.slice(0,2);
+    var text = item.slice(2).trim();
+    return '<div style="padding:.5rem 0;font-size:.82rem;border-bottom:1px solid var(--border);display:flex;gap:.6rem;align-items:flex-start;">' +
+      '<span style="flex-shrink:0;font-size:1rem;">' + emoji + '</span>' +
+      '<span style="color:var(--muted);line-height:1.5;">' + text + '</span></div>';
   }).join('');
-  box.innerHTML = '<div style="font-size:2rem;margin-bottom:.5rem;">🎉</div>' +
-    '<div style="font-family:Syne,sans-serif;font-weight:800;font-size:1.15rem;margin-bottom:1rem;">' + log.title + '</div>' +
-    '<div style="max-height:280px;overflow-y:auto;margin-bottom:1.25rem;">' + itemsHTML + '</div>' +
-    '<button class="btn primary" style="width:100%;" onclick="this.closest(\'div\').parentNode.remove()">Los geht\'s! 🚀</button>';
+  box.innerHTML =
+    '<div style="font-size:2.5rem;margin-bottom:.4rem;text-align:center;">' + (log.emoji || '🎉') + '</div>' +
+    '<div style="font-family:Syne,sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:.25rem;text-align:center;">' + log.title + '</div>' +
+    '<div style="font-size:.72rem;color:var(--muted);text-align:center;margin-bottom:1rem;">LINGUA · Mai 2026 · René Prause</div>' +
+    '<div style="margin-bottom:1.25rem;">' + itemsHTML + '</div>' +
+    '<button class="btn primary" style="width:100%;padding:.8rem;" onclick="this.closest(\'[style*=fixed]\').remove()">Los geht\'s! 🚀</button>';
   overlay.appendChild(box);
   overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
   document.body.appendChild(overlay);
 }
 
 function checkAndShowChangelog() {
-  var lastVersion = localStorage.getItem('lingua_onboarded_version');
-  if (lastVersion && lastVersion !== CURRENT_VERSION) {
-    // User has updated — show what's new
-    setTimeout(function() { showChangelog(CURRENT_VERSION); }, 1000);
-    localStorage.setItem('lingua_onboarded_version', CURRENT_VERSION);
+  var storedBuild = parseInt(localStorage.getItem('lingua_build') || '0', 10);
+  if (storedBuild === 0) {
+    // Erste Installation — Build speichern, kein Changelog (Onboarding übernimmt)
+    localStorage.setItem('lingua_build', String(BUILD));
+    return;
+  }
+  if (storedBuild < BUILD) {
+    // Neue Version erkannt — Changelog anzeigen
+    localStorage.setItem('lingua_build', String(BUILD));
+    setTimeout(function() { showChangelog(CURRENT_VERSION); }, 1200);
   }
 }
 
@@ -7724,6 +7875,7 @@ function getTalkPrompt() {
 // ============================================================
 var DEEPL_DEFAULT_KEY = '6e4904b4-bf62-4785-829f-1abdce255680:fx';
 var DEEPL_API_URL = 'https://api-free.deepl.com/v2/translate';
+var DEEPL_PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent('https://api-free.deepl.com/v2/translate');
 
 // Cache SOFORT beim Laden aus localStorage befüllen
 var deeplCache = (function() {
@@ -7779,19 +7931,20 @@ function updateDeeplDot() {
 
 async function testDeeplKey() {
   var resultEl = document.getElementById('deepl-test-result');
-  if (resultEl) resultEl.textContent = '⏳ Teste...';
+  if (resultEl) { resultEl.textContent = '⏳ Teste DeepL...'; resultEl.style.color = 'var(--muted)'; }
   try {
-    var translation = await translateWithDeepl('Hallo', 'EN');
+    var translation = await translateWithDeepl('Hallo', 'RU');
     if (resultEl) {
-      resultEl.textContent = '✓ Verbindung OK — "Hallo" → "' + translation + '"';
+      resultEl.textContent = '✓ OK — "Hallo" → "' + translation + '"';
       resultEl.style.color = 'var(--accent3)';
     }
-    showToast('✓ DeepL API funktioniert!');
+    showToast('✓ DeepL funktioniert! "Hallo" = ' + translation);
   } catch(e) {
     if (resultEl) {
-      resultEl.textContent = '✗ Fehler: ' + e.message;
+      resultEl.textContent = '✗ ' + e.message;
       resultEl.style.color = 'var(--accent2)';
     }
+    showToast('✗ DeepL Fehler: ' + e.message);
   }
 }
 
@@ -7806,30 +7959,30 @@ async function translateWithDeepl(text, targetLang) {
   params.append('target_lang', targetLang);
   params.append('source_lang', 'DE');
 
-  var response = await fetch(DEEPL_API_URL, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body: params.toString()
-  });
-
-  if (!response.ok) throw new Error('DeepL Fehler ' + response.status);
-  var data = await response.json();
-  var result = data.translations[0].text;
-
-  // Cache speichern
-  deeplCache[cacheKey] = result;
-  try {
-    var toSave = Object.assign({}, deeplCache);
-    delete toSave._loaded;
-    // Max 5000 Einträge im Cache
-    var keys = Object.keys(toSave);
-    if (keys.length > 5000) {
-      keys.slice(0, keys.length - 5000).forEach(function(k){ delete toSave[k]; });
-    }
-    localStorage.setItem('lingua_deepl_cache', JSON.stringify(toSave));
-  } catch(e) {}
-
-  return result;
+  // Versuche direkten Call, dann CORS-Proxy als Fallback
+  var urls = [DEEPL_API_URL, DEEPL_PROXY_URL];
+  var lastErr = null;
+  for (var i = 0; i < urls.length; i++) {
+    try {
+      var response = await fetch(urls[i], {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: params.toString()
+      });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      var data = await response.json();
+      var result = data.translations[0].text;
+      deeplCache[cacheKey] = result;
+      try {
+        var toSave = Object.assign({}, deeplCache);
+        var keys = Object.keys(toSave);
+        if (keys.length > 5000) keys.slice(0, keys.length - 5000).forEach(function(k){ delete toSave[k]; });
+        localStorage.setItem('lingua_deepl_cache', JSON.stringify(toSave));
+      } catch(e) {}
+      return result;
+    } catch(e) { lastErr = e; }
+  }
+  throw lastErr || new Error('DeepL nicht erreichbar');
 }
 
 // Übersetzt ein Vokabelobjekt {f, t, p} in die UI-Sprache
@@ -7877,13 +8030,21 @@ async function translateTopicBatch(words, targetLang) {
       params.append('source_lang', 'DE');
       batch.forEach(function(item){ params.append('text', item.text); });
 
-      var response = await fetch(DEEPL_API_URL, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: params.toString()
-      });
+      var batchUrls = [DEEPL_API_URL, DEEPL_PROXY_URL];
+      var response = null;
+      for (var bui = 0; bui < batchUrls.length; bui++) {
+        try {
+          response = await fetch(batchUrls[bui], {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: params.toString()
+          });
+          if (response.ok) break;
+          response = null;
+        } catch(e) { response = null; }
+      }
 
-      if (response.ok) {
+      if (response && response.ok) {
         var data = await response.json();
         data.translations.forEach(function(tr, idx) {
           var item = batch[idx];
@@ -7933,8 +8094,13 @@ updateDeeplDot();
 populateTranslatorDropdowns();
 initColorSystem();
 updateGoalRing();
+renderGoalOptions();
 updateXPBar();
 checkBadges();
+// Session-Timer für Zeitziel starten
+if (getGoalType() === 'time') startSessionTimer();
+// Auch beim Wörter-Ziel Zeit tracken (für Statistiken)
+startSessionTimer();
 // Show onboarding for new users, API modal for existing users without key
 if (!localStorage.getItem('lingua_onboarded')) {
   setTimeout(showOnboarding, 600);
