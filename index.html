@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" content="LINGUA v4.1 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" id="meta-description" content="LINGUA v4.1 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
 <title>LINGUA v4.1 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
@@ -511,7 +511,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
    ============================================================ */
 
 /* ============================================================
-   NEUE FEATURES v4.1: ONBOARDING · SUCHE · KONJUGATION
+   NEUE FEATURES: ONBOARDING · SUCHE · KONJUGATION
    ============================================================ */
 
 /* ONBOARDING OVERLAY */
@@ -653,7 +653,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;">v4.1</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v4.1</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -1214,7 +1214,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   </main>
 
   <footer>
-    LINGUA v4.1 · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v4.1</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -1382,7 +1382,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA v4.1 · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v4.1</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -11366,12 +11366,11 @@ function showOnboardingNow() {
 // Beim ersten Laden der neuen BUILD-Nummer wird die Version
 // automatisch um 0.1 erhöht und überall im UI aktualisiert.
 // ============================================================
-var BUILD = 39;
+var BUILD = 40;
 (function() {
   var storedBuild = parseInt(localStorage.getItem('lingua_build_num') || '0', 10);
   var storedVer   = localStorage.getItem('lingua_version') || '4.1';
   if (storedBuild < BUILD) {
-    // Neue BUILD → Version erhöhen
     var parts = storedVer.split('.');
     var major = parseInt(parts[0]);
     var minor = parseInt(parts[1] || '0') + 1;
@@ -11380,24 +11379,64 @@ var BUILD = 39;
     localStorage.setItem('lingua_build_num', String(BUILD));
     localStorage.setItem('lingua_version', storedVer);
   }
-  // CURRENT_VERSION aus localStorage laden (immer aktuell)
-  var CURRENT_VERSION = storedVer;
-  window.CURRENT_VERSION = CURRENT_VERSION;
+  window.CURRENT_VERSION = storedVer;
+
   // Alle UI-Stellen mit der aktuellen Version befüllen
-  var vStr = 'v' + CURRENT_VERSION;
-  document.addEventListener('DOMContentLoaded', function() {
-    // Logo
-    var logo = document.querySelector('.logo span[style*="font-size:.7rem"]');
-    if (logo) logo.textContent = vStr;
-    // Footer
-    document.querySelectorAll('[id^="footer"]').forEach(function(el) {
-      if (el.textContent.match(/v\d+\.\d+/)) el.textContent = el.textContent.replace(/v\d+\.\d+/, vStr);
-    });
-    // Meta description + title (best effort)
-    var desc = document.querySelector('meta[name="description"]');
-    if (desc) desc.content = desc.content.replace(/v\d+\.\d+/, vStr);
+  function updateAllVersionDisplays() {
+    var vStr = 'v' + window.CURRENT_VERSION;
+
+    // 1. Logo
+    var el = document.getElementById('logo-version');
+    if (el) el.textContent = vStr;
+
+    // 2. Footer
+    el = document.getElementById('footer-version');
+    if (el) el.textContent = vStr;
+
+    // 3. Settings-Footer
+    el = document.getElementById('settings-version');
+    if (el) el.textContent = vStr;
+
+    // 4. <title>
     document.title = document.title.replace(/v\d+\.\d+/, vStr);
-  });
+
+    // 5. meta description
+    el = document.getElementById('meta-description');
+    if (el) el.setAttribute('content', el.getAttribute('content').replace(/v\d+\.\d+/, vStr));
+
+    // 6. Onboarding Willkommen-Text (wird dynamisch gerendert — per MutationObserver)
+    var ob = new MutationObserver(function() {
+      document.querySelectorAll('.onboarding-title, .onboarding-text').forEach(function(node) {
+        if (node.textContent.match(/v\d+\.\d+/)) {
+          node.innerHTML = node.innerHTML.replace(/v\d+\.\d+/g, vStr);
+        }
+      });
+    });
+    ob.observe(document.body, { childList: true, subtree: true });
+
+    // 7. Changelog-Titel (ebenfalls dynamisch)
+    var origShowChangelog = window.showChangelog;
+    if (origShowChangelog) {
+      window.showChangelog = function(ver) {
+        origShowChangelog(ver);
+        setTimeout(function() {
+          document.querySelectorAll('.changelog-title, .modal-title').forEach(function(node) {
+            if (node.textContent.match(/v\d+\.\d+/)) {
+              node.innerHTML = node.innerHTML.replace(/v\d+\.\d+/g, vStr);
+            }
+          });
+        }, 100);
+      };
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateAllVersionDisplays);
+  } else {
+    updateAllVersionDisplays();
+  }
+  // Zusätzlich nach kurzem Delay (für dynamisch gerenderte Elemente)
+  setTimeout(updateAllVersionDisplays, 500);
 })();
 
 var CHANGELOG = {
