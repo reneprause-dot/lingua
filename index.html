@@ -721,19 +721,6 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
           <button class="lang-select-card" onclick="selectLanguage('es')"><div class="lsc-flag">🇪🇸</div><div class="lsc-name">Spanisch</div><div class="lsc-sub">Español · Romanisch</div></button>
           <button class="lang-select-card" onclick="selectLanguage('th')"><div class="lsc-flag">🇹🇭</div><div class="lsc-name">Thailändisch</div><div class="lsc-sub">ภาษาไทย · Tai-Kadai</div></button>
           <button class="lang-select-card" onclick="selectLanguage('tr')"><div class="lsc-flag">🇹🇷</div><div class="lsc-name">Türkisch</div><div class="lsc-sub">Türkçe · Altaisch</div></button>
-        </div><div class="lsc-name">Polnisch</div><div class="lsc-sub">Polski · Slawisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('sq')"><div class="lsc-flag">🇦🇱</div><div class="lsc-name">Albanisch</div><div class="lsc-sub">Shqip · Isolat</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('da')"><div class="lsc-flag">🇩🇰</div><div class="lsc-name">Dänisch</div><div class="lsc-sub">Dansk · Germanisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('de')"><div class="lsc-flag">🇩🇪</div><div class="lsc-name">Deutsch</div><div class="lsc-sub">Deutsch · Germanisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('en')"><div class="lsc-flag">🇬🇧</div><div class="lsc-name">Englisch</div><div class="lsc-sub">English · Germanisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('fr')"><div class="lsc-flag">🇫🇷</div><div class="lsc-name">Französisch</div><div class="lsc-sub">Français · Romanisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('it')"><div class="lsc-flag">🇮🇹</div><div class="lsc-name">Italienisch</div><div class="lsc-sub">Italiano · Romanisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('ro')"><div class="lsc-flag">🇷🇴</div><div class="lsc-name">Rumänisch</div><div class="lsc-sub">Română · Romanisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('ru')"><div class="lsc-flag">🇷🇺</div><div class="lsc-name">Russisch</div><div class="lsc-sub">Русский · Kyrillisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('sv')"><div class="lsc-flag">🇸🇪</div><div class="lsc-name">Schwedisch</div><div class="lsc-sub">Svenska · Germanisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('es')"><div class="lsc-flag">🇪🇸</div><div class="lsc-name">Spanisch</div><div class="lsc-sub">Español · Romanisch</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('th')"><div class="lsc-flag">🇹🇭</div><div class="lsc-name">Thailändisch</div><div class="lsc-sub">ภาษาไทย · Tai-Kadai</div></button>
-          <button class="lang-select-card" onclick="selectLanguage('tr')"><div class="lsc-flag">🇹🇷</div><div class="lsc-name">Türkisch</div><div class="lsc-sub">Türkçe · Altaisch</div></button>
         </div>
       </div>
 
@@ -11372,10 +11359,46 @@ function showOnboardingNow() {
 // ============================================================
 // UPDATE CHECK + CHANGELOG
 // ============================================================
-var CURRENT_VERSION = '4.1';
-// BUILD wird bei jedem Update automatisch erhöht
-// Version wird automatisch um 0.1 hochgezählt: 3.7→3.8→3.9→4.0→4.1...
-var BUILD = 37;
+// ============================================================
+// AUTO-VERSION-SYSTEM
+// BUILD wird bei jedem Deployment erhöht.
+// Version zählt automatisch: 4.1 → 4.2 → 4.9 → 5.0 → 5.1...
+// Beim ersten Laden der neuen BUILD-Nummer wird die Version
+// automatisch um 0.1 erhöht und überall im UI aktualisiert.
+// ============================================================
+var BUILD = 39;
+(function() {
+  var storedBuild = parseInt(localStorage.getItem('lingua_build_num') || '0', 10);
+  var storedVer   = localStorage.getItem('lingua_version') || '4.1';
+  if (storedBuild < BUILD) {
+    // Neue BUILD → Version erhöhen
+    var parts = storedVer.split('.');
+    var major = parseInt(parts[0]);
+    var minor = parseInt(parts[1] || '0') + 1;
+    if (minor >= 10) { major++; minor = 0; }
+    storedVer = major + '.' + minor;
+    localStorage.setItem('lingua_build_num', String(BUILD));
+    localStorage.setItem('lingua_version', storedVer);
+  }
+  // CURRENT_VERSION aus localStorage laden (immer aktuell)
+  var CURRENT_VERSION = storedVer;
+  window.CURRENT_VERSION = CURRENT_VERSION;
+  // Alle UI-Stellen mit der aktuellen Version befüllen
+  var vStr = 'v' + CURRENT_VERSION;
+  document.addEventListener('DOMContentLoaded', function() {
+    // Logo
+    var logo = document.querySelector('.logo span[style*="font-size:.7rem"]');
+    if (logo) logo.textContent = vStr;
+    // Footer
+    document.querySelectorAll('[id^="footer"]').forEach(function(el) {
+      if (el.textContent.match(/v\d+\.\d+/)) el.textContent = el.textContent.replace(/v\d+\.\d+/, vStr);
+    });
+    // Meta description + title (best effort)
+    var desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.content = desc.content.replace(/v\d+\.\d+/, vStr);
+    document.title = document.title.replace(/v\d+\.\d+/, vStr);
+  });
+})();
 
 var CHANGELOG = {
   '3.0': {
