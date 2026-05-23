@@ -825,11 +825,11 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <div class="word-translation" id="vocab-translation"></div>
         <div class="flip-hint" id="ui-flip-hint">Klicken zum Aufdecken</div>
       </div>
-      <div class="vocab-controls">
+      <div class="vocab-controls" id="ui-vocab-controls" style="display:none;">
         <button class="btn danger" onclick="vocabAnswer(false)" id="ui-btn-again">✗ Nochmal</button>
         <button class="btn" onclick="speakCurrent()" id="ui-btn-listen">🔊 Anhören</button>
         <button class="btn warn" onclick="vocabAnswer('skip')" id="ui-btn-skip">→ Überspringen</button>
-        <button class="btn primary" onclick="vocabAnswer('next')" id="ui-btn-next" style="display:none;">→ Weiter</button>
+        <button class="btn" onclick="vocabAnswer('next')" id="ui-btn-next">→ Weiter</button>
         <button class="btn success" onclick="vocabAnswer(true)" id="ui-btn-knew">✓ Gewusst</button>
       </div>
     </div>
@@ -1490,7 +1490,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
           <div class="word-sub" id="en-nex-phonetic"></div>
           <div class="word-translation" id="en-nex-translation" style="opacity:0;transition:opacity .3s;"></div>
         </div>
-        <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;">
+        <div style="display:none;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;" id="en-nex-vocab-btns">
           <button class="btn" onclick="enNiveauVocabAnswer(false)" style="flex:1;background:rgba(239,68,68,.15);color:#ef4444;">✗ Again</button>
           <button class="btn" onclick="enNiveauSpeakWord()" style="flex:1;">🔊 Listen</button>
           <button class="btn" onclick="enNiveauVocabAnswer('next')" style="flex:1;">→ Next</button>
@@ -10141,19 +10141,15 @@ function showVocabCard() {
 function revealVocab() {
   document.getElementById('vocab-card').classList.add('revealed');
   vocabRevealed = true;
-  // Weiter-Button zeigen, Gewusst ausblenden
-  var nextBtn = document.getElementById('ui-btn-next');
-  var knewBtn = document.getElementById('ui-btn-knew');
-  if (nextBtn) nextBtn.style.display = 'inline-flex';
-  if (knewBtn) knewBtn.style.display = 'none';
+  // Alle Buttons nach dem Aufklappen zeigen
+  var controls = document.getElementById('ui-vocab-controls');
+  if (controls) controls.style.display = 'flex';
 }
 
 function vocabAnswer(result) {
-  // Weiter-Button wieder ausblenden, Gewusst zeigen
-  var nextBtn = document.getElementById('ui-btn-next');
-  var knewBtn = document.getElementById('ui-btn-knew');
-  if (nextBtn) nextBtn.style.display = 'none';
-  if (knewBtn) knewBtn.style.display = 'inline-flex';
+  // Buttons wieder verstecken für nächste Karte
+  var controls = document.getElementById('ui-vocab-controls');
+  if (controls) controls.style.display = 'none';
 
   if (!vocabRevealed && result !== 'skip' && result !== 'next') { revealVocab(); return; }
   const card = vocabQueue[vocabIndex];
@@ -12044,7 +12040,9 @@ function renderNiveauVocab() {
   document.getElementById('nex-translation').textContent = trans;
   document.getElementById('nex-translation').style.opacity = '0';
   niveauState.revealed = false;
-  document.getElementById('nex-vocab-btns').style.display = 'none';
+  // Buttons verstecken bis Aufklappen
+  var btns = document.getElementById('nex-vocab-btns');
+  if (btns) btns.style.display = 'none';
   document.getElementById('nex-vocab-counter').textContent = (idx+1)+' / '+t.vocab.length;
 }
 
@@ -12052,7 +12050,9 @@ function niveauReveal() {
   if (niveauState.revealed) return;
   niveauState.revealed = true;
   document.getElementById('nex-translation').style.opacity = '1';
-  document.getElementById('nex-vocab-btns').style.display = 'flex';
+  // Alle Buttons nach Aufklappen zeigen
+  var btns = document.getElementById('nex-vocab-btns');
+  if (btns) btns.style.display = 'flex';
 }
 
 function niveauSpeakWord() {
@@ -12755,6 +12755,9 @@ function enRenderVocab() {
   document.getElementById('en-nex-translation').textContent = trans;
   document.getElementById('en-nex-translation').style.opacity = '0';
   enNiveauState.revealed = false;
+  // Buttons verstecken bis Aufklappen
+  var btns = document.getElementById('en-nex-vocab-btns');
+  if (btns) btns.style.display = 'none';
   document.getElementById('en-nex-vocab-counter').textContent = (enNiveauState.vocabIdx+1)+' / '+t.vocab.length;
 }
 
@@ -12762,6 +12765,9 @@ function enNiveauReveal() {
   if (enNiveauState.revealed) return;
   enNiveauState.revealed = true;
   document.getElementById('en-nex-translation').style.opacity = '1';
+  // Alle Buttons nach Aufklappen zeigen
+  var btns = document.getElementById('en-nex-vocab-btns');
+  if (btns) btns.style.display = 'flex';
 }
 
 function enNiveauSpeakWord() {
@@ -12769,6 +12775,10 @@ function enNiveauSpeakWord() {
 }
 
 function enNiveauVocabAnswer(knew) {
+  // Buttons für nächste Karte ausblenden
+  var btns = document.getElementById('en-nex-vocab-btns');
+  if (btns) btns.style.display = 'none';
+
   var t = enNiveauState.topic;
   if (knew === true) {
     if (!enNiveauState.progress[t.id]) enNiveauState.progress[t.id] = {vocab:0};
@@ -13219,8 +13229,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 55;
-var BUILD_VERSION = '5.2'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 56;
+var BUILD_VERSION = '5.3'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -13326,6 +13336,17 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  56: {
+    emoji: '→',
+    title: 'Weiter-Button in allen Vokabeltrainings',
+    items: [
+      '→ Weiter-Button erscheint nach Aufklappen der Karte — zusätzlich zu Gewusst',
+      '✓ Gewusst bleibt immer sichtbar — kein Ersetzen mehr',
+      '📚 Gilt für Vokabeltraining, DE Niveau und EN Niveau',
+      '🎯 Buttons werden erst nach Aufklappen eingeblendet (vorher keine Ablenkung)',
+      '↺ Nach Wahl eines Buttons werden Buttons für nächste Karte versteckt',
+    ]
+  },
   55: {
     emoji: '🔧',
     title: 'DeepL komplett überarbeitet',
