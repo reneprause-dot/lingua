@@ -10193,37 +10193,22 @@ async function preloadDeeplBatch(words) {
 
   try {
     var key = getDeeplKey();
-    var params = new URLSearchParams();
-    params.append('auth_key', key);
-    params.append('target_lang', deeplLang);
-    params.append('source_lang', 'DE');
-    toTranslate.forEach(function(text) { params.append('text', text); });
-
-    var urls = [DEEPL_API_URL, DEEPL_PROXY_URL];
-    var response = null;
-    for (var ui = 0; ui < urls.length; ui++) {
-      try {
-        response = await fetch(urls[ui], {
-          method: 'POST',
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-          body: params.toString()
-        });
-        if (response.ok) break;
-        response = null;
-      } catch(e) { response = null; }
-    }
+    var body = JSON.stringify({
+      text: toTranslate,
+      target_lang: deeplLang,
+      source_lang: 'DE'
+    });
+    var response = await _deeplFetch(key, body);
     if (!response || !response.ok) return;
     var data = await response.json();
     data.translations.forEach(function(tr, i) {
       deeplCache[toTranslate[i] + '|' + deeplLang] = tr.text;
     });
-    // Cache persistieren
     try {
-      var toSave = Object.assign({}, deeplCache);
-      localStorage.setItem('lingua_deepl_cache', JSON.stringify(toSave));
+      localStorage.setItem('lingua_deepl_cache', JSON.stringify(deeplCache));
     } catch(e) {}
   } catch(e) {
-    console.warn('DeepL Batch-Vorübersetzung fehlgeschlagen:', e.message);
+    console.warn('DeepL Batch fehlgeschlagen:', e.message);
   }
 }
 
@@ -10394,30 +10379,9 @@ async function doTranslate() {
 
   try {
     if (deeplFrom && deeplTo) {
-      // DeepL direkte Übersetzung
-      var key = getDeeplKey();
-      var params = new URLSearchParams();
-      params.append('auth_key', key);
-      params.append('text', text);
-      params.append('target_lang', deeplTo);
-      if (deeplFrom) params.append('source_lang', deeplFrom);
-
-      var urls = [DEEPL_API_URL, DEEPL_PROXY_URL];
-      var response = null;
-      for (var ui = 0; ui < urls.length; ui++) {
-        try {
-          response = await fetch(urls[ui], {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: params.toString()
-          });
-          if (response.ok) break;
-          response = null;
-        } catch(e) { response = null; }
-      }
-      if (!response || !response.ok) throw new Error('DeepL nicht erreichbar');
-      var data = await response.json();
-      document.getElementById('trans-output').value = data.translations[0].text;
+      // translateWithDeepl nutzen (robuste Version mit mehreren Fallbacks)
+      var result = await translateWithDeepl(text, deeplTo, deeplFrom);
+      document.getElementById('trans-output').value = result;
     } else {
       // Fallback: Claude für nicht-DeepL-Sprachen (sq, th)
       const result = await callClaude({
@@ -13255,8 +13219,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 54;
-var BUILD_VERSION = '5.1'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 55;
+var BUILD_VERSION = '5.2'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -13362,6 +13326,17 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  55: {
+    emoji: '🔧',
+    title: 'DeepL komplett überarbeitet',
+    items: [
+      '🔧 Zentrale _deeplFetch() Hilfsfunktion — eine Stelle für alle Aufrufe',
+      '🔄 Alle alten DeepL-Stellen auf neue Funktion umgestellt',
+      '📡 4 Proxy-Fallbacks: direkt → corsproxy.io → cors.sh → form-encoded',
+      '🔤 translateWithDeepl() akzeptiert jetzt source_lang als Parameter',
+      '🌍 Übersetzer-Funktion nutzt dieselbe robuste Kern-Funktion',
+    ]
+  },
   54: {
     emoji: '🔧',
     title: 'Übersetzer-Fix: DEEPL_PROXY_URL',
@@ -14017,69 +13992,85 @@ async function testDeeplKey() {
   }
 }
 
-async function translateWithDeepl(text, targetLang) {
-  var cacheKey = text + '|' + targetLang;
-  if (deeplCache[cacheKey]) return deeplCache[cacheKey];
-
-  var key = getDeeplKey();
-  var body = JSON.stringify({ text: [text], target_lang: targetLang, source_lang: 'DE' });
-  var headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'DeepL-Auth-Key ' + key,
-  };
-
-  // Versuche: 1. direkt, 2-4. verschiedene CORS-Proxies
-  var attempts = [
-    // Direkter Aufruf (funktioniert wenn CORS-Header gesetzt oder mit Extension)
+// ============================================================
+// DEEPL KERN-FUNKTION — zentrale Fetch-Logik
+// Wird von translateWithDeepl UND Batch-Übersetzung genutzt
+// ============================================================
+async function _deeplFetch(key, jsonBody) {
+  var url = DEEPL_API_URL;
+  var proxies = [
+    // 1. Direkt mit Authorization Header
     function() {
-      return fetch(DEEPL_API_URL, { method:'POST', headers:headers, body:body });
-    },
-    // corsproxy.io
-    function() {
-      return fetch('https://corsproxy.io/?url=' + encodeURIComponent(DEEPL_API_URL), {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json', 'x-requested-with':'XMLHttpRequest' },
-        body: JSON.stringify({ text:[text], target_lang:targetLang, source_lang:'DE', auth_key:key }),
+      return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'DeepL-Auth-Key ' + key },
+        body: jsonBody
       });
     },
-    // cors.sh proxy
+    // 2. corsproxy.io mit URL-Encoding
     function() {
-      return fetch('https://proxy.cors.sh/' + DEEPL_API_URL, {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json', 'x-cors-api-key':'temp_' + key.slice(0,8) },
-        body: body,
+      var proxyUrl = 'https://corsproxy.io/?url=' + encodeURIComponent(url);
+      return fetch(proxyUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'DeepL-Auth-Key ' + key },
+        body: jsonBody
       });
     },
-    // allorigins — GET-only wrapper, nutze form-encoded
+    // 3. cors.sh
     function() {
-      var formBody = 'auth_key='+encodeURIComponent(key)+'&text='+encodeURIComponent(text)+'&target_lang='+targetLang+'&source_lang=DE';
-      return fetch('https://corsproxy.io/?url=' + encodeURIComponent(DEEPL_API_URL), {
-        method:'POST',
-        headers:{ 'Content-Type':'application/x-www-form-urlencoded' },
-        body: formBody,
+      return fetch('https://proxy.cors.sh/' + url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'DeepL-Auth-Key ' + key, 'x-cors-api-key': 'temp_lingua' },
+        body: jsonBody
+      });
+    },
+    // 4. form-encoded als Fallback
+    function() {
+      var parsed = JSON.parse(jsonBody);
+      var texts = Array.isArray(parsed.text) ? parsed.text : [parsed.text];
+      var form = texts.map(function(t){ return 'text='+encodeURIComponent(t); }).join('&');
+      form += '&auth_key='+encodeURIComponent(key)+'&target_lang='+parsed.target_lang;
+      if (parsed.source_lang) form += '&source_lang='+parsed.source_lang;
+      var proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
+      return fetch(proxyUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: form
       });
     },
   ];
 
-  var lastErr = null;
-  for (var i = 0; i < attempts.length; i++) {
+  for (var i = 0; i < proxies.length; i++) {
     try {
-      var response = await attempts[i]();
-      if (!response.ok) { lastErr = new Error('HTTP ' + response.status); continue; }
-      var data = await response.json();
-      if (!data.translations || !data.translations[0]) { lastErr = new Error('Kein Ergebnis'); continue; }
-      var result = data.translations[0].text;
-      deeplCache[cacheKey] = result;
-      try {
-        var toSave = Object.assign({}, deeplCache);
-        var keys = Object.keys(toSave);
-        if (keys.length > 5000) keys.slice(0, keys.length - 5000).forEach(function(k){ delete toSave[k]; });
-        localStorage.setItem('lingua_deepl_cache', JSON.stringify(toSave));
-      } catch(e) {}
-      return result;
-    } catch(e) { lastErr = e; }
+      var res = await proxies[i]();
+      if (res && res.ok) return res;
+    } catch(e) { /* weiter */ }
   }
-  throw lastErr || new Error('DeepL nicht erreichbar');
+  throw new Error('DeepL nicht erreichbar — alle Proxy-Versuche fehlgeschlagen');
+}
+
+async function translateWithDeepl(text, targetLang, sourceLang) {
+  var cacheKey = text + '|' + targetLang;
+  if (deeplCache[cacheKey]) return deeplCache[cacheKey];
+
+  var key = getDeeplKey();
+  var body = JSON.stringify({
+    text: [text],
+    target_lang: targetLang,
+    source_lang: sourceLang || 'DE'
+  });
+
+  var response = await _deeplFetch(key, body);
+  var data = await response.json();
+  if (!data.translations || !data.translations[0]) throw new Error('Kein Übersetzungsergebnis');
+  var result = data.translations[0].text;
+  deeplCache[cacheKey] = result;
+  try {
+    var keys = Object.keys(deeplCache);
+    if (keys.length > 5000) { delete deeplCache[keys[0]]; }
+    localStorage.setItem('lingua_deepl_cache', JSON.stringify(deeplCache));
+  } catch(e) {}
+  return result;
 }
 
 // Übersetzt ein Vokabelobjekt {f, t, p} in die UI-Sprache
@@ -14121,25 +14112,13 @@ async function translateTopicBatch(words, targetLang) {
     var batch = toTranslate.slice(b, b + batchSize);
     try {
       var key = getDeeplKey();
-      var params = new URLSearchParams();
-      params.append('auth_key', key);
-      params.append('target_lang', deeplLang);
-      params.append('source_lang', 'DE');
-      batch.forEach(function(item){ params.append('text', item.text); });
+      var body = JSON.stringify({
+        text: batch.map(function(item){ return item.text; }),
+        target_lang: deeplLang,
+        source_lang: 'DE'
+      });
 
-      var batchUrls = [DEEPL_API_URL, DEEPL_PROXY_URL];
-      var response = null;
-      for (var bui = 0; bui < batchUrls.length; bui++) {
-        try {
-          response = await fetch(batchUrls[bui], {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: params.toString()
-          });
-          if (response.ok) break;
-          response = null;
-        } catch(e) { response = null; }
-      }
+      var response = await _deeplFetch(key, body);
 
       if (response && response.ok) {
         var data = await response.json();
