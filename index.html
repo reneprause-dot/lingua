@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" id="meta-description" content="LINGUA v4.9 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" id="meta-description" content="LINGUA v5.0 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v4.9 · by René Prause</title>
+<title>LINGUA v5.0 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -659,7 +659,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v4.9</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v5.0</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -694,6 +694,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     <button class="nav-btn" data-section="free"><span class="nav-icon">🗂</span> Freies Lernen</button>
     <button class="nav-btn" data-section="path"><span class="nav-icon">🗺</span> Lernpfad</button>
     <button class="nav-btn" data-section="deniveau"><span class="nav-icon">🇩🇪</span> DE Niveau</button>
+    <button class="nav-btn" data-section="enniveau"><span class="nav-icon">🇬🇧</span> EN Niveau</button>
     <button class="nav-btn" data-section="stats"><span class="nav-icon">📊</span> Statistiken</button>
     <button class="nav-btn" data-section="badges"><span class="nav-icon">🏆</span> Abzeichen</button>
     <button class="nav-btn" data-section="generator"><span class="nav-icon">✨</span> KI-Generator</button>
@@ -802,6 +803,10 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
           <div class="home-card" style="--hc-color:#2a9d8f" onclick="switchSection('deniveau')">
             <div class="hc-icon">🇩🇪</div><div class="hc-title" id="hc-deniveau-title">Deutsch Sprachniveau</div>
             <div class="hc-desc" id="hc-deniveau-desc">A1–C2 strukturiert für Russischsprachige</div>
+          </div>
+          <div class="home-card" style="--hc-color:#457b9d" onclick="switchSection('enniveau')">
+            <div class="hc-icon">🇬🇧</div><div class="hc-title">Englisch Sprachniveau</div>
+            <div class="hc-desc">A1–C2 Englisch lernen mit Übersetzung</div>
           </div>
         </div>
       </div>
@@ -1234,21 +1239,13 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
       <span style="font-size:1.1rem;">🇩🇪</span>
       <span class="section-title" id="ui-deniveau-title">Deutsch Sprachniveau</span>
     </div>
-    <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem;" id="ui-deniveau-sub">Strukturiertes Sprachlernen nach GER — Deutsch oder Englisch</p>
-
-    <!-- Lernsprache wählen: Deutsch oder Englisch -->
-    <div style="display:flex;gap:.4rem;margin-bottom:.75rem;align-items:center;">
-      <span style="font-size:.72rem;color:var(--muted);flex-shrink:0;">Lernen:</span>
-      <button class="btn primary" id="nlang-learn-de" onclick="setNiveauLearnLang('de')" style="flex:1;">🇩🇪 Deutsch</button>
-      <button class="btn" id="nlang-learn-en" onclick="setNiveauLearnLang('en')" style="flex:1;">🇬🇧 Englisch</button>
-    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem;" id="ui-deniveau-sub">Deutsch lernen A1–C2 — strukturiert nach GER</p>
 
     <!-- Übersetzungssprache wählen -->
     <div style="display:flex;gap:.4rem;margin-bottom:1rem;align-items:center;">
       <span style="font-size:.72rem;color:var(--muted);flex-shrink:0;">Übersetzung:</span>
       <button class="btn primary" id="nlang-ru" onclick="setNiveauLang('ru')" style="flex:1;">🇷🇺 Russisch</button>
       <button class="btn" id="nlang-tr" onclick="setNiveauLang('tr')" style="flex:1;">🇹🇷 Türkisch</button>
-      <button class="btn" id="nlang-en" onclick="setNiveauLang('en')" style="flex:1;">🇬🇧 Englisch</button>
     </div>
 
     <!-- Level Tabs -->
@@ -1404,8 +1401,171 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
   </div>
 
+  <!-- ============================================================ -->
+  <!-- ENGLISCH SPRACHNIVEAU SEKTION                                 -->
+  <!-- ============================================================ -->
+  <div class="section" id="enniveau">
+    <div class="section-header">
+      <span style="font-size:1.1rem;">🇬🇧</span>
+      <span class="section-title">Englisch Sprachniveau</span>
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem;">Englisch lernen A1–C2 — strukturiert nach GER</p>
+
+    <!-- Übersetzungssprache wählen -->
+    <div style="display:flex;gap:.4rem;margin-bottom:1rem;align-items:center;">
+      <span style="font-size:.72rem;color:var(--muted);flex-shrink:0;">Übersetzung:</span>
+      <button class="btn primary" id="en-nlang-de" onclick="setEnNiveauLang('de')" style="flex:1;">🇩🇪 Deutsch</button>
+      <button class="btn" id="en-nlang-ru" onclick="setEnNiveauLang('ru')" style="flex:1;">🇷🇺 Russisch</button>
+      <button class="btn" id="en-nlang-tr" onclick="setEnNiveauLang('tr')" style="flex:1;">🇹🇷 Türkisch</button>
+    </div>
+
+    <!-- Level Tabs -->
+    <div style="display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <button class="btn primary" onclick="showEnNiveau('a1a2')" id="en-tab-a1a2" style="flex:1;min-width:80px;">🌱 A1–A2</button>
+      <button class="btn" onclick="showEnNiveau('b1b2')" id="en-tab-b1b2" style="flex:1;min-width:80px;">📈 B1–B2</button>
+      <button class="btn" onclick="showEnNiveau('c1c2')" id="en-tab-c1c2" style="flex:1;min-width:80px;">🏆 C1–C2</button>
+    </div>
+
+    <!-- A1/A2 Panel -->
+    <div id="en-niveau-a1a2" class="niveau-panel">
+      <div class="card" style="margin-bottom:.75rem;border-left:3px solid var(--accent3);">
+        <div class="card-title">🌱 A1 – Beginner</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;">First contacts, simple sentences, introducing yourself</p>
+        <div class="niveau-topic-grid" id="en-topics-a1"></div>
+      </div>
+      <div class="card" style="margin-bottom:.75rem;border-left:3px solid var(--accent);">
+        <div class="card-title">🌿 A2 – Elementary</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;">Shopping, transport, work, health</p>
+        <div class="niveau-topic-grid" id="en-topics-a2"></div>
+      </div>
+    </div>
+
+    <!-- B1/B2 Panel -->
+    <div id="en-niveau-b1b2" class="niveau-panel" style="display:none;">
+      <div class="card" style="margin-bottom:.75rem;border-left:3px solid var(--accent2);">
+        <div class="card-title">📗 B1 – Intermediate</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;">Travel, media, environment, education</p>
+        <div class="niveau-topic-grid" id="en-topics-b1"></div>
+      </div>
+      <div class="card" style="margin-bottom:.75rem;border-left:3px solid #c77dff;">
+        <div class="card-title">📘 B2 – Upper Intermediate</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;">Career, culture, complex topics</p>
+        <div class="niveau-topic-grid" id="en-topics-b2"></div>
+      </div>
+    </div>
+
+    <!-- C1/C2 Panel -->
+    <div id="en-niveau-c1c2" class="niveau-panel" style="display:none;">
+      <div class="card" style="margin-bottom:.75rem;border-left:3px solid #f9c74f;">
+        <div class="card-title">🎓 C1 – Advanced</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;">Rhetoric, nuance, academic language</p>
+        <div class="niveau-topic-grid" id="en-topics-c1"></div>
+      </div>
+      <div class="card" style="margin-bottom:.75rem;border-left:3px solid #e76f51;">
+        <div class="card-title">👑 C2 – Mastery</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;">Idioms, style, native-level language</p>
+        <div class="niveau-topic-grid" id="en-topics-c2"></div>
+      </div>
+    </div>
+
+    <!-- Übungs-Bereich EN (eigene IDs mit en- Präfix) -->
+    <div id="en-niveau-exercise" style="display:none;">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
+        <button class="btn" onclick="closeEnNiveauExercise()" style="font-size:.8rem;">← Back</button>
+        <span id="en-niveau-ex-title" style="font-weight:700;"></span>
+        <span id="en-niveau-ex-badge" class="badge badge-accent"></span>
+      </div>
+      <div style="display:flex;gap:.4rem;margin-bottom:.75rem;flex-wrap:wrap;">
+        <button class="btn primary" onclick="enNiveauMode('vocab')" id="en-nmode-vocab" style="flex:1;font-size:.78rem;">📚 Vocabulary</button>
+        <button class="btn" onclick="enNiveauMode('grammar')" id="en-nmode-grammar" style="flex:1;font-size:.78rem;">📝 Grammar</button>
+        <button class="btn" onclick="enNiveauMode('sentences')" id="en-nmode-sentences" style="flex:1;font-size:.78rem;">💬 Sentences</button>
+        <button class="btn" onclick="enNiveauMode('quiz')" id="en-nmode-quiz" style="flex:1;font-size:.78rem;">🎯 Quiz</button>
+        <button class="btn" onclick="enNiveauMode('write')" id="en-nmode-write" style="flex:1;font-size:.78rem;">✍️ Write</button>
+      </div>
+
+      <!-- Vokabel-Karte EN -->
+      <div id="en-nex-vocab-area">
+        <div class="vocab-card" id="en-nex-card" onclick="enNiveauReveal()" style="cursor:pointer;min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div class="word-main" id="en-nex-word">—</div>
+          <div class="word-sub" id="en-nex-phonetic"></div>
+          <div class="word-translation" id="en-nex-translation" style="opacity:0;transition:opacity .3s;"></div>
+        </div>
+        <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;">
+          <button class="btn" onclick="enNiveauVocabAnswer(false)" style="flex:1;background:rgba(239,68,68,.15);color:#ef4444;">✗ Again</button>
+          <button class="btn" onclick="enNiveauSpeakWord()" style="flex:1;">🔊 Listen</button>
+          <button class="btn" onclick="enNiveauVocabAnswer('next')" style="flex:1;">→ Next</button>
+          <button class="btn primary" onclick="enNiveauVocabAnswer(true)" style="flex:1;">✓ Got it</button>
+        </div>
+        <div style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:.5rem;" id="en-nex-vocab-counter"></div>
+      </div>
+
+      <!-- Grammatik EN -->
+      <div id="en-nex-grammar-area" style="display:none;">
+        <div class="card" id="en-nex-grammar-card">
+          <div class="card-title" id="en-nex-grammar-rule-title"></div>
+          <div id="en-nex-grammar-content" style="font-size:.82rem;line-height:1.6;"></div>
+          <div id="en-nex-grammar-examples" style="margin-top:.75rem;"></div>
+          <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+            <button class="btn" onclick="enNiveauPrevGrammar()" style="flex:1;">← Back</button>
+            <button class="btn primary" onclick="enNiveauNextGrammar()" style="flex:1;">Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sätze EN -->
+      <div id="en-nex-sentences-area" style="display:none;">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:1.1rem;font-weight:700;margin-bottom:.5rem;" id="en-nex-sentence-en"></div>
+          <div style="font-size:.82rem;color:var(--muted);margin-bottom:.75rem;" id="en-nex-sentence-trans"></div>
+          <button class="btn" onclick="enNiveauSpeakSentence()" style="margin-bottom:.75rem;width:100%;">🔊 Listen</button>
+          <button class="btn primary" onclick="enNiveauNextSentence()" style="width:100%;">Next →</button>
+        </div>
+        <div style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:.4rem;" id="en-nex-sentence-counter"></div>
+      </div>
+
+      <!-- Quiz EN -->
+      <div id="en-nex-quiz-area" style="display:none;">
+        <div class="card">
+          <div style="font-size:.78rem;color:var(--muted);margin-bottom:.5rem;" id="en-nex-quiz-counter"></div>
+          <div style="font-weight:700;font-size:1rem;margin-bottom:1rem;" id="en-nex-quiz-question"></div>
+          <div id="en-nex-quiz-options" style="display:flex;flex-direction:column;gap:.4rem;"></div>
+          <div id="en-nex-quiz-feedback" style="margin-top:.75rem;font-weight:600;font-size:.85rem;text-align:center;"></div>
+          <button class="btn primary" onclick="enNiveauNextQuiz()" id="en-nex-quiz-next" style="width:100%;margin-top:.75rem;display:none;">Next →</button>
+        </div>
+        <div style="text-align:center;margin-top:.5rem;font-size:.78rem;color:var(--muted);" id="en-nex-quiz-score"></div>
+      </div>
+
+      <!-- Schreiben EN -->
+      <div id="en-nex-write-area" style="display:none;">
+        <div class="card" style="margin-bottom:.75rem;">
+          <div style="font-size:.72rem;color:var(--muted);margin-bottom:.4rem;" id="en-nex-write-counter"></div>
+          <div style="background:var(--surface2);border-radius:10px;padding:.75rem;margin-bottom:.75rem;">
+            <div style="font-size:.68rem;color:var(--muted);font-weight:700;margin-bottom:.3rem;">✍️ TYPE IN ENGLISH:</div>
+            <div style="font-size:1rem;font-weight:700;" id="en-nex-write-prompt"></div>
+            <div style="font-size:.78rem;color:var(--muted);margin-top:.3rem;" id="en-nex-write-prompt-lang"></div>
+          </div>
+          <input type="text" id="en-nex-write-input" style="width:100%;background:var(--surface2);border:2px solid var(--border);border-radius:10px;color:var(--text);padding:.6rem .75rem;font-size:.95rem;font-family:'Syne',sans-serif;box-sizing:border-box;transition:border-color .2s;" placeholder="Type in English..." onkeydown="if(event.key==='Enter')enNiveauCheckWrite()" oninput="enNiveauWriteHint()">
+          <div id="en-nex-write-hint" style="font-size:.72rem;color:var(--accent);margin-top:.4rem;letter-spacing:.15em;font-weight:700;min-height:1.2em;"></div>
+          <div id="en-nex-write-feedback" style="margin-top:.5rem;font-size:.85rem;font-weight:600;text-align:center;min-height:1.4em;"></div>
+          <div style="display:flex;gap:.4rem;margin-top:.75rem;">
+            <button class="btn" onclick="enNiveauWriteHintFull()" style="flex:1;font-size:.78rem;">💡 Hint</button>
+            <button class="btn" onclick="enNiveauSpeakWriteWord()" style="flex:1;font-size:.78rem;">🔊 Listen</button>
+            <button class="btn primary" onclick="enNiveauCheckWrite()" style="flex:2;font-size:.85rem;">✓ Check</button>
+          </div>
+          <button class="btn" id="en-nex-write-next-btn" onclick="enNiveauNextWrite()" style="width:100%;margin-top:.5rem;display:none;">Next →</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <div style="flex:1;background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;">
+            <div id="en-nex-write-progress" style="height:100%;background:var(--accent3);border-radius:4px;width:0%;transition:width .4s;"></div>
+          </div>
+          <div id="en-nex-write-score" style="font-size:.72rem;color:var(--muted);white-space:nowrap;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <footer>
-    LINGUA <span id="footer-version">v4.9</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v5.0</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -1573,7 +1733,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v4.9</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v5.0</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -5508,7 +5668,7 @@ function applyUILanguage() {
   uiLang = localStorage.getItem('lingua_ui_lang') || 'de';
   function setText(id, text) { var el = document.getElementById(id); if (el) el.textContent = text; }
   // Nav
-  var navIcons = {home:'⌂',vocab:'📚',quiz:'❓',free:'🗂',generator:'✨',myvocab:'⭐',translate:'⇄',ai:'✦',srs:'🧠',write:'✍',stats:'📊',badges:'🏆',path:'🗺',search:'🔍',conjugate:'🔀',deniveau:'🇩🇪'};
+  var navIcons = {home:'⌂',vocab:'📚',quiz:'❓',free:'🗂',generator:'✨',myvocab:'⭐',translate:'⇄',ai:'✦',srs:'🧠',write:'✍',stats:'📊',badges:'🏆',path:'🗺',search:'🔍',conjugate:'🔀',deniveau:'🇩🇪',enniveau:'🇬🇧'};
   var navKeys  = {home:'nav_home',vocab:'nav_vocab',quiz:'nav_quiz',free:'nav_free',generator:'nav_gen',myvocab:'nav_myvocab',translate:'nav_translate',ai:'nav_ai',srs:'nav_srs',write:'nav_write',stats:'nav_stats',badges:'nav_badges',path:'nav_path',search:'nav_search',conjugate:'nav_conjugate'};
   document.querySelectorAll('.nav-btn[data-section]').forEach(function(b) {
     var sec = b.dataset.section;
@@ -12537,6 +12697,305 @@ function updateNiveauWriteProgress() {
 }
 
 // ============================================================
+// ENGLISCH SPRACHNIVEAU — JS-Logik (eigene Sektion)
+// f = Englisch (lernen), t = Deutsch, ru/tr = Weitere
+// ============================================================
+var enNiveauState = {
+  level:null, topicId:null, topic:null, lang:'de',
+  mode:'vocab', vocabIdx:0, revealed:false,
+  grammarIdx:0, sentenceIdx:0,
+  quizIdx:0, quizScore:0, quizAnswered:false, progress:{}
+};
+
+function setEnNiveauLang(lang) {
+  enNiveauState.lang = lang;
+  ['de','ru','tr'].forEach(function(l) {
+    var b = document.getElementById('en-nlang-'+l);
+    if (b) b.className = 'btn'+(lang===l?' primary':'');
+  });
+  if (enNiveauState.topic) enRenderVocab();
+}
+
+function initEnNiveau() {
+  enNiveauState.level = null; enNiveauState.topic = null;
+  document.getElementById('en-niveau-exercise').style.display = 'none';
+  showEnNiveau('a1a2');
+  enRenderTopics();
+}
+
+function showEnNiveau(lvl) {
+  ['a1a2','b1b2','c1c2'].forEach(function(l) {
+    document.getElementById('en-niveau-'+l).style.display = l===lvl ? 'block' : 'none';
+    document.getElementById('en-tab-'+l).className = 'btn'+(l===lvl?' primary':'');
+  });
+  enRenderTopics();
+}
+
+function enRenderTopics() {
+  ['a1','a2','b1','b2','c1','c2'].forEach(function(lvl) {
+    var el = document.getElementById('en-topics-'+lvl);
+    if (!el || !NIVEAU_DATA_EN[lvl]) return;
+    el.innerHTML = NIVEAU_DATA_EN[lvl].topics.map(function(t) {
+      var prog = enNiveauState.progress[t.id];
+      var pct = prog ? Math.round((prog.vocab/t.vocab.length)*100) : 0;
+      return '<button class="niveau-topic-btn'+(pct>=100?' done':'')+'" onclick="openEnTopic(\''+lvl+'\',\''+t.id+'\')">' +
+        '<span class="ntb-icon">'+t.icon+'</span>'+t.title+
+        '<span class="ntb-prog">'+(pct>0?pct+'% ✓':'0%')+'</span></button>';
+    }).join('');
+  });
+}
+
+function openEnTopic(lvl, topicId) {
+  var topic = NIVEAU_DATA_EN[lvl].topics.find(function(t){ return t.id===topicId; });
+  if (!topic) return;
+  enNiveauState.level=lvl; enNiveauState.topicId=topicId; enNiveauState.topic=topic;
+  enNiveauState.vocabIdx=0; enNiveauState.revealed=false;
+  enNiveauState.grammarIdx=0; enNiveauState.sentenceIdx=0;
+  enNiveauState.quizIdx=0; enNiveauState.quizScore=0;
+  document.getElementById('en-niveau-ex-title').textContent = topic.icon+' '+topic.title;
+  document.getElementById('en-niveau-ex-badge').textContent = NIVEAU_DATA_EN[lvl].label;
+  document.getElementById('en-niveau-exercise').style.display = 'block';
+  ['a1a2','b1b2','c1c2'].forEach(function(l){
+    document.getElementById('en-niveau-'+l).style.display = 'none';
+  });
+  enNiveauMode('vocab');
+}
+
+function closeEnNiveauExercise() {
+  document.getElementById('en-niveau-exercise').style.display = 'none';
+  enRenderTopics();
+  showEnNiveau('a1a2');
+}
+
+function enNiveauMode(mode) {
+  enNiveauState.mode = mode;
+  ['vocab','grammar','sentences','quiz','write'].forEach(function(m) {
+    document.getElementById('en-nmode-'+m).className = 'btn'+(m===mode?' primary':'');
+    document.getElementById('en-nex-'+m+'-area').style.display = m===mode ? 'block' : 'none';
+  });
+  if (mode==='vocab')     enRenderVocab();
+  if (mode==='grammar')   enRenderGrammar();
+  if (mode==='sentences') enRenderSentence();
+  if (mode==='quiz')      enStartQuiz();
+  if (mode==='write')     enStartWrite();
+}
+
+// --- VOKABELN ---
+function enRenderVocab() {
+  var t = enNiveauState.topic;
+  var w = t.vocab[enNiveauState.vocabIdx];
+  document.getElementById('en-nex-word').textContent = w.f;
+  document.getElementById('en-nex-phonetic').textContent = '['+w.p+']';
+  var lang = enNiveauState.lang;
+  var trans = lang==='ru'?(w.ru||w.t) : lang==='tr'?(w.tr||w.t) : w.t;
+  document.getElementById('en-nex-translation').textContent = trans;
+  document.getElementById('en-nex-translation').style.opacity = '0';
+  enNiveauState.revealed = false;
+  document.getElementById('en-nex-vocab-counter').textContent = (enNiveauState.vocabIdx+1)+' / '+t.vocab.length;
+}
+
+function enNiveauReveal() {
+  if (enNiveauState.revealed) return;
+  enNiveauState.revealed = true;
+  document.getElementById('en-nex-translation').style.opacity = '1';
+}
+
+function enNiveauSpeakWord() {
+  speak(enNiveauState.topic.vocab[enNiveauState.vocabIdx].f, 'en');
+}
+
+function enNiveauVocabAnswer(knew) {
+  var t = enNiveauState.topic;
+  if (knew === true) {
+    if (!enNiveauState.progress[t.id]) enNiveauState.progress[t.id] = {vocab:0};
+    enNiveauState.progress[t.id].vocab = Math.min(t.vocab.length, (enNiveauState.progress[t.id].vocab||0)+1);
+    addXP(1); incrementDailyLearned();
+  }
+  enNiveauState.vocabIdx++;
+  if (enNiveauState.vocabIdx >= t.vocab.length) {
+    enNiveauState.vocabIdx = 0;
+    showToast('🎉 All words of this unit done!');
+    if (knew !== false && enNiveauState.progress[t.id]) enNiveauState.progress[t.id].done = true;
+  }
+  enRenderVocab();
+}
+
+// --- GRAMMATIK ---
+function enRenderGrammar() {
+  var rules = enNiveauState.topic.grammar || [];
+  if (!rules.length) {
+    document.getElementById('en-nex-grammar-card').innerHTML = '<p style="color:var(--muted);text-align:center;">No grammar for this topic.</p>';
+    return;
+  }
+  var r = rules[enNiveauState.grammarIdx];
+  document.getElementById('en-nex-grammar-rule-title').textContent = '📖 '+r.title;
+  document.getElementById('en-nex-grammar-content').innerHTML = r.text.replace(/\n/g,'<br>');
+  document.getElementById('en-nex-grammar-examples').innerHTML =
+    '<div style="font-weight:700;font-size:.75rem;color:var(--muted);margin-bottom:.4rem;">Examples:</div>' +
+    r.examples.map(function(ex){
+      return '<div style="background:var(--surface2);border-radius:8px;padding:.4rem .6rem;margin-bottom:.3rem;font-size:.8rem;">'+ex+'</div>';
+    }).join('');
+}
+function enNiveauPrevGrammar() {
+  if (enNiveauState.grammarIdx > 0) { enNiveauState.grammarIdx--; enRenderGrammar(); }
+}
+function enNiveauNextGrammar() {
+  var r = enNiveauState.topic.grammar || [];
+  if (enNiveauState.grammarIdx < r.length-1) { enNiveauState.grammarIdx++; enRenderGrammar(); }
+  else showToast('✅ All grammar rules done!');
+}
+
+// --- SÄTZE ---
+function enRenderSentence() {
+  var sens = enNiveauState.topic.sentences;
+  var s = sens[enNiveauState.sentenceIdx % sens.length];
+  document.getElementById('en-nex-sentence-en').textContent = s.f;
+  var lang = enNiveauState.lang;
+  var trans = lang==='ru'?(s.ru||s.t) : lang==='tr'?(s.tr||s.t) : s.t;
+  document.getElementById('en-nex-sentence-trans').textContent = trans;
+  document.getElementById('en-nex-sentence-counter').textContent =
+    (enNiveauState.sentenceIdx%sens.length+1)+' / '+sens.length;
+}
+function enNiveauSpeakSentence() {
+  var s = enNiveauState.topic.sentences[enNiveauState.sentenceIdx % enNiveauState.topic.sentences.length];
+  speak(s.f, 'en');
+}
+function enNiveauNextSentence() { enNiveauState.sentenceIdx++; enRenderSentence(); addXP(1); }
+
+// --- QUIZ ---
+function enStartQuiz() {
+  enNiveauState.quizIdx=0; enNiveauState.quizScore=0; enNiveauState.quizAnswered=false;
+  enRenderQuiz();
+}
+function enRenderQuiz() {
+  var vocab = enNiveauState.topic.vocab;
+  if (enNiveauState.quizIdx >= vocab.length) {
+    document.getElementById('en-nex-quiz-question').textContent = '🏆 Quiz done!';
+    document.getElementById('en-nex-quiz-options').innerHTML = '';
+    document.getElementById('en-nex-quiz-score').textContent = 'Score: '+enNiveauState.quizScore+' / '+vocab.length;
+    document.getElementById('en-nex-quiz-next').style.display = 'none';
+    document.getElementById('en-nex-quiz-feedback').textContent = '';
+    if (enNiveauState.quizScore === vocab.length) addXP(3);
+    return;
+  }
+  var w = vocab[enNiveauState.quizIdx];
+  var lang = enNiveauState.lang;
+  var trans = lang==='ru'?(w.ru||w.t):lang==='tr'?(w.tr||w.t):w.t;
+  var flag  = lang==='ru'?'🇷🇺':lang==='tr'?'🇹🇷':'🇩🇪';
+  document.getElementById('en-nex-quiz-counter').textContent = 'Question '+(enNiveauState.quizIdx+1)+' / '+vocab.length;
+  document.getElementById('en-nex-quiz-question').textContent = flag+' '+trans+' = ?';
+  document.getElementById('en-nex-quiz-feedback').textContent = '';
+  document.getElementById('en-nex-quiz-next').style.display = 'none';
+  enNiveauState.quizAnswered = false;
+  var pool = vocab.filter(function(x){ return x.f!==w.f; }).sort(function(){ return Math.random()-.5; }).slice(0,3);
+  var opts = [{f:w.f,ok:true}].concat(pool.map(function(x){ return {f:x.f,ok:false}; })).sort(function(){ return Math.random()-.5; });
+  document.getElementById('en-nex-quiz-options').innerHTML = opts.map(function(o){
+    return '<button class="btn" style="text-align:left;" onclick="enCheckQuiz(this,'+o.ok+',\''+w.f.replace(/'/g,"\\'")+'\')">'+o.f+'</button>';
+  }).join('');
+  document.getElementById('en-nex-quiz-score').textContent = 'Score: '+enNiveauState.quizScore;
+}
+function enCheckQuiz(btn, ok, correct) {
+  if (enNiveauState.quizAnswered) return;
+  enNiveauState.quizAnswered = true;
+  if (ok) {
+    btn.style.background='var(--accent3)'; btn.style.color='#fff'; enNiveauState.quizScore++;
+    document.getElementById('en-nex-quiz-feedback').textContent='✓ Correct!';
+    document.getElementById('en-nex-quiz-feedback').style.color='var(--accent3)';
+  } else {
+    btn.style.background='rgba(239,68,68,.2)'; btn.style.color='#ef4444';
+    document.getElementById('en-nex-quiz-feedback').textContent='✗ Correct: '+correct;
+    document.getElementById('en-nex-quiz-feedback').style.color='#ef4444';
+  }
+  document.getElementById('en-nex-quiz-next').style.display = 'block';
+}
+function enNiveauNextQuiz() { enNiveauState.quizIdx++; enNiveauState.quizAnswered=false; enRenderQuiz(); }
+
+// --- SCHREIBEN EN ---
+var enWriteState = {idx:0,correct:0,total:0,words:[],hintCount:0,checked:false};
+
+function enStartWrite() {
+  var t = enNiveauState.topic;
+  enWriteState.words = t.vocab.slice().sort(function(){ return Math.random()-.5; });
+  enWriteState.idx=0; enWriteState.correct=0; enWriteState.total=enWriteState.words.length;
+  enRenderWrite();
+}
+function enRenderWrite() {
+  var ws = enWriteState;
+  if (ws.idx >= ws.total) {
+    document.getElementById('en-nex-write-prompt').textContent = '🎉 All words done!';
+    document.getElementById('en-nex-write-prompt-lang').textContent = '';
+    document.getElementById('en-nex-write-input').style.display = 'none';
+    document.getElementById('en-nex-write-feedback').textContent = 'Score: '+ws.correct+' / '+ws.total;
+    document.getElementById('en-nex-write-feedback').style.color = 'var(--accent3)';
+    document.getElementById('en-nex-write-hint').textContent = '';
+    document.getElementById('en-nex-write-next-btn').style.display = 'none';
+    if (ws.correct===ws.total) addXP(3);
+    enUpdateWriteProgress(); return;
+  }
+  var w = ws.words[ws.idx]; ws.hintCount=0; ws.checked=false;
+  var lang=enNiveauState.lang;
+  var trans=lang==='ru'?(w.ru||w.t):lang==='tr'?(w.tr||w.t):w.t;
+  var flag=lang==='ru'?'🇷🇺':lang==='tr'?'🇹🇷':'🇩🇪';
+  document.getElementById('en-nex-write-prompt').textContent = trans;
+  document.getElementById('en-nex-write-prompt-lang').textContent = flag+' Type the English word';
+  document.getElementById('en-nex-write-input').value = '';
+  document.getElementById('en-nex-write-input').style.display = 'block';
+  document.getElementById('en-nex-write-input').style.borderColor = 'var(--border)';
+  document.getElementById('en-nex-write-input').disabled = false;
+  document.getElementById('en-nex-write-feedback').textContent = '';
+  document.getElementById('en-nex-write-hint').textContent = '';
+  document.getElementById('en-nex-write-next-btn').style.display = 'none';
+  document.getElementById('en-nex-write-counter').textContent = (ws.idx+1)+' / '+ws.total;
+  enUpdateWriteProgress();
+  setTimeout(function(){ var i=document.getElementById('en-nex-write-input'); if(i) i.focus(); },100);
+}
+function enNiveauWriteHint() {
+  var ws=enWriteState; if(ws.idx>=ws.total||ws.checked) return;
+  var w=ws.words[ws.idx]; var input=document.getElementById('en-nex-write-input').value.toLowerCase();
+  var correct=w.f.toLowerCase(); var matchLen=0;
+  for(var i=0;i<Math.min(input.length,correct.length);i++){if(input[i]===correct[i])matchLen++;else break;}
+  var hint=''; for(var j=0;j<correct.length;j++){hint+=j<matchLen?correct[j]:j<input.length?'✗':'·';}
+  document.getElementById('en-nex-write-hint').textContent=hint;
+}
+function enNiveauWriteHintFull() {
+  var ws=enWriteState; if(ws.idx>=ws.total||ws.checked) return;
+  var w=ws.words[ws.idx]; ws.hintCount=Math.min(ws.hintCount+2,w.f.length);
+  document.getElementById('en-nex-write-hint').textContent='💡 '+w.f.slice(0,ws.hintCount)+'·'.repeat(Math.max(0,w.f.length-ws.hintCount));
+  document.getElementById('en-nex-write-input').value=w.f.slice(0,ws.hintCount);
+  document.getElementById('en-nex-write-input').focus();
+}
+function enNiveauSpeakWriteWord() {
+  var ws=enWriteState; if(ws.idx>=ws.total) return; speak(ws.words[ws.idx].f,'en');
+}
+function enNiveauCheckWrite() {
+  var ws=enWriteState; if(ws.idx>=ws.total||ws.checked) return;
+  ws.checked=true; var w=ws.words[ws.idx];
+  var input=document.getElementById('en-nex-write-input').value.trim();
+  var isOk=input.toLowerCase()===w.f.toLowerCase();
+  var feedEl=document.getElementById('en-nex-write-feedback');
+  var inpEl=document.getElementById('en-nex-write-input');
+  if(isOk){
+    feedEl.textContent='✓ Correct!'; feedEl.style.color='var(--accent3)';
+    inpEl.style.borderColor='var(--accent3)'; ws.correct++;
+    addXP(1); incrementDailyLearned();
+    setTimeout(function(){ if(ws.checked) enNiveauNextWrite(); },1200);
+  } else {
+    feedEl.textContent='✗ Correct: '+w.f; feedEl.style.color='#ef4444';
+    inpEl.style.borderColor='#ef4444'; inpEl.disabled=true;
+    document.getElementById('en-nex-write-next-btn').style.display='block';
+  }
+  document.getElementById('en-nex-write-hint').textContent='['+w.p+']';
+  enUpdateWriteProgress();
+}
+function enNiveauNextWrite() { enWriteState.idx++; enRenderWrite(); }
+function enUpdateWriteProgress() {
+  var ws=enWriteState;
+  var pct=ws.total>0?Math.round((ws.idx/ws.total)*100):0;
+  document.getElementById('en-nex-write-progress').style.width=pct+'%';
+  document.getElementById('en-nex-write-score').textContent=ws.correct+' ✓  ·  '+(ws.idx-ws.correct)+' ✗';
+}
+
+// ============================================================
 // OVERRIDE switchSection to handle new sections
 // ============================================================
 var _origSwitchSection = switchSection;
@@ -12547,7 +13006,8 @@ switchSection = function(id) {
   if (id === 'stats') { updateAllStats(); renderGoalOptions(); }
   if (id === 'badges') renderBadges();
   if (id === 'path') renderLearningPath();
-  if (id === 'deniveau') { showNiveau('a1a2'); renderNiveauTopics(); }
+  if (id === 'deniveau') { setNiveauLearnLang('de'); showNiveau('a1a2'); renderNiveauTopics(); }
+  if (id === 'enniveau') { initEnNiveau(); }
 };
 
 // ============================================================
@@ -12795,8 +13255,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 52;
-var BUILD_VERSION = '4.9'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 53;
+var BUILD_VERSION = '5.0'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -12902,6 +13362,18 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  53: {
+    emoji: '🇬🇧',
+    title: 'Englisch Sprachniveau — eigene Sektion',
+    items: [
+      '🇬🇧 Englisch Sprachniveau als eigenständige Sektion (id=enniveau)',
+      '🗺 Nav-Button 🇬🇧 EN Niveau in der Navigationsleiste',
+      '🏠 Home-Card Englisch Sprachniveau ergänzt',
+      '🇩🇪 Übersetzungssprache DE/RU/TR für Englisch Niveau wählbar',
+      '✍️ Alle 5 Modi: Vokabeln, Grammatik, Sätze, Quiz, Schreiben',
+      '🇩🇪 Deutsch Niveau: Übersetzung nur RU/TR (EN nicht mehr nötig)',
+    ]
+  },
   52: {
     emoji: '🇬🇧',
     title: 'Englisch Sprachniveau A1–C2',
