@@ -1303,6 +1303,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <button class="btn" onclick="niveauMode('grammar')" id="nmode-grammar" style="flex:1;font-size:.78rem;">📝 Grammatik</button>
         <button class="btn" onclick="niveauMode('sentences')" id="nmode-sentences" style="flex:1;font-size:.78rem;">💬 Sätze</button>
         <button class="btn" onclick="niveauMode('quiz')" id="nmode-quiz" style="flex:1;font-size:.78rem;">🎯 Quiz</button>
+        <button class="btn" onclick="niveauMode('write')" id="nmode-write" style="flex:1;font-size:.78rem;">✍️ Schreiben</button>
       </div>
       <!-- Vokabel-Karte -->
       <div id="nex-vocab-area">
@@ -1351,6 +1352,43 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         </div>
         <div style="text-align:center;margin-top:.5rem;">
           <div id="nex-quiz-score" style="font-size:.78rem;color:var(--muted);"></div>
+        </div>
+      </div>
+
+      <!-- SCHREIBEN-BEREICH -->
+      <div id="nex-write-area" style="display:none;">
+        <div class="card" style="margin-bottom:.75rem;">
+          <div style="font-size:.72rem;color:var(--muted);margin-bottom:.4rem;" id="nex-write-counter"></div>
+          <!-- Aufgabe -->
+          <div style="background:var(--surface2);border-radius:10px;padding:.75rem;margin-bottom:.75rem;">
+            <div style="font-size:.68rem;color:var(--muted);font-weight:700;margin-bottom:.3rem;">✍️ SCHREIBE AUF DEUTSCH:</div>
+            <div style="font-size:1rem;font-weight:700;color:var(--text);" id="nex-write-prompt"></div>
+            <div style="font-size:.78rem;color:var(--muted);margin-top:.3rem;" id="nex-write-prompt-lang"></div>
+          </div>
+          <!-- Eingabe -->
+          <input type="text" id="nex-write-input"
+            style="width:100%;background:var(--surface2);border:2px solid var(--border);border-radius:10px;color:var(--text);padding:.6rem .75rem;font-size:.95rem;font-family:'Syne',sans-serif;box-sizing:border-box;transition:border-color .2s;"
+            placeholder="Auf Deutsch tippen..."
+            onkeydown="if(event.key==='Enter')niveauCheckWrite()"
+            oninput="niveauWriteHint()">
+          <!-- Hinweis-Buchstaben -->
+          <div id="nex-write-hint" style="font-size:.72rem;color:var(--accent);margin-top:.4rem;letter-spacing:.15em;font-weight:700;min-height:1.2em;"></div>
+          <!-- Feedback -->
+          <div id="nex-write-feedback" style="margin-top:.5rem;font-size:.85rem;font-weight:600;text-align:center;min-height:1.4em;"></div>
+          <!-- Buttons -->
+          <div style="display:flex;gap:.4rem;margin-top:.75rem;">
+            <button class="btn" onclick="niveauWriteHintFull()" style="flex:1;font-size:.78rem;">💡 Tipp</button>
+            <button class="btn" onclick="niveauSpeakWriteWord()" style="flex:1;font-size:.78rem;">🔊 Hören</button>
+            <button class="btn primary" onclick="niveauCheckWrite()" style="flex:2;font-size:.85rem;">✓ Prüfen</button>
+          </div>
+          <button class="btn" id="nex-write-next-btn" onclick="niveauNextWrite()" style="width:100%;margin-top:.5rem;display:none;">Weiter →</button>
+        </div>
+        <!-- Fortschrittsleiste -->
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <div style="flex:1;background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;">
+            <div id="nex-write-progress" style="height:100%;background:var(--accent3);border-radius:4px;width:0%;transition:width .4s;"></div>
+          </div>
+          <div id="nex-write-score" style="font-size:.72rem;color:var(--muted);white-space:nowrap;"></div>
         </div>
       </div>
     </div>
@@ -11808,7 +11846,7 @@ function closeNiveauExercise() {
 
 function niveauMode(mode) {
   niveauState.mode = mode;
-  ['vocab','grammar','sentences','quiz'].forEach(function(m) {
+  ['vocab','grammar','sentences','quiz','write'].forEach(function(m) {
     document.getElementById('nmode-'+m).className = 'btn'+(m===mode?' primary':'');
     document.getElementById('nex-'+m+'-area').style.display = m===mode?'block':'none';
   });
@@ -11816,6 +11854,7 @@ function niveauMode(mode) {
   if (mode==='grammar') renderNiveauGrammar();
   if (mode==='sentences') renderNiveauSentence();
   if (mode==='quiz') startNiveauQuiz();
+  if (mode==='write') startNiveauWrite();
 }
 
 // ---- VOKABELN ----
@@ -11949,6 +11988,167 @@ function niveauCheckQuizAnswer(btn, correct, correctDe) {
   document.getElementById('nex-quiz-next').style.display='block';
 }
 function niveauNextQuiz() { niveauState.quizIdx++; renderNiveauQuiz(); }
+
+// ============================================================
+// NIVEAU SCHREIBEN — Tippübungen
+// ============================================================
+var niveauWriteState = {
+  idx: 0, correct: 0, total: 0,
+  words: [], hintCount: 0, checked: false
+};
+
+function startNiveauWrite() {
+  var t = niveauState.topic;
+  // Mische Vokabeln für die Übung
+  niveauWriteState.words = t.vocab.slice().sort(function(){ return Math.random()-.5; });
+  niveauWriteState.idx = 0;
+  niveauWriteState.correct = 0;
+  niveauWriteState.total = niveauWriteState.words.length;
+  renderNiveauWrite();
+}
+
+function renderNiveauWrite() {
+  var ws = niveauWriteState;
+  if (ws.idx >= ws.total) {
+    // Alle Wörter geübt
+    document.getElementById('nex-write-prompt').textContent = '🎉 Alle Wörter geübt!';
+    document.getElementById('nex-write-prompt-lang').textContent = '';
+    document.getElementById('nex-write-input').style.display = 'none';
+    document.getElementById('nex-write-feedback').textContent =
+      'Ergebnis: ' + ws.correct + ' / ' + ws.total + ' korrekt';
+    document.getElementById('nex-write-feedback').style.color = 'var(--accent3)';
+    document.getElementById('nex-write-hint').textContent = '';
+    document.getElementById('nex-write-next-btn').style.display = 'none';
+    if (ws.correct === ws.total) addXP(3);
+    updateNiveauWriteProgress();
+    return;
+  }
+
+  var w = ws.words[ws.idx];
+  ws.hintCount = 0;
+  ws.checked = false;
+
+  // Zeige Übersetzung als Aufgabe, Nutzer soll Deutsch tippen
+  var lang = niveauState.lang;
+  var translation = lang === 'tr' ? (w.tr || w.ru) : w.ru;
+  var flag = lang === 'tr' ? '🇹🇷' : '🇷🇺';
+
+  document.getElementById('nex-write-prompt').textContent = translation;
+  document.getElementById('nex-write-prompt-lang').textContent = flag + ' Tippe das deutsche Wort';
+  document.getElementById('nex-write-input').value = '';
+  document.getElementById('nex-write-input').style.display = 'block';
+  document.getElementById('nex-write-input').style.borderColor = 'var(--border)';
+  document.getElementById('nex-write-input').disabled = false;
+  document.getElementById('nex-write-feedback').textContent = '';
+  document.getElementById('nex-write-feedback').style.color = '';
+  document.getElementById('nex-write-hint').textContent = '';
+  document.getElementById('nex-write-next-btn').style.display = 'none';
+  document.getElementById('nex-write-counter').textContent =
+    (ws.idx + 1) + ' / ' + ws.total + ' Wörter';
+
+  updateNiveauWriteProgress();
+
+  // Fokus auf Eingabefeld
+  setTimeout(function() {
+    var inp = document.getElementById('nex-write-input');
+    if (inp) inp.focus();
+  }, 100);
+}
+
+function niveauWriteHint() {
+  // Live-Tipp: zeigt erste n Buchstaben während Tippen
+  var ws = niveauWriteState;
+  if (ws.idx >= ws.total || ws.checked) return;
+  var w = ws.words[ws.idx];
+  var input = document.getElementById('nex-write-input').value.toLowerCase();
+  var correct = w.de.toLowerCase();
+  // Prüfe wie viele Buchstaben richtig sind
+  var matchLen = 0;
+  for (var i = 0; i < Math.min(input.length, correct.length); i++) {
+    if (input[i] === correct[i]) matchLen++;
+    else break;
+  }
+  // Zeige Tipp-Anzeige: grüne Buchstaben = korrekt, Rest = Punkte
+  var hintStr = '';
+  for (var j = 0; j < correct.length; j++) {
+    if (j < matchLen) hintStr += correct[j];
+    else if (j < input.length) hintStr += '✗';
+    else hintStr += '·';
+  }
+  document.getElementById('nex-write-hint').textContent = hintStr;
+}
+
+function niveauWriteHintFull() {
+  // Vollständiger Hinweis: ersten Buchstaben enthüllen
+  var ws = niveauWriteState;
+  if (ws.idx >= ws.total || ws.checked) return;
+  var w = ws.words[ws.idx];
+  ws.hintCount = Math.min(ws.hintCount + 2, w.de.length);
+  var hint = w.de.slice(0, ws.hintCount) + '·'.repeat(Math.max(0, w.de.length - ws.hintCount));
+  document.getElementById('nex-write-hint').textContent = '💡 ' + hint;
+  // Vorausfüllen
+  document.getElementById('nex-write-input').value = w.de.slice(0, ws.hintCount);
+  document.getElementById('nex-write-input').focus();
+}
+
+function niveauSpeakWriteWord() {
+  var ws = niveauWriteState;
+  if (ws.idx >= ws.total) return;
+  speak(ws.words[ws.idx].de, 'de');
+}
+
+function niveauCheckWrite() {
+  var ws = niveauWriteState;
+  if (ws.idx >= ws.total || ws.checked) return;
+  ws.checked = true;
+
+  var w = ws.words[ws.idx];
+  var input = document.getElementById('nex-write-input').value.trim();
+  var correct = w.de;
+
+  // Vergleich (case-insensitive, Artikel tolerant)
+  var inputClean = input.toLowerCase().replace(/^(der|die|das|ein|eine)\s+/i, '');
+  var correctClean = correct.toLowerCase().replace(/^(der|die|das|ein|eine)\s+/i, '');
+  var isCorrect = inputClean === correctClean || input.toLowerCase() === correct.toLowerCase();
+
+  var feedbackEl = document.getElementById('nex-write-feedback');
+  var inputEl = document.getElementById('nex-write-input');
+
+  if (isCorrect) {
+    feedbackEl.textContent = '✓ Richtig!';
+    feedbackEl.style.color = 'var(--accent3)';
+    inputEl.style.borderColor = 'var(--accent3)';
+    ws.correct++;
+    addXP(1);
+    incrementDailyLearned();
+    // Auto-weiter nach 1.2s
+    setTimeout(function() {
+      if (ws.checked) niveauNextWrite();
+    }, 1200);
+  } else {
+    feedbackEl.textContent = '✗ Richtig: ' + correct;
+    feedbackEl.style.color = '#ef4444';
+    inputEl.style.borderColor = '#ef4444';
+    inputEl.disabled = true;
+    document.getElementById('nex-write-next-btn').style.display = 'block';
+  }
+
+  document.getElementById('nex-write-hint').textContent = '[' + w.ph + ']';
+  updateNiveauWriteProgress();
+}
+
+function niveauNextWrite() {
+  niveauWriteState.idx++;
+  renderNiveauWrite();
+}
+
+function updateNiveauWriteProgress() {
+  var ws = niveauWriteState;
+  var pct = ws.total > 0 ? Math.round((ws.idx / ws.total) * 100) : 0;
+  document.getElementById('nex-write-progress').style.width = pct + '%';
+  document.getElementById('nex-write-score').textContent =
+    ws.correct + ' ✓  ·  ' + (ws.idx - ws.correct) + ' ✗';
+}
 
 // ============================================================
 // OVERRIDE switchSection to handle new sections
@@ -12209,7 +12409,7 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 46;
+var BUILD = 47;
 var BUILD_VERSION = '4.5'; // ← Diese zwei Zeilen bei jedem Deploy anpassen
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
