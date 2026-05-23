@@ -12409,24 +12409,35 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 47;
-var BUILD_VERSION = '4.5'; // ← Diese zwei Zeilen bei jedem Deploy anpassen
+var BUILD = 48;
+var BUILD_VERSION = '4.6'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
   var storedBuild = parseInt(localStorage.getItem('lingua_build_num') || '0', 10);
+  var storedVer   = localStorage.getItem('lingua_version') || '0.0';
 
-  // Wenn neuer Build → immer BUILD_VERSION verwenden (kein Increment vom alten Wert)
-  if (storedBuild < BUILD) {
-    localStorage.setItem('lingua_build_num', String(BUILD));
-    localStorage.setItem('lingua_version', BUILD_VERSION);
+  // Version vergleichen: nie runterzählen
+  function versionToNum(v) {
+    var p = (v || '0.0').split('.');
+    return parseInt(p[0]) * 100 + parseInt(p[1] || '0');
   }
 
-  var activeVer = localStorage.getItem('lingua_version') || BUILD_VERSION;
+  if (storedBuild < BUILD) {
+    // Neuer Build → höhere der beiden Versionen nehmen
+    var activeVer = versionToNum(BUILD_VERSION) >= versionToNum(storedVer)
+      ? BUILD_VERSION
+      : storedVer;
+    localStorage.setItem('lingua_build_num', String(BUILD));
+    localStorage.setItem('lingua_version', activeVer);
+    storedVer = activeVer;
+  }
+
+  var finalVer = localStorage.getItem('lingua_version') || BUILD_VERSION;
 
   // Globale Variable setzen — wird überall genutzt
-  window.CURRENT_VERSION = activeVer;
-  CURRENT_VERSION = activeVer;
+  window.CURRENT_VERSION = finalVer;
+  CURRENT_VERSION = finalVer;
 })();
 
 // Alle UI-Stellen mit der aktuellen Version befüllen
