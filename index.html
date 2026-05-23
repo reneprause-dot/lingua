@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" id="meta-description" content="LINGUA v4.1 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" id="meta-description" content="LINGUA v4.4 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v4.1 · by René Prause</title>
+<title>LINGUA v4.4 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -605,6 +605,12 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 .xp-bar-track { height:8px; background:var(--border); border-radius:4px; overflow:hidden; margin:.5rem 0; }
 .xp-bar-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--accent),#a855f7); transition:width .6s ease; }
 .badge-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:.75rem; }
+/* DEUTSCH SPRACHNIVEAU */
+.niveau-topic-grid { display:grid; grid-template-columns:1fr 1fr; gap:.4rem; }
+.niveau-topic-btn { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:.55rem .5rem; cursor:pointer; text-align:center; transition:all .2s; font-size:.72rem; color:var(--text); font-family:'Syne',sans-serif; font-weight:600; line-height:1.3; }
+.niveau-topic-btn:hover,.niveau-topic-btn.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+.niveau-topic-btn .ntb-icon { font-size:1.1rem; display:block; margin-bottom:.15rem; }
+.niveau-topic-btn .ntb-prog { display:block; font-size:.6rem; color:var(--accent3); margin-top:.2rem; font-weight:700; }
 .badge-item { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:.75rem .5rem; text-align:center; transition:all .2s; }
 .badge-item.unlocked { border-color:var(--accent4); background:rgba(247,151,30,.1); }
 .badge-item.locked { opacity:.4; filter:grayscale(1); }
@@ -653,7 +659,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v4.1</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v4.4</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -687,6 +693,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     <button class="nav-btn" data-section="quiz"><span class="nav-icon">❓</span> Quiz</button>
     <button class="nav-btn" data-section="free"><span class="nav-icon">🗂</span> Freies Lernen</button>
     <button class="nav-btn" data-section="path"><span class="nav-icon">🗺</span> Lernpfad</button>
+    <button class="nav-btn" data-section="deniveau"><span class="nav-icon">🇩🇪</span> DE Niveau</button>
     <button class="nav-btn" data-section="stats"><span class="nav-icon">📊</span> Statistiken</button>
     <button class="nav-btn" data-section="badges"><span class="nav-icon">🏆</span> Abzeichen</button>
     <button class="nav-btn" data-section="generator"><span class="nav-icon">✨</span> KI-Generator</button>
@@ -791,6 +798,10 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
           <div class="home-card" style="--hc-color:#e76f51" onclick="switchSection('path')">
             <div class="hc-icon">🗺</div><div class="hc-title">Lernpfad</div>
             <div class="hc-desc">Strukturierte Lektionen von Anfänger bis Fortgeschritten</div>
+          </div>
+          <div class="home-card" style="--hc-color:#2a9d8f" onclick="switchSection('deniveau')">
+            <div class="hc-icon">🇩🇪</div><div class="hc-title" id="hc-deniveau-title">Deutsch Sprachniveau</div>
+            <div class="hc-desc" id="hc-deniveau-desc">A1–C2 strukturiert für Russischsprachige</div>
           </div>
         </div>
       </div>
@@ -1213,8 +1224,140 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
   </main>
 
+
+  <!-- ============================================================ -->
+  <!-- DEUTSCH SPRACHNIVEAU SEKTION                                  -->
+  <!-- ============================================================ -->
+  <div class="section" id="deniveau">
+    <div class="section-header">
+      <span style="font-size:1.1rem;">🇩🇪</span>
+      <span class="section-title" id="ui-deniveau-title">Deutsch Sprachniveau</span>
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem;" id="ui-deniveau-sub">Strukturiertes Deutsch lernen nach Europäischem Referenzrahmen (GER)</p>
+
+    <!-- Übersetzungssprache wählen -->
+    <div style="display:flex;gap:.4rem;margin-bottom:1rem;align-items:center;">
+      <span style="font-size:.72rem;color:var(--muted);flex-shrink:0;">Übersetzung:</span>
+      <button class="btn primary" id="nlang-ru" onclick="setNiveauLang('ru')" style="flex:1;">🇷🇺 Russisch</button>
+      <button class="btn" id="nlang-tr" onclick="setNiveauLang('tr')" style="flex:1;">🇹🇷 Türkisch</button>
+    </div>
+
+    <!-- Level Tabs -->
+    <div style="display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;" id="niveau-tabs">
+      <button class="btn primary" onclick="showNiveau('a1a2')" id="tab-a1a2" style="flex:1;min-width:80px;">🌱 A1–A2</button>
+      <button class="btn" onclick="showNiveau('b1b2')" id="tab-b1b2" style="flex:1;min-width:80px;">📈 B1–B2</button>
+      <button class="btn" onclick="showNiveau('c1c2')" id="tab-c1c2" style="flex:1;min-width:80px;">🏆 C1–C2</button>
+    </div>
+
+    <!-- A1/A2 Panel -->
+    <div id="niveau-a1a2" class="niveau-panel">
+      <div class="card" style="margin-bottom:.75rem;border-left:3px solid var(--accent3);">
+        <div class="card-title">🌱 A1 – Anfänger</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;">Erste Kontakte, einfache Sätze, sich vorstellen</p>
+        <div class="niveau-topic-grid" id="topics-a1"></div>
+      </div>
+      <div class="card" style="margin-bottom:.75rem;border-left:3px solid var(--accent);">
+        <div class="card-title">🌿 A2 – Grundlegende Kenntnisse</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;">Alltag, Familie, Einkaufen, Orientierung</p>
+        <div class="niveau-topic-grid" id="topics-a2"></div>
+      </div>
+    </div>
+
+    <!-- B1/B2 Panel -->
+    <div id="niveau-b1b2" class="niveau-panel" style="display:none;">
+      <div class="card" style="margin-bottom:.75rem;border-left:3px solid var(--accent2);">
+        <div class="card-title">📗 B1 – Mittelstufe</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;">Beruf, Reisen, Meinungen äußern, Medien</p>
+        <div class="niveau-topic-grid" id="topics-b1"></div>
+      </div>
+      <div class="card" style="margin-bottom:.75rem;border-left:3px solid #c77dff;">
+        <div class="card-title">📘 B2 – Gehobene Mittelstufe</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;">Komplexe Themen, Argumentation, Literatur</p>
+        <div class="niveau-topic-grid" id="topics-b2"></div>
+      </div>
+    </div>
+
+    <!-- C1/C2 Panel -->
+    <div id="niveau-c1c2" class="niveau-panel" style="display:none;">
+      <div class="card" style="margin-bottom:.75rem;border-left:3px solid #f9c74f;">
+        <div class="card-title">🎓 C1 – Fortgeschrittene Kenntnisse</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;">Akademisch, Fachsprache, Nuancen</p>
+        <div class="niveau-topic-grid" id="topics-c1"></div>
+      </div>
+      <div class="card" style="margin-bottom:.75rem;border-left:3px solid #e76f51;">
+        <div class="card-title">👑 C2 – Meisterschaft</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;">Muttersprachlerniveau, Idiome, Stilistik</p>
+        <div class="niveau-topic-grid" id="topics-c2"></div>
+      </div>
+    </div>
+
+    <!-- Übungs-Bereich (erscheint wenn Thema gewählt) -->
+    <div id="niveau-exercise" style="display:none;">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
+        <button class="btn" onclick="closeNiveauExercise()" style="font-size:.8rem;">← Zurück</button>
+        <span id="niveau-ex-title" style="font-weight:700;"></span>
+        <span id="niveau-ex-badge" class="badge badge-accent"></span>
+      </div>
+      <div id="niveau-ex-mode-tabs" style="display:flex;gap:.4rem;margin-bottom:.75rem;flex-wrap:wrap;">
+        <button class="btn primary" onclick="niveauMode('vocab')" id="nmode-vocab" style="flex:1;font-size:.78rem;">📚 Vokabeln</button>
+        <button class="btn" onclick="niveauMode('grammar')" id="nmode-grammar" style="flex:1;font-size:.78rem;">📝 Grammatik</button>
+        <button class="btn" onclick="niveauMode('sentences')" id="nmode-sentences" style="flex:1;font-size:.78rem;">💬 Sätze</button>
+        <button class="btn" onclick="niveauMode('quiz')" id="nmode-quiz" style="flex:1;font-size:.78rem;">🎯 Quiz</button>
+      </div>
+      <!-- Vokabel-Karte -->
+      <div id="nex-vocab-area">
+        <div class="vocab-card" id="nex-card" onclick="niveauReveal()" style="cursor:pointer;min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div class="word-main" id="nex-word">—</div>
+          <div class="word-sub" id="nex-phonetic"></div>
+          <div class="word-translation" id="nex-translation" style="opacity:0;transition:opacity .3s;"></div>
+        </div>
+        <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;" id="nex-vocab-btns" style="display:none;">
+          <button class="btn" onclick="niveauVocabAnswer(false)" style="flex:1;background:rgba(239,68,68,.15);color:#ef4444;">✗ Nochmal</button>
+          <button class="btn" onclick="niveauSpeakWord()" style="flex:1;">🔊 Hören</button>
+          <button class="btn primary" onclick="niveauVocabAnswer(true)" style="flex:1;">✓ Gewusst</button>
+        </div>
+        <div style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:.5rem;" id="nex-vocab-counter"></div>
+      </div>
+      <!-- Grammatik-Bereich -->
+      <div id="nex-grammar-area" style="display:none;">
+        <div class="card" id="nex-grammar-card">
+          <div class="card-title" id="nex-grammar-rule-title"></div>
+          <div id="nex-grammar-content" style="font-size:.82rem;line-height:1.6;"></div>
+          <div id="nex-grammar-examples" style="margin-top:.75rem;"></div>
+          <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+            <button class="btn" onclick="niveauPrevGrammar()" style="flex:1;">← Zurück</button>
+            <button class="btn primary" onclick="niveauNextGrammar()" style="flex:1;">Weiter →</button>
+          </div>
+        </div>
+      </div>
+      <!-- Sätze-Bereich -->
+      <div id="nex-sentences-area" style="display:none;">
+        <div class="card" id="nex-sentence-card" style="text-align:center;">
+          <div style="font-size:1.1rem;font-weight:700;margin-bottom:.5rem;" id="nex-sentence-de"></div>
+          <div style="font-size:.82rem;color:var(--muted);margin-bottom:.75rem;" id="nex-sentence-ru"></div>
+          <button class="btn" onclick="niveauSpeakSentence()" style="margin-bottom:.75rem;width:100%;">🔊 Anhören</button>
+          <button class="btn primary" onclick="niveauNextSentence()" style="width:100%;">Nächster Satz →</button>
+        </div>
+        <div style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:.4rem;" id="nex-sentence-counter"></div>
+      </div>
+      <!-- Quiz-Bereich -->
+      <div id="nex-quiz-area" style="display:none;">
+        <div class="card">
+          <div style="font-size:.78rem;color:var(--muted);margin-bottom:.5rem;" id="nex-quiz-counter"></div>
+          <div style="font-weight:700;font-size:1rem;margin-bottom:1rem;" id="nex-quiz-question"></div>
+          <div id="nex-quiz-options" style="display:flex;flex-direction:column;gap:.4rem;"></div>
+          <div id="nex-quiz-feedback" style="margin-top:.75rem;font-weight:600;font-size:.85rem;text-align:center;"></div>
+          <button class="btn primary" onclick="niveauNextQuiz()" id="nex-quiz-next" style="width:100%;margin-top:.75rem;display:none;">Weiter →</button>
+        </div>
+        <div style="text-align:center;margin-top:.5rem;">
+          <div id="nex-quiz-score" style="font-size:.78rem;color:var(--muted);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <footer>
-    LINGUA <span id="footer-version">v4.1</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v4.4</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -1382,7 +1525,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v4.1</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v4.4</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -5229,19 +5372,19 @@ const UI_LANGS = {
   tr:{code:'tr',label:'🇹🇷 Türkçe'},
 };
 const UI_STRINGS = {
-  de:{ nav_home:'Start',nav_vocab:'Vokabeln',nav_quiz:'Quiz',nav_free:'Freies Lernen',nav_gen:'KI-Generator',nav_myvocab:'Meine Vokabeln',nav_translate:'Übersetzer',nav_ai:'KI-Assistent',nav_srs:'SRS',nav_write:'Schreiben',nav_stats:'Statistiken',nav_badges:'Abzeichen',nav_path:'Lernpfad',nav_search:'Suche',nav_conjugate:'Konjugation',welcome_back:'Willkommen zurück',learning:'Du lernst',change_lang:'🌍 Sprache wechseln',which_lang:'Welche Sprache möchtest du lernen?',choose_lang:'Wähle deine Lernsprache',stat_learned:'Gelernt',stat_streak:'Streak',stat_correct:'% Korrekt',stat_total:'Quiz Total',vocab_title:'Vokabeltraining',quiz_title:'Quiz',free_title:'Freies Lernen',gen_title:'KI-Vokabel-Generator',myvocab_title:'Meine Vokabeln',translate_title:'Übersetzer',ai_title:'KI-Sprachassistent',reveal:'Klicken zum Aufdecken',again:'✗ Nochmal',listen:'🔊 Anhören',skip:'→ Überspringen',knew:'✓ Gewusst',translate_btn:'Übersetzen',speak_out:'🔊 Vorlesen',copy:'⧉ Kopieren',input:'EINGABE',output:'AUSGABE',send:'Senden',new_quiz:'🔄 Neu starten',next:'Weiter →',correct:'✓ Richtig!',wrong:'✗ Falsch. Richtig:',enter_topic:'Thema eingeben',generate:'✨ Generieren',generating:'KI generiert Vokabeln...',save_all:'⭐ Alle speichern',to_training:'📚 Zum Training',add_word:'➕ Eigenes Wort hinzufügen',foreign_word:'FREMDWORT',translation_lbl:'DEUTSCH',phonetic:'AUSSPRACHE (optional)',add_btn:'+ Hinzufügen',train_mine:'📚 Meine Vokabeln trainieren',delete_all:'🗑 Alle löschen',no_vocab:'Noch keine eigenen Vokabeln. Füge Wörter hinzu oder generiere sie mit dem KI-Generator.',settings:'⚙ Einstellungen',save:'Speichern',delete:'Löschen',export:'⬇ Exportieren',reset:'🗑 Zurücksetzen',ai_welcome:'Hallo! Ich bin dein KI-Sprachassistent. Wähle eine Lernsprache und einen Modus, dann können wir loslegen!',mode_conv:'💬 Konversation',mode_grammar:'📝 Grammatik',mode_pron:'🎤 Aussprache',mode_corr:'✏️ Korrektur',quick_grammar:'📖 Grammatiktipp',quick_phrases:'💡 Sätze des Tages',quick_talk:'🗣 Gespräch starten',hc_vocab_desc:'Lerne neue Wörter mit Karteikarten und Sprachausgabe',hc_quiz_desc:'Teste dein Wissen mit Multiple-Choice-Fragen',hc_free_desc:'Wähle ein Thema und stöbere durch Vokabeln',hc_translate_desc:'Übersetze Begriffe und Sätze sofort',hc_ai_desc:'Übe Gespräche mit KI, Mikrofon & Sprachausgabe',hc_gen_desc:'Thema eingeben – KI generiert sofort 20 Vokabeln',hc_myvocab_desc:'Eigene Wörter speichern und gezielt trainieren',myvocab_desc:'Eigene Wörter hinzufügen, gespeicherte KI-Vokabeln verwalten und trainieren',gen_desc:'Gib ein Thema ein – die KI generiert passende Vokabeln für deine Lernsprache',footer_note:'Dein Fortschritt wird lokal gespeichert',chat_placeholder:'Nachricht eingeben oder 🎤 drücken...',pron_test:"🎤 Aussprache testen",srs_done:"Alle fälligen Karten erledigt!",srs_next:"Komm morgen wieder für neue Wiederholungen.",no_data:"Noch keine Daten",search_empty:"Kein Ergebnis gefunden.",search_hint:"Tippe um zu suchen — in allen Sprachen.",search_count_found:"Ergebnisse gefunden",search_count_more:"weitere Ergebnisse. Suche verfeinern.",quick_select:"Schnellauswahl:",gen_result:"Ergebnis",write_done:"Übung abgeschlossen!",write_correct:"✓ Richtig!",write_wrong:"✗ Richtig wäre: ",quiz_done:"🏆 Quiz abgeschlossen!",conj_quiz_done:"Quiz abgeschlossen!",conj_restart:"🔄 Wiederholen",conj_new_verb:"+ Neues Verb",conj_saved_verbs:"⭐ Gespeicherte Verben",conj_loading:"KI erstellt Konjugationstabelle...",conj_pronoun:"Pronomen",conj_tab_table:"📋 Tabelle",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Konjugieren",conj_save:"⭐ Speichern",conj_start_quiz:"🎯 Quiz starten",srs_flip:"Klicken zum Aufdecken",srs_not_at_all:"😰 Gar nicht",srs_hard:"😐 Schwer",srs_ok:"🙂 Ok",srs_easy:"😊 Leicht",srs_perfect:"🚀 Perfekt",check_btn:"✓ Prüfen",hint_btn:"💡 Hinweis",write_skip:"→ Überspringen",back_lbl:"Zurück",mv_empty_detail:"Füge Wörter hinzu oder generiere sie mit dem KI-Generator."},
-  en:{ nav_home:'Home',search_all:"Alle",nav_vocab:'Vocabulary',nav_quiz:'Quiz',nav_free:'Free Learning',nav_gen:'AI Generator',nav_myvocab:'My Words',nav_translate:'Translator',nav_ai:'AI Assistant',nav_srs:'SRS',nav_write:'Writing',nav_stats:'Statistics',nav_badges:'Badges',nav_path:'Learning path',nav_search:'Search',nav_conjugate:'Conjugation',welcome_back:'Welcome back',learning:'You are learning',change_lang:'🌍 Change language',which_lang:'Which language do you want to learn?',choose_lang:'Choose your learning language',stat_learned:'Learned',stat_streak:'Streak',stat_correct:'% Correct',stat_total:'Quiz Total',vocab_title:'Vocabulary Training',quiz_title:'Quiz',free_title:'Free Learning',gen_title:'✨ AI Vocabulary Generator',myvocab_title:'⭐ My Vocabulary',translate_title:'Translator',ai_title:'AI Language Assistant',reveal:'Tap to reveal',again:'✗ Again',listen:'🔊 Listen',skip:'→ Skip',knew:'✓ Got it',translate_btn:'Translate',speak_out:'🔊 Speak',copy:'⧉ Copy',input:'INPUT',output:'OUTPUT',send:'Send',new_quiz:'🔄 Restart',next:'Next →',correct:'✓ Correct!',wrong:'✗ Wrong. Correct:',enter_topic:'Enter topic',generate:'✨ Generate',generating:'AI is generating...',save_all:'⭐ Save all',to_training:'📚 To Training',add_word:'➕ Add custom word',foreign_word:'FOREIGN WORD',translation_lbl:'GERMAN',phonetic:'PRONUNCIATION (optional)',add_btn:'+ Add',train_mine:'📚 Train my vocabulary',delete_all:'🗑 Delete all',no_vocab:'No custom vocabulary yet. Add words or generate them with the AI Generator.',settings:'⚙ Settings',save:'Save',delete:'Delete',export:'⬇ Export',reset:'🗑 Reset',ai_welcome:'Hello! I am your AI language assistant. Choose a learning language and a mode to get started!',mode_conv:'💬 Conversation',mode_grammar:'📝 Grammar',mode_pron:'🎤 Pronunciation',mode_corr:'✏️ Correction',quick_grammar:'📖 Grammar tip',quick_phrases:'💡 Phrases of the day',quick_talk:'🗣 Start conversation',hc_vocab_desc:'Learn new words with flashcards and audio',hc_quiz_desc:'Test your knowledge with multiple choice questions',hc_free_desc:'Choose a topic and browse vocabulary',hc_translate_desc:'Translate words and sentences instantly',hc_ai_desc:'Practice conversations with AI and microphone',hc_gen_desc:'Enter a topic – AI generates 20 words instantly',hc_myvocab_desc:'Save custom words and train them',myvocab_desc:'Add words, manage AI vocabulary and train',gen_desc:'Enter a topic – the AI generates matching vocabulary',footer_note:'Your progress is saved locally',chat_placeholder:'Type a message or press 🎤...',pron_test:"🎤 Test pronunciation",srs_done:"All due cards done!",srs_next:"Come back tomorrow for new reviews.",no_data:"No data yet",search_empty:"No results found.",search_hint:"Type to search — across all languages.",search_count_found:"results found",search_count_more:"more results. Refine search.",quick_select:"Quick select:",gen_result:"Result",write_done:"Exercise completed!",write_correct:"✓ Correct!",write_wrong:"✗ Correct answer: ",quiz_done:"🏆 Quiz completed!",conj_quiz_done:"Quiz completed!",conj_restart:"🔄 Repeat",conj_new_verb:"+ New verb",conj_saved_verbs:"⭐ Saved verbs",conj_loading:"AI is creating conjugation table...",conj_pronoun:"Pronoun",conj_tab_table:"📋 Table",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Conjugate",conj_save:"⭐ Save",conj_start_quiz:"🎯 Start quiz",srs_flip:"Tap to reveal",srs_not_at_all:"😰 Not at all",srs_hard:"😐 Hard",srs_ok:"🙂 OK",srs_easy:"😊 Easy",srs_perfect:"🚀 Perfect",check_btn:"✓ Check",hint_btn:"💡 Hint",write_skip:"→ Skip",back_lbl:"Back",mv_empty_detail:"Add words or generate them with the AI Generator."},
-  ru:{ nav_home:'Главная',search_all:"All",nav_vocab:'Словарь',nav_quiz:'Тест',nav_free:'Свободное обучение',nav_gen:'ИИ-Генератор',nav_myvocab:'Мои слова',nav_translate:'Переводчик',nav_ai:'ИИ-Ассистент',nav_srs:'SRS',nav_write:'Письмо',nav_stats:'Статистика',nav_badges:'Значки',nav_path:'Учебный путь',nav_search:'Поиск',nav_conjugate:'Спряжение',welcome_back:'С возвращением',learning:'Вы изучаете',change_lang:'🌍 Сменить язык',which_lang:'Какой язык вы хотите учить?',choose_lang:'Выберите язык',stat_learned:'Изучено',stat_streak:'Серия',stat_correct:'% Правильных',stat_total:'Всего тестов',vocab_title:'Тренировка слов',quiz_title:'Тест',free_title:'Свободное обучение',gen_title:'✨ ИИ-Генератор словаря',myvocab_title:'⭐ Мои слова',translate_title:'Переводчик',ai_title:'ИИ-Языковой ассистент',reveal:'Нажмите, чтобы открыть',again:'✗ Ещё раз',listen:'🔊 Слушать',skip:'→ Пропустить',knew:'✓ Знал',translate_btn:'Перевести',speak_out:'🔊 Озвучить',copy:'⧉ Копировать',input:'ВВОД',output:'ВЫВОД',send:'Отправить',new_quiz:'🔄 Заново',next:'Далее →',correct:'✓ Правильно!',wrong:'✗ Неверно. Правильно:',enter_topic:'Введите тему',generate:'✨ Генерировать',generating:'ИИ генерирует...',save_all:'⭐ Сохранить все',to_training:'📚 К тренировке',add_word:'➕ Добавить слово',foreign_word:'ИНОСТРАННОЕ СЛОВО',translation_lbl:'НЕМЕЦКИЙ',phonetic:'ПРОИЗНОШЕНИЕ (необязательно)',add_btn:'+ Добавить',train_mine:'📚 Тренировать мои слова',delete_all:'🗑 Удалить все',no_vocab:'Пока нет своих слов.',settings:'⚙ Настройки',save:'Сохранить',delete:'Удалить',export:'⬇ Экспорт',reset:'🗑 Сбросить',ai_welcome:'Привет! Я ваш ИИ-языковой ассистент. Выберите язык и режим для начала!',mode_conv:'💬 Разговор',mode_grammar:'📝 Грамматика',mode_pron:'🎤 Произношение',mode_corr:'✏️ Коррекция',quick_grammar:'📖 Совет по грамматике',quick_phrases:'💡 Фразы дня',quick_talk:'🗣 Начать разговор',hc_vocab_desc:'Учите новые слова с карточками и аудио',hc_quiz_desc:'Проверьте знания с тестами',hc_free_desc:'Выберите тему и просматривайте слова',hc_translate_desc:'Переводите слова и предложения мгновенно',hc_ai_desc:'Практикуйте разговор с ИИ и микрофоном',hc_gen_desc:'Введите тему – ИИ мгновенно создаёт 20 слов',hc_myvocab_desc:'Сохраняйте слова и тренируйте их',myvocab_desc:'Добавляйте слова, управляйте словарём ИИ и тренируйтесь',gen_desc:'Введите тему – ИИ создаёт подходящие слова',footer_note:'Ваш прогресс сохраняется локально',chat_placeholder:'Введите сообщение или нажмите 🎤...',pron_test:"🎤 Тест произношения",srs_done:"Все карточки выполнены!",srs_next:"Возвращайтесь завтра для новых повторений.",no_data:"Нет данных",search_empty:"Ничего не найдено.",search_hint:"Введите текст для поиска — по всем языкам.",search_count_found:"результатов найдено",search_count_more:"ещё результатов.",quick_select:"Быстрый выбор:",gen_result:"Результат",write_done:"Упражнение завершено!",write_correct:"✓ Правильно!",write_wrong:"✗ Правильный ответ: ",quiz_done:"🏆 Тест завершён!",conj_quiz_done:"Тест завершён!",conj_restart:"🔄 Повторить",conj_new_verb:"+ Новый глагол",conj_saved_verbs:"⭐ Сохранённые глаголы",conj_loading:"ИИ создаёт таблицу спряжений...",conj_pronoun:"Местоимение",conj_tab_table:"📋 Таблица",conj_tab_quiz:"🎯 Тест",conj_gen_btn:"Спрягать",conj_save:"⭐ Сохранить",conj_start_quiz:"🎯 Начать тест",srs_flip:"Нажмите, чтобы открыть",srs_not_at_all:"😰 Совсем нет",srs_hard:"😐 Сложно",srs_ok:"🙂 Нормально",srs_easy:"😊 Легко",srs_perfect:"🚀 Отлично",check_btn:"✓ Проверить",hint_btn:"💡 Подсказка",write_skip:"→ Пропустить",back_lbl:"Назад",mv_empty_detail:"Добавьте слова или сгенерируйте их с помощью ИИ."},
-  it:{ nav_home:'Inizio',search_all:"Все",nav_vocab:'Vocaboli',nav_quiz:'Quiz',nav_free:'Studio libero',nav_gen:'Generatore IA',nav_myvocab:'Le mie parole',nav_translate:'Traduttore',nav_ai:'Assistente IA',nav_srs:'SRS',nav_write:'Scrittura',nav_stats:'Statistiche',nav_badges:'Insegne',nav_path:'Percorso',nav_search:'Ricerca',nav_conjugate:'Coniugazione',welcome_back:'Bentornato',learning:'Stai imparando',change_lang:'🌍 Cambia lingua',which_lang:'Quale lingua vuoi imparare?',choose_lang:'Scegli la tua lingua',stat_learned:'Imparato',stat_streak:'Serie',stat_correct:'% Corretti',stat_total:'Quiz totali',vocab_title:'Allenamento vocaboli',quiz_title:'Quiz',free_title:'Studio libero',gen_title:'✨ Generatore vocaboli IA',myvocab_title:'⭐ I miei vocaboli',translate_title:'Traduttore',ai_title:'Assistente linguistico IA',reveal:'Clicca per rivelare',again:'✗ Di nuovo',listen:'🔊 Ascolta',skip:'→ Salta',knew:'✓ Lo sapevo',translate_btn:'Traduci',speak_out:'🔊 Leggi',copy:'⧉ Copia',input:'INGRESSO',output:'USCITA',send:'Invia',new_quiz:'🔄 Ricomincia',next:'Avanti →',correct:'✓ Corretto!',wrong:'✗ Sbagliato. Corretto:',enter_topic:'Inserisci argomento',generate:'✨ Genera',generating:'IA sta generando...',save_all:'⭐ Salva tutto',to_training:'📚 Allena',add_word:'➕ Aggiungi parola',foreign_word:'PAROLA STRANIERA',translation_lbl:'TEDESCO',phonetic:'PRONUNCIA (opzionale)',add_btn:'+ Aggiungi',train_mine:'📚 Allena i miei vocaboli',delete_all:'🗑 Elimina tutto',no_vocab:'Nessun vocabolo personale ancora.',settings:'⚙ Impostazioni',save:'Salva',delete:'Elimina',export:'⬇ Esporta',reset:'🗑 Reimposta',ai_welcome:'Ciao! Sono il tuo assistente linguistico IA. Scegli una lingua e una modalità per iniziare!',mode_conv:'💬 Conversazione',mode_grammar:'📝 Grammatica',mode_pron:'🎤 Pronuncia',mode_corr:'✏️ Correzione',quick_grammar:'📖 Consiglio grammaticale',quick_phrases:'💡 Frasi del giorno',quick_talk:'🗣 Inizia conversazione',hc_vocab_desc:'Impara nuove parole con flashcard e audio',hc_quiz_desc:'Testa la conoscenza con domande a scelta multipla',hc_free_desc:'Scegli un argomento e sfoglia il vocabolario',hc_translate_desc:'Traduci parole e frasi istantaneamente',hc_ai_desc:'Pratica conversazioni con IA e microfono',hc_gen_desc:'Inserisci un argomento – IA genera 20 parole',hc_myvocab_desc:'Salva parole personalizzate e allenale',myvocab_desc:'Aggiungi parole, gestisci il vocabolario IA e allenati',gen_desc:'Inserisci un argomento – IA genera vocaboli per la tua lingua',footer_note:'Il tuo progresso è salvato localmente',chat_placeholder:'Scrivi un messaggio o premi 🎤...',pron_test:"🎤 Testa pronuncia",srs_done:"Tutte le schede completate!",srs_next:"Torna domani per nuove ripetizioni.",no_data:"Nessun dato",search_empty:"Nessun risultato trovato.",search_hint:"Digita per cercare — in tutte le lingue.",search_count_found:"risultati trovati",search_count_more:"altri risultati.",quick_select:"Selezione rapida:",gen_result:"Risultato",write_done:"Esercizio completato!",write_correct:"✓ Corretto!",write_wrong:"✗ Risposta corretta: ",quiz_done:"🏆 Quiz completato!",conj_quiz_done:"Quiz completato!",conj_restart:"🔄 Ripeti",conj_new_verb:"+ Nuovo verbo",conj_saved_verbs:"⭐ Verbi salvati",conj_loading:"IA sta creando la tabella di coniugazione...",conj_pronoun:"Pronome",conj_tab_table:"📋 Tabella",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Coniuga",conj_save:"⭐ Salva",conj_start_quiz:"🎯 Inizia quiz",srs_flip:"Clicca per rivelare",srs_not_at_all:"😰 Per niente",srs_hard:"😐 Difficile",srs_ok:"🙂 Ok",srs_easy:"😊 Facile",srs_perfect:"🚀 Perfetto",check_btn:"✓ Controlla",hint_btn:"💡 Suggerimento",write_skip:"→ Salta",back_lbl:"Indietro",mv_empty_detail:"Aggiungi parole o generatele con il Generatore IA."},
-  es:{ nav_home:'Inicio',search_all:"Tutte",nav_vocab:'Vocabulario',nav_quiz:'Quiz',nav_free:'Aprendizaje libre',nav_gen:'Generador IA',nav_myvocab:'Mis palabras',nav_translate:'Traductor',nav_ai:'Asistente IA',nav_srs:'SRS',nav_write:'Escritura',nav_stats:'Estadísticas',nav_badges:'Insignias',nav_path:'Ruta',nav_search:'Búsqueda',nav_conjugate:'Conjugación',welcome_back:'Bienvenido de vuelta',learning:'Estás aprendiendo',change_lang:'🌍 Cambiar idioma',which_lang:'¿Qué idioma quieres aprender?',choose_lang:'Elige tu idioma',stat_learned:'Aprendido',stat_streak:'Racha',stat_correct:'% Correctas',stat_total:'Total quiz',vocab_title:'Entrenamiento de vocabulario',quiz_title:'Quiz',free_title:'Aprendizaje libre',gen_title:'✨ Generador de vocabulario IA',myvocab_title:'⭐ Mi vocabulario',translate_title:'Traductor',ai_title:'Asistente de idiomas IA',reveal:'Toca para revelar',again:'✗ Otra vez',listen:'🔊 Escuchar',skip:'→ Saltar',knew:'✓ Lo sabía',translate_btn:'Traducir',speak_out:'🔊 Leer',copy:'⧉ Copiar',input:'ENTRADA',output:'SALIDA',send:'Enviar',new_quiz:'🔄 Reiniciar',next:'Siguiente →',correct:'✓ ¡Correcto!',wrong:'✗ Incorrecto. Correcto:',enter_topic:'Introduce tema',generate:'✨ Generar',generating:'IA generando...',save_all:'⭐ Guardar todo',to_training:'📚 Entrenar',add_word:'➕ Añadir palabra',foreign_word:'PALABRA EXTRANJERA',translation_lbl:'ALEMÁN',phonetic:'PRONUNCIACIÓN (opcional)',add_btn:'+ Añadir',train_mine:'📚 Entrenar mi vocabulario',delete_all:'🗑 Eliminar todo',no_vocab:'Sin vocabulario propio todavía.',settings:'⚙ Ajustes',save:'Guardar',delete:'Eliminar',export:'⬇ Exportar',reset:'🗑 Restablecer',ai_welcome:'¡Hola! Soy tu asistente de idiomas IA. ¡Elige un idioma y un modo para comenzar!',mode_conv:'💬 Conversación',mode_grammar:'📝 Gramática',mode_pron:'🎤 Pronunciación',mode_corr:'✏️ Corrección',quick_grammar:'📖 Consejo gramatical',quick_phrases:'💡 Frases del día',quick_talk:'🗣 Iniciar conversación',hc_vocab_desc:'Aprende nuevas palabras con tarjetas y audio',hc_quiz_desc:'Pon a prueba tu conocimiento con preguntas de opción múltiple',hc_free_desc:'Elige un tema y navega por el vocabulario',hc_translate_desc:'Traduce palabras y frases al instante',hc_ai_desc:'Pratica conversaciones con IA y micrófono',hc_gen_desc:'Introduce un tema – IA genera 20 palabras',hc_myvocab_desc:'Guarda palabras personalizadas y entrénalas',myvocab_desc:'Añade palabras, gestiona vocabulario IA y entrena',gen_desc:'Introduce un tema – IA genera vocabulario para tu idioma',footer_note:'Tu progreso se guarda localmente',chat_placeholder:'Escribe un mensaje o pulsa 🎤...',pron_test:"🎤 Probar pronunciación",srs_done:"¡Todas las tarjetas completadas!",srs_next:"Vuelve mañana para nuevas revisiones.",no_data:"Sin datos",search_empty:"No se encontraron resultados.",search_hint:"Escribe para buscar — en todos los idiomas.",search_count_found:"resultados encontrados",search_count_more:"resultados más.",quick_select:"Selección rápida:",gen_result:"Resultado",write_done:"¡Ejercicio completado!",write_correct:"✓ ¡Correcto!",write_wrong:"✗ Respuesta correcta: ",quiz_done:"🏆 ¡Quiz completado!",conj_quiz_done:"¡Quiz completado!",conj_restart:"🔄 Repetir",conj_new_verb:"+ Nuevo verbo",conj_saved_verbs:"⭐ Verbos guardados",conj_loading:"IA creando tabla de conjugación...",conj_pronoun:"Pronombre",conj_tab_table:"📋 Tabla",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Conjugar",conj_save:"⭐ Guardar",conj_start_quiz:"🎯 Iniciar quiz",srs_flip:"Toca para revelar",srs_not_at_all:"😰 Para nada",srs_hard:"😐 Difícil",srs_ok:"🙂 Ok",srs_easy:"😊 Fácil",srs_perfect:"🚀 Perfecto",check_btn:"✓ Comprobar",hint_btn:"💡 Pista",write_skip:"→ Saltar",back_lbl:"Volver",mv_empty_detail:"Añade palabras o genéralas con el Generador IA."},
-  pl:{ nav_home:'Start',search_all:"Wszystkie",nav_vocab:'Słownictwo',nav_quiz:'Quiz',nav_free:'Nauka swobodna',nav_gen:'Generator AI',nav_myvocab:'Moje słowa',nav_translate:'Tłumacz',nav_ai:'Asystent AI',nav_srs:'SRS',nav_write:'Pisanie',nav_stats:'Statystyki',nav_badges:'Odznaki',nav_path:'Ścieżka nauki',nav_search:'Szukaj',nav_conjugate:'Koniugacja',welcome_back:'Witaj z powrotem',learning:'Uczysz się',change_lang:'🌍 Zmień język',which_lang:'Jakiego języka chcesz się uczyć?',choose_lang:'Wybierz język nauki',stat_learned:'Nauczono',stat_streak:'Seria',stat_correct:'% Poprawnych',stat_total:'Łącznie quizów',vocab_title:'Trening słownictwa',quiz_title:'Quiz',free_title:'Nauka swobodna',gen_title:'✨ Generator AI',myvocab_title:'⭐ Moje słowa',translate_title:'Tłumacz',ai_title:'Asystent językowy AI',reveal:'Dotknij, aby odkryć',again:'✗ Jeszcze raz',listen:'🔊 Słuchaj',skip:'→ Pomiń',knew:'✓ Wiedziałem',translate_btn:'Przetłumacz',speak_out:'🔊 Przeczytaj',copy:'⧉ Kopiuj',input:'WEJŚCIE',output:'WYJŚCIE',send:'Wyślij',new_quiz:'🔄 Zacznij od nowa',next:'Dalej →',correct:'✓ Poprawnie!',wrong:'✗ Błąd. Poprawnie:',enter_topic:'Wpisz temat',generate:'✨ Generuj',generating:'AI generuje...',save_all:'⭐ Zapisz wszystko',to_training:'📚 Do treningu',add_word:'➕ Dodaj słowo',foreign_word:'SŁOWO OBCE',translation_lbl:'NIEMIECKIE',phonetic:'WYMOWA (opcjonalnie)',add_btn:'+ Dodaj',train_mine:'📚 Trenuj moje słowa',delete_all:'🗑 Usuń wszystko',no_vocab:'Brak własnych słów.',settings:'⚙ Ustawienia',save:'Zapisz',delete:'Usuń',export:'⬇ Eksportuj',reset:'🗑 Resetuj',ai_welcome:'Cześć! Jestem Twoim asystentem językowym AI. Wybierz język i tryb, żeby zacząć!',mode_conv:'💬 Rozmowa',mode_grammar:'📝 Gramatyka',mode_pron:'🎤 Wymowa',mode_corr:'✏️ Korekta',quick_grammar:'📖 Wskazówka gramatyczna',quick_phrases:'💡 Zdania dnia',quick_talk:'🗣 Zacznij rozmowę',hc_vocab_desc:'Ucz się nowych słów z kartami i dźwiękiem',hc_quiz_desc:'Sprawdź wiedzę pytaniami wielokrotnego wyboru',hc_free_desc:'Wybierz temat i przeglądaj słownictwo',hc_translate_desc:'Tłumacz słowa i zdania natychmiast',hc_ai_desc:'Ćwicz rozmowy z AI i mikrofonem',hc_gen_desc:'Podaj temat – AI natychmiast generuje 20 słów',hc_myvocab_desc:'Zapisuj własne słowa i trenuj je',myvocab_desc:'Dodawaj słowa, zarządzaj słownictwem AI i trenuj',gen_desc:'Podaj temat – AI generuje odpowiednie słownictwo',footer_note:'Twój postęp jest zapisywany lokalnie',chat_placeholder:'Wpisz wiadomość lub naciśnij 🎤...',pron_test:"🎤 Testuj wymowę",srs_done:"Wszystkie karty wykonane!",srs_next:"Wróć jutro po nowe powtórzenia.",no_data:"Brak danych",search_empty:"Nie znaleziono wyników.",search_hint:"Wpisz, aby szukać — we wszystkich językach.",search_count_found:"wyników znaleziono",search_count_more:"więcej wyników.",quick_select:"Szybki wybór:",gen_result:"Wynik",write_done:"Ćwiczenie zakończone!",write_correct:"✓ Poprawnie!",write_wrong:"✗ Poprawna odpowiedź: ",quiz_done:"🏆 Quiz zakończony!",conj_quiz_done:"Quiz zakończony!",conj_restart:"🔄 Powtórz",conj_new_verb:"+ Nowy czasownik",conj_saved_verbs:"⭐ Zapisane czasowniki",conj_loading:"AI tworzy tabelę koniugacji...",conj_pronoun:"Zaimek",conj_tab_table:"📋 Tabela",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Koniuguj",conj_save:"⭐ Zapisz",conj_start_quiz:"🎯 Zacznij quiz",srs_flip:"Dotknij, aby odkryć",srs_not_at_all:"😰 Wcale",srs_hard:"😐 Trudne",srs_ok:"🙂 OK",srs_easy:"😊 Łatwe",srs_perfect:"🚀 Perfekcyjnie",check_btn:"✓ Sprawdź",hint_btn:"💡 Wskazówka",write_skip:"→ Pomiń",back_lbl:"Wstecz",mv_empty_detail:"Dodaj słowa lub wygeneruj je generatorem AI."},
-  tr:{ nav_home:'Ana Sayfa',search_all:"Todos",nav_vocab:'Kelimeler',nav_quiz:'Test',nav_free:'Serbest Öğrenme',nav_gen:'YZ Üretici',nav_myvocab:'Kelimelerim',nav_translate:'Çevirmen',nav_ai:'YZ Asistan',nav_srs:'SRS',nav_write:'Yazma',nav_stats:'İstatistikler',nav_badges:'Rozetler',nav_path:'Öğrenme yolu',nav_search:'Arama',nav_conjugate:'Çekim',welcome_back:'Tekrar hoş geldin',learning:'Öğreniyorsun',change_lang:'🌍 Dil değiştir',which_lang:'Hangi dili öğrenmek istiyorsun?',choose_lang:'Öğrenme dilini seç',stat_learned:'Öğrenildi',stat_streak:'Seri',stat_correct:'% Doğru',stat_total:'Test Toplam',vocab_title:'Kelime Antrenmanı',quiz_title:'Test',free_title:'Serbest Öğrenme',gen_title:'✨ YZ Kelime Üretici',myvocab_title:'⭐ Kelimelerim',translate_title:'Çevirmen',ai_title:'YZ Dil Asistanı',reveal:'Görmek için dokun',again:'✗ Tekrar',listen:'🔊 Dinle',skip:'→ Geç',knew:'✓ Bildim',translate_btn:'Çevir',speak_out:'🔊 Seslendir',copy:'⧉ Kopyala',input:'GİRİŞ',output:'ÇIKIŞ',send:'Gönder',new_quiz:'🔄 Yeniden başla',next:'İleri →',correct:'✓ Doğru!',wrong:'✗ Yanlış. Doğrusu:',enter_topic:'Konu girin',generate:'✨ Üret',generating:'YZ üretiyor...',save_all:'⭐ Hepsini kaydet',to_training:'📚 Antrenmana',add_word:'➕ Kelime ekle',foreign_word:'YABANCI KELİME',translation_lbl:'ALMANCA',phonetic:'OKUNUŞ (isteğe bağlı)',add_btn:'+ Ekle',train_mine:'📚 Kelimelerimi antrenman et',delete_all:'🗑 Hepsini sil',no_vocab:'Henüz kişisel kelime yok.',settings:'⚙ Ayarlar',save:'Kaydet',delete:'Sil',export:'⬇ Dışa aktar',reset:'🗑 Sıfırla',ai_welcome:'Merhaba! Ben senin YZ dil asistanınım. Başlamak için bir dil ve mod seç!',mode_conv:'💬 Konuşma',mode_grammar:'📝 Gramer',mode_pron:'🎤 Telaffuz',mode_corr:'✏️ Düzeltme',quick_grammar:'📖 Gramer ipucu',quick_phrases:'💡 Günün cümleleri',quick_talk:'🗣 Konuşma başlat',hc_vocab_desc:'Yeni kelimeleri kartlarla ve sesle öğren',hc_quiz_desc:'Bilgini çoktan seçmeli sorularla test et',hc_free_desc:'Bir konu seç ve kelimelere göz at',hc_translate_desc:'Kelimeleri ve cümleleri anında çevir',hc_ai_desc:'YZ ve mikrofon ile konuşma pratiği yap',hc_gen_desc:'Konu gir – YZ anında 20 kelime üretir',hc_myvocab_desc:'Kişisel kelimeleri kaydet ve antrenman yap',myvocab_desc:'Kelime ekle, YZ kelime haznesini yönet ve antrenman yap',gen_desc:'Konu gir – YZ öğrenme dilin için uygun kelimeler üretir',footer_note:'Gelişimin yerel olarak kaydedilir',chat_placeholder:'Mesaj yaz veya 🎤 düğmesine bas...',pron_test:"🎤 Telaffuzu test et",srs_done:"Tüm kartlar tamamlandı!",srs_next:"Yeni tekrarlar için yarın geri gel.",no_data:"Veri yok",search_empty:"Sonuç bulunamadı.",search_hint:"Aramak için yaz — tüm dillerde.",search_count_found:"sonuç bulundu",search_count_more:"sonuç daha.",quick_select:"Hızlı seçim:",gen_result:"Sonuç",write_done:"Alıştırma tamamlandı!",write_correct:"✓ Doğru!",write_wrong:"✗ Doğru cevap: ",quiz_done:"🏆 Test tamamlandı!",conj_quiz_done:"Test tamamlandı!",conj_restart:"🔄 Tekrarla",conj_new_verb:"+ Yeni fiil",conj_saved_verbs:"⭐ Kaydedilen fiiller",conj_loading:"YZ çekim tablosu oluşturuyor...",conj_pronoun:"Zamir",conj_tab_table:"📋 Tablo",conj_tab_quiz:"🎯 Test",conj_gen_btn:"Çekimle",conj_save:"⭐ Kaydet",conj_start_quiz:"🎯 Testi başlat",srs_flip:"Görmek için dokun",srs_not_at_all:"😰 Hiç",srs_hard:"😐 Zor",srs_ok:"🙂 Tamam",srs_easy:"😊 Kolay",srs_perfect:"🚀 Mükemmel",check_btn:"✓ Kontrol et",hint_btn:"💡 İpucu",write_skip:"→ Geç",back_lbl:"Geri",mv_empty_detail:"Kelime ekle veya YZ Üretici ile oluştur."},
-  sq:{ nav_home:'Fillimi',search_all:"Tümü",nav_vocab:'Fjalor',nav_quiz:'Test',nav_free:'Mësim i lirë',nav_gen:'Gjenerator IA',nav_myvocab:'Fjalët e mia',nav_translate:'Përkthyes',nav_ai:'Asistent IA',nav_srs:'SRS',nav_write:'Shkrim',nav_stats:'Statistika',nav_badges:'Distinkcione',nav_path:'Rrugë mësimi',nav_search:'Kërkim',nav_conjugate:'Zgjedhim',welcome_back:'Mirë se u kthe',learning:'Po mëson',change_lang:'🌍 Ndrysho gjuhën',which_lang:'Çfarë gjuhe dëshiron të mësosh?',choose_lang:'Zgjedh gjuhën tuaj',stat_learned:'Mësuar',stat_streak:'Varg',stat_correct:'% Saktë',stat_total:'Total test',vocab_title:'Stërvitje fjalori',quiz_title:'Test',free_title:'Mësim i lirë',gen_title:'✨ Gjenerator fjalori IA',myvocab_title:'⭐ Fjalori im',translate_title:'Përkthyes',ai_title:'Asistent gjuhësor IA',reveal:'Kliko për të zbuluar',again:'✗ Sërish',listen:'🔊 Dëgjo',skip:'→ Kalo',knew:'✓ E dija',translate_btn:'Përkthe',speak_out:'🔊 Lexo',copy:'⧉ Kopjo',input:'HYRJE',output:'DALJE',send:'Dërgo',new_quiz:'🔄 Rifillo',next:'Tjetri →',correct:'✓ Saktë!',wrong:'✗ Gabim. Saktë:',enter_topic:'Shkruaj temën',generate:'✨ Gjenero',generating:'IA po gjeneron...',save_all:'⭐ Ruaj të gjitha',to_training:'📚 Tek stërvitja',add_word:'➕ Shto fjalë',foreign_word:'FJALË E HUAJ',translation_lbl:'GJERMANISHT',phonetic:'SHQIPTIM (opsional)',add_btn:'+ Shto',train_mine:'📚 Stërvit fjalësinë time',delete_all:'🗑 Fshi të gjitha',no_vocab:'Ende asnjë fjalë personale.',settings:'⚙ Cilësimet',save:'Ruaj',delete:'Fshi',export:'⬇ Eksporto',reset:'🗑 Rivendos',ai_welcome:'Përshëndetje! Jam asistenti juaj gjuhësor IA. Zgjedh gjuhën dhe modalitetin për të filluar!',mode_conv:'💬 Bisedë',mode_grammar:'📝 Gramatikë',mode_pron:'🎤 Shqiptim',mode_corr:'✏️ Korrigjim',quick_grammar:'📖 Këshillë gramatikore',quick_phrases:'💡 Frazat e ditës',quick_talk:'🗣 Fillo bisedën',hc_vocab_desc:'Mëso fjalë të reja me kartela dhe audio',hc_quiz_desc:'Testo njohuritë me pyetje me shumë zgjedhje',hc_free_desc:'Zgjedh temën dhe shfleto fjalët',hc_translate_desc:'Përkthe fjalë dhe fjali menjëherë',hc_ai_desc:'Praktiko bisedën me IA dhe mikrofon',hc_gen_desc:'Shkruaj temën – IA gjeneron 20 fjalë',hc_myvocab_desc:'Ruaj fjalë personale dhe stërviti',myvocab_desc:'Shto fjalë, menaxho fjalësinë IA dhe stërvitu',gen_desc:'Shkruaj temën – IA gjeneron fjalë për gjuhën tënde',footer_note:'Progresi juaj ruhet lokalisht',chat_placeholder:'Shkruaj mesazh ose shtyp 🎤...',pron_test:"🎤 Testo shqiptimin",srs_done:"Të gjitha kartat u kryen!",srs_next:"Kthehu nesër për rishikime të reja.",no_data:"Nuk ka të dhëna",search_empty:"Nuk u gjet asnjë rezultat.",search_hint:"Shkruaj për të kërkuar — në të gjitha gjuhët.",search_count_found:"rezultate u gjetën",search_count_more:"rezultate të tjera.",quick_select:"Zgjedhje e shpejtë:",gen_result:"Rezultati",write_done:"Ushtrimi u përfundua!",write_correct:"✓ Saktë!",write_wrong:"✗ Përgjigja e saktë: ",quiz_done:"🏆 Testi u krye!",conj_quiz_done:"Testi u krye!",conj_restart:"🔄 Përsërit",conj_new_verb:"+ Folje e re",conj_saved_verbs:"⭐ Foljet e ruajtura",conj_loading:"IA po krijon tabelën e zgjedhimit...",conj_pronoun:"Përemër",conj_tab_table:"📋 Tabelë",conj_tab_quiz:"🎯 Test",conj_gen_btn:"Zgjedho",conj_save:"⭐ Ruaj",conj_start_quiz:"🎯 Fillo testin",srs_flip:"Kliko për të zbuluar",srs_not_at_all:"😰 Aspak",srs_hard:"😐 Vështirë",srs_ok:"🙂 Ok",srs_easy:"😊 Lehtë",srs_perfect:"🚀 Perfekt",check_btn:"✓ Kontrollo",hint_btn:"💡 Sugjerim",write_skip:"→ Kalo",back_lbl:"Kthehu",mv_empty_detail:"Shto fjalë ose gjenero ato me Gjeneratorin IA."},
-  th:{ nav_home:'หน้าหลัก',search_all:"Të gjitha",nav_vocab:'คำศัพท์',nav_quiz:'ทดสอบ',nav_free:'เรียนรู้อิสระ',nav_gen:'AI สร้างคำศัพท์',nav_myvocab:'คำศัพท์ของฉัน',nav_translate:'แปลภาษา',nav_ai:'AI ผู้ช่วย',nav_srs:'SRS',nav_write:'เขียน',nav_stats:'สถิติ',nav_badges:'รางวัล',nav_path:'เส้นทาง',nav_search:'ค้นหา',nav_conjugate:'คำกริยา',welcome_back:'ยินดีต้อนรับกลับ',learning:'คุณกำลังเรียน',change_lang:'🌍 เปลี่ยนภาษา',which_lang:'คุณต้องการเรียนภาษาอะไร?',choose_lang:'เลือกภาษาที่ต้องการเรียน',stat_learned:'เรียนแล้ว',stat_streak:'ต่อเนื่อง',stat_correct:'% ถูก',stat_total:'ทำแบบทดสอบ',vocab_title:'ฝึกคำศัพท์',quiz_title:'ทดสอบ',free_title:'เรียนรู้อิสระ',gen_title:'AI สร้างคำศัพท์',myvocab_title:'คำศัพท์ของฉัน',translate_title:'แปลภาษา',ai_title:'AI ผู้ช่วยภาษา',reveal:'แตะเพื่อดู',again:'✗ อีกครั้ง',listen:'🔊 ฟัง',skip:'→ ข้าม',knew:'✓ รู้แล้ว',translate_btn:'แปล',speak_out:'🔊 อ่านออกเสียง',copy:'⧉ คัดลอก',input:'ป้อนข้อความ',output:'ผลลัพธ์',send:'ส่ง',new_quiz:'🔄 เริ่มใหม่',next:'ถัดไป →',correct:'✓ ถูกต้อง!',wrong:'✗ ผิด. ถูกต้องคือ:',enter_topic:'ใส่หัวข้อ',generate:'สร้าง',generating:'AI กำลังสร้าง...',save_all:'บันทึกทั้งหมด',to_training:'ไปฝึก',add_word:'เพิ่มคำ',foreign_word:'คำต่างประเทศ',translation_lbl:'ภาษาเยอรมัน',phonetic:'การออกเสียง (ไม่บังคับ)',add_btn:'+ เพิ่ม',train_mine:'ฝึกคำศัพท์ของฉัน',delete_all:'ลบทั้งหมด',no_vocab:'ยังไม่มีคำศัพท์ส่วนตัว',settings:'ตั้งค่า',save:'บันทึก',delete:'ลบ',export:'ส่งออก',reset:'รีเซ็ต',ai_welcome:'สวัสดี! ฉันคือผู้ช่วย AI ด้านภาษาของคุณ เลือกภาษาและโหมดเพื่อเริ่มต้น!',mode_conv:'สนทนา',mode_grammar:'ไวยากรณ์',mode_pron:'การออกเสียง',mode_corr:'แก้ไข',quick_grammar:'เคล็ดลับไวยากรณ์',quick_phrases:'ประโยคประจำวัน',quick_talk:'เริ่มสนทนา',hc_vocab_desc:'เรียนคำศัพท์ใหม่ด้วยบัตรและเสียง',hc_quiz_desc:'ทดสอบความรู้ด้วยคำถามแบบตัวเลือก',hc_free_desc:'เลือกหัวข้อและดูคำศัพท์',hc_translate_desc:'แปลคำและประโยคได้ทันที',hc_ai_desc:'ฝึกสนทนากับ AI และไมโครโฟน',hc_gen_desc:'ใส่หัวข้อ – AI สร้าง 20 คำทันที',hc_myvocab_desc:'บันทึกคำส่วนตัวและฝึกอย่างเจาะจง',myvocab_desc:'เพิ่มคำ จัดการคำ AI และฝึก',gen_desc:'ใส่หัวข้อ – AI สร้างคำศัพท์สำหรับภาษาที่เรียน',footer_note:'ความก้าวหน้าของคุณถูกบันทึกในเครื่อง',chat_placeholder:'พิมพ์ข้อความหรือกด 🎤...',pron_test:"🎤 ทดสอบการออกเสียง",srs_done:"เสร็จสิ้นทุกบัตรแล้ว!",srs_next:"กลับมาพรุ่งนี้เพื่อทบทวนใหม่",no_data:"ยังไม่มีข้อมูล",search_empty:"ไม่พบผลลัพธ์",search_hint:"พิมพ์เพื่อค้นหา — ทุกภาษา",search_count_found:"ผลลัพธ์",search_count_more:"ผลลัพธ์เพิ่มเติม",quick_select:"เลือกเร็ว:",gen_result:"ผลลัพธ์",write_done:"ทำแบบฝึกหัดเสร็จ!",write_correct:"✓ ถูกต้อง!",write_wrong:"✗ คำตอบที่ถูก: ",quiz_done:"🏆 ทำแบบทดสอบเสร็จ!",conj_quiz_done:"ทำแบบทดสอบเสร็จ!",conj_restart:"🔄 ทำซ้ำ",conj_new_verb:"+ คำกริยาใหม่",conj_saved_verbs:"⭐ คำกริยาที่บันทึกไว้",conj_loading:"AI กำลังสร้างตาราง...",conj_pronoun:"สรรพนาม",conj_tab_table:"📋 ตาราง",conj_tab_quiz:"🎯 ทดสอบ",conj_gen_btn:"ผัน",conj_save:"⭐ บันทึก",conj_start_quiz:"🎯 เริ่มทดสอบ",srs_flip:"แตะเพื่อดู",srs_not_at_all:"😰 ไม่รู้เลย",srs_hard:"😐 ยาก",srs_ok:"🙂 พอใช้",srs_easy:"😊 ง่าย",srs_perfect:"🚀 สมบูรณ์แบบ",check_btn:"✓ ตรวจ",hint_btn:"💡 คำใบ้",write_skip:"→ ข้าม",back_lbl:"กลับ",mv_empty_detail:"เพิ่มคำหรือสร้างด้วย AI"},
-  fr:{ nav_home:'Accueil',search_all:"ทั้งหมด",nav_vocab:'Vocabulaire',nav_quiz:'Quiz',nav_free:'Apprentissage libre',nav_gen:'Générateur IA',nav_myvocab:'Mes mots',nav_translate:'Traducteur',nav_ai:'Assistant IA',nav_srs:'SRS',nav_write:'Écriture',nav_stats:'Statistiques',nav_badges:'Badges',nav_path:'Parcours',nav_search:'Recherche',nav_conjugate:'Conjugaison',welcome_back:'Bon retour',learning:'Vous apprenez',change_lang:'🌍 Changer de langue',which_lang:'Quelle langue voulez-vous apprendre?',choose_lang:'Choisissez votre langue',stat_learned:'Appris',stat_streak:'Série',stat_correct:'% Correct',stat_total:'Quiz total',vocab_title:'Entraînement vocabulaire',quiz_title:'Quiz',free_title:'Apprentissage libre',gen_title:'Générateur IA',myvocab_title:'Mon vocabulaire',translate_title:'Traducteur',ai_title:'Assistant linguistique IA',reveal:'Cliquer pour révéler',again:'✗ Encore',listen:'🔊 Écouter',skip:'→ Passer',knew:'✓ Je savais',translate_btn:'Traduire',speak_out:'🔊 Lire',copy:'⧉ Copier',input:'ENTRÉE',output:'SORTIE',send:'Envoyer',new_quiz:'🔄 Recommencer',next:'Suivant →',correct:'✓ Correct!',wrong:'✗ Incorrect. Correct:',enter_topic:'Entrer un sujet',generate:'Générer',generating:'IA génère...',save_all:'Tout sauvegarder',to_training:'À l\'entraînement',add_word:'Ajouter un mot',foreign_word:'MOT ÉTRANGER',translation_lbl:'ALLEMAND',phonetic:'PRONONCIATION (optionnel)',add_btn:'+ Ajouter',train_mine:'Entraîner mon vocabulaire',delete_all:'Tout supprimer',no_vocab:'Pas encore de vocabulaire personnel.',settings:'⚙ Paramètres',save:'Sauvegarder',delete:'Supprimer',export:'⬇ Exporter',reset:'🗑 Réinitialiser',ai_welcome:'Bonjour! Je suis votre assistant linguistique IA. Choisissez une langue et un mode pour commencer!',mode_conv:'Conversation',mode_grammar:'Grammaire',mode_pron:'Prononciation',mode_corr:'Correction',quick_grammar:'Conseil grammatical',quick_phrases:'Phrases du jour',quick_talk:'Démarrer conversation',hc_vocab_desc:'Apprenez de nouveaux mots avec des fiches',hc_quiz_desc:'Testez vos connaissances en QCM',hc_free_desc:'Choisissez un thème et parcourez le vocabulaire',hc_translate_desc:'Traduisez mots et phrases instantanément',hc_ai_desc:'Pratiquez avec IA et microphone',hc_gen_desc:'Entrez un thème – IA génère 20 mots',hc_myvocab_desc:'Sauvegardez des mots personnalisés',myvocab_desc:'Ajoutez des mots et gérez votre vocabulaire',gen_desc:'Entrez un thème – IA génère du vocabulaire',footer_note:'Votre progression est sauvegardée localement',chat_placeholder:'Écrivez un message ou appuyez sur 🎤...',pron_test:"🎤 Tester la prononciation",srs_done:"Toutes les cartes terminées !",srs_next:"Revenez demain pour de nouvelles révisions.",no_data:"Pas encore de données",search_empty:"Aucun résultat trouvé.",search_hint:"Tapez pour rechercher — dans toutes les langues.",search_count_found:"résultats trouvés",search_count_more:"résultats de plus.",quick_select:"Sélection rapide :",gen_result:"Résultat",write_done:"Exercice terminé !",write_correct:"✓ Correct !",write_wrong:"✗ Bonne réponse : ",quiz_done:"🏆 Quiz terminé !",conj_quiz_done:"Quiz terminé !",conj_restart:"🔄 Répéter",conj_new_verb:"+ Nouveau verbe",conj_saved_verbs:"⭐ Verbes sauvegardés",conj_loading:"IA crée le tableau de conjugaison...",conj_pronoun:"Pronom",conj_tab_table:"📋 Tableau",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Conjuguer",conj_save:"⭐ Sauvegarder",conj_start_quiz:"🎯 Démarrer quiz",srs_flip:"Cliquer pour révéler",srs_not_at_all:"😰 Pas du tout",srs_hard:"😐 Difficile",srs_ok:"🙂 Ok",srs_easy:"😊 Facile",srs_perfect:"🚀 Parfait",check_btn:"✓ Vérifier",hint_btn:"💡 Indice",write_skip:"→ Passer",back_lbl:"Retour",mv_empty_detail:"Ajoutez des mots ou générez-les avec le Générateur IA."},
-  ro:{ nav_home:'Acasă',search_all:"Toutes",nav_vocab:'Vocabular',nav_quiz:'Quiz',nav_free:'Învățare liberă',nav_gen:'Generator IA',nav_myvocab:'Cuvintele mele',nav_translate:'Traducător',nav_ai:'Asistent IA',nav_srs:'SRS',nav_write:'Scriere',nav_stats:'Statistici',nav_badges:'Insigne',nav_path:'Traseu',nav_search:'Căutare',nav_conjugate:'Conjugare',welcome_back:'Bine ai revenit',learning:'Înveți',change_lang:'🌍 Schimbă limba',which_lang:'Ce limbă vrei să înveți?',choose_lang:'Alege limba ta',stat_learned:'Învățat',stat_streak:'Serie',stat_correct:'% Corect',stat_total:'Total quiz',vocab_title:'Antrenament vocabular',quiz_title:'Quiz',free_title:'Învățare liberă',gen_title:'Generator IA',myvocab_title:'Vocabularul meu',translate_title:'Traducător',ai_title:'Asistent lingvistic IA',reveal:'Click pentru a dezvălui',again:'✗ Din nou',listen:'🔊 Ascultă',skip:'→ Sari',knew:'✓ Știam',translate_btn:'Traduce',speak_out:'🔊 Citește',copy:'⧉ Copiază',input:'INTRARE',output:'IEȘIRE',send:'Trimite',new_quiz:'🔄 Reîncepe',next:'Următor →',correct:'✓ Corect!',wrong:'✗ Greșit. Corect:',enter_topic:'Introdu subiect',generate:'Generează',generating:'IA generează...',save_all:'Salvează tot',to_training:'La antrenament',add_word:'Adaugă cuvânt',foreign_word:'CUVÂNT STRĂIN',translation_lbl:'GERMANĂ',phonetic:'PRONUNȚIE (opțional)',add_btn:'+ Adaugă',train_mine:'Antrenează vocabularul meu',delete_all:'Șterge tot',no_vocab:'Niciun vocabular personal încă.',settings:'⚙ Setări',save:'Salvează',delete:'Șterge',export:'⬇ Exportă',reset:'🗑 Resetează',ai_welcome:'Bună! Sunt asistentul tău lingvistic IA. Alege o limbă și un mod pentru a începe!',mode_conv:'Conversație',mode_grammar:'Gramatică',mode_pron:'Pronunție',mode_corr:'Corecție',quick_grammar:'Sfat gramatical',quick_phrases:'Fraze ale zilei',quick_talk:'Începe conversație',hc_vocab_desc:'Învață cuvinte noi cu fișe',hc_quiz_desc:'Testează cunoștințele cu QCM',hc_free_desc:'Alege o temă și răsfoiește vocabularul',hc_translate_desc:'Traduce cuvinte și fraze instant',hc_ai_desc:'Exersează cu IA și microfon',hc_gen_desc:'Introdu temă – IA generează 20 cuvinte',hc_myvocab_desc:'Salvează cuvinte personalizate',myvocab_desc:'Adaugă cuvinte și gestionează vocabularul',gen_desc:'Introdu o temă – IA generează vocabular',footer_note:'Progresul tău este salvat local',chat_placeholder:'Scrie un mesaj sau apasă 🎤...',pron_test:"🎤 Testează pronunția",srs_done:"Toate cardurile completate!",srs_next:"Revino mâine pentru noi recapitulări.",no_data:"Fără date",search_empty:"Nu s-au găsit rezultate.",search_hint:"Tastează pentru a căuta — în toate limbile.",search_count_found:"rezultate găsite",search_count_more:"rezultate în plus.",quick_select:"Selecție rapidă:",gen_result:"Rezultat",write_done:"Exercițiu finalizat!",write_correct:"✓ Corect!",write_wrong:"✗ Răspuns corect: ",quiz_done:"🏆 Quiz finalizat!",conj_quiz_done:"Quiz finalizat!",conj_restart:"🔄 Repetă",conj_new_verb:"+ Verb nou",conj_saved_verbs:"⭐ Verbe salvate",conj_loading:"IA creează tabelul de conjugare...",conj_pronoun:"Pronume",conj_tab_table:"📋 Tabel",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Conjugă",conj_save:"⭐ Salvează",conj_start_quiz:"🎯 Începe quiz",srs_flip:"Click pentru a dezvălui",srs_not_at_all:"😰 Deloc",srs_hard:"😐 Dificil",srs_ok:"🙂 Ok",srs_easy:"😊 Ușor",srs_perfect:"🚀 Perfect",check_btn:"✓ Verifică",hint_btn:"💡 Indiciu",write_skip:"→ Sari",back_lbl:"Înapoi",mv_empty_detail:"Adaugă cuvinte sau generează-le cu Generatorul IA."},
-  sv:{ nav_home:'Hem',search_all:"Toate",nav_vocab:'Ordförråd',nav_quiz:'Quiz',nav_free:'Fri inlärning',nav_gen:'AI-generator',nav_myvocab:'Mina ord',nav_translate:'Översättare',nav_ai:'AI-assistent',nav_srs:'SRS',nav_write:'Skrivning',nav_stats:'Statistik',nav_badges:'Märken',nav_path:'Inlärningsväg',nav_search:'Sök',nav_conjugate:'Konjugation',welcome_back:'Välkommen tillbaka',learning:'Du lär dig',change_lang:'🌍 Byt språk',which_lang:'Vilket språk vill du lära dig?',choose_lang:'Välj ditt inlärningsspråk',stat_learned:'Inlärt',stat_streak:'Serie',stat_correct:'% Rätt',stat_total:'Quiz totalt',vocab_title:'Ordträning',quiz_title:'Quiz',free_title:'Fri inlärning',gen_title:'AI-ordgenerator',myvocab_title:'Mitt ordförråd',translate_title:'Översättare',ai_title:'AI språkassistent',reveal:'Klicka för att avslöja',again:'✗ Igen',listen:'🔊 Lyssna',skip:'→ Hoppa över',knew:'✓ Visste det',translate_btn:'Översätt',speak_out:'🔊 Läs upp',copy:'⧉ Kopiera',input:'INMATNING',output:'UTDATA',send:'Skicka',new_quiz:'🔄 Börja om',next:'Nästa →',correct:'✓ Rätt!',wrong:'✗ Fel. Rätt:',enter_topic:'Ange ämne',generate:'Generera',generating:'AI genererar...',save_all:'Spara alla',to_training:'Till träning',add_word:'Lägg till ord',foreign_word:'FRÄMMANDE ORD',translation_lbl:'TYSKA',phonetic:'UTTAL (valfritt)',add_btn:'+ Lägg till',train_mine:'Träna mitt ordförråd',delete_all:'Ta bort alla',no_vocab:'Inget personligt ordförråd ännu.',settings:'⚙ Inställningar',save:'Spara',delete:'Ta bort',export:'⬇ Exportera',reset:'🗑 Återställ',ai_welcome:'Hej! Jag är din AI-språkassistent. Välj ett inlärningsspråk och ett läge för att börja!',mode_conv:'Konversation',mode_grammar:'Grammatik',mode_pron:'Uttal',mode_corr:'Korrigering',quick_grammar:'Grammatiktips',quick_phrases:'Dagens fraser',quick_talk:'Starta konversation',hc_vocab_desc:'Lär dig nya ord med flashkort och ljud',hc_quiz_desc:'Testa dina kunskaper med flervalsfrågor',hc_free_desc:'Välj ett ämne och bläddra igenom ordförrådet',hc_translate_desc:'Översätt ord och meningar direkt',hc_ai_desc:'Öva konversationer med AI och mikrofon',hc_gen_desc:'Ange ett ämne – AI genererar 20 ord direkt',hc_myvocab_desc:'Spara anpassade ord och träna dem',myvocab_desc:'Lägg till ord och hantera AI-ordförråd',gen_desc:'Ange ett ämne – AI genererar ordförråd',footer_note:'Dina framsteg sparas lokalt',chat_placeholder:'Skriv ett meddelande eller tryck 🎤...',pron_test:"🎤 Testa uttal",srs_done:"Alla kort klara!",srs_next:"Kom tillbaka imorgon för nya repetitioner.",no_data:"Inga data ännu",search_empty:"Inga resultat hittades.",search_hint:"Skriv för att söka — på alla språk.",search_count_found:"resultat hittades",search_count_more:"fler resultat.",quick_select:"Snabbval:",gen_result:"Resultat",write_done:"Övning klar!",write_correct:"✓ Rätt!",write_wrong:"✗ Rätt svar: ",quiz_done:"🏆 Quiz klar!",conj_quiz_done:"Quiz klar!",conj_restart:"🔄 Upprepa",conj_new_verb:"+ Nytt verb",conj_saved_verbs:"⭐ Sparade verb",conj_loading:"AI skapar konjugationstabell...",conj_pronoun:"Pronomen",conj_tab_table:"📋 Tabell",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Konjugera",conj_save:"⭐ Spara",conj_start_quiz:"🎯 Starta quiz",srs_flip:"Klicka för att avslöja",srs_not_at_all:"😰 Inte alls",srs_hard:"😐 Svårt",srs_ok:"🙂 Ok",srs_easy:"😊 Lätt",srs_perfect:"🚀 Perfekt",check_btn:"✓ Kontrollera",hint_btn:"💡 Ledtråd",write_skip:"→ Hoppa över",back_lbl:"Tillbaka",mv_empty_detail:"Lägg till ord eller generera dem med AI-generatorn."},
-  da:{ nav_home:'Start',search_all:"Alla",nav_vocab:'Ordforråd',nav_quiz:'Quiz',nav_free:'Fri læring',nav_gen:'AI-generator',nav_myvocab:'Mine ord',nav_translate:'Oversætter',nav_ai:'AI-assistent',nav_srs:'SRS',nav_write:'Skrivning',nav_stats:'Statistik',nav_badges:'Badges',nav_path:'Læringssti',nav_search:'Søg',nav_conjugate:'Bøjning',welcome_back:'Velkommen tilbage',learning:'Du lærer',change_lang:'🌍 Skift sprog',which_lang:'Hvilket sprog vil du lære?',choose_lang:'Vælg dit lærersprog',stat_learned:'Lært',stat_streak:'Serie',stat_correct:'% Korrekt',stat_total:'Quiz i alt',vocab_title:'Ordtræning',quiz_title:'Quiz',free_title:'Fri læring',gen_title:'AI-ordgenerator',myvocab_title:'Mit ordforråd',translate_title:'Oversætter',ai_title:'AI sprogassistent',reveal:'Klik for at afsløre',again:'✗ Igen',listen:'🔊 Lyt',skip:'→ Spring over',knew:'✓ Vidste det',translate_btn:'Oversæt',speak_out:'🔊 Oplæs',copy:'⧉ Kopier',input:'INPUT',output:'OUTPUT',send:'Send',new_quiz:'🔄 Start forfra',next:'Næste →',correct:'✓ Korrekt!',wrong:'✗ Forkert. Korrekt:',enter_topic:'Indtast emne',generate:'Generer',generating:'AI genererer...',save_all:'Gem alle',to_training:'Til træning',add_word:'Tilføj ord',foreign_word:'FREMMEDORD',translation_lbl:'TYSK',phonetic:'UDTALE (valgfrit)',add_btn:'+ Tilføj',train_mine:'Træn mit ordforråd',delete_all:'Slet alle',no_vocab:'Intet personligt ordforråd endnu.',settings:'⚙ Indstillinger',save:'Gem',delete:'Slet',export:'⬇ Eksporter',reset:'🗑 Nulstil',ai_welcome:'Hej! Jeg er din AI-sprogassistent. Vælg et lærersprog og en tilstand for at begynde!',mode_conv:'Samtale',mode_grammar:'Grammatik',mode_pron:'Udtale',mode_corr:'Rettelse',quick_grammar:'Grammatiktip',quick_phrases:'Dagens sætninger',quick_talk:'Start samtale',hc_vocab_desc:'Lær nye ord med flashkort og lyd',hc_quiz_desc:'Test din viden med multiple choice',hc_free_desc:'Vælg et emne og gennemse ordforrådet',hc_translate_desc:'Oversæt ord og sætninger med det samme',hc_ai_desc:'Øv samtaler med AI og mikrofon',hc_gen_desc:'Indtast et emne – AI genererer 20 ord',hc_myvocab_desc:'Gem tilpassede ord og træn dem',myvocab_desc:'Tilføj ord og administrer AI-ordforråd',gen_desc:'Indtast et emne – AI genererer ordforråd',footer_note:'Dine fremskridt gemmes lokalt',chat_placeholder:'Skriv en besked eller tryk 🎤...',pron_test:"🎤 Test udtale",srs_done:"Alle kort færdige!",srs_next:"Kom tilbage i morgen for nye gennemgange.",no_data:"Ingen data endnu",search_empty:"Ingen resultater fundet.",search_hint:"Skriv for at søge — på alle sprog.",search_count_found:"resultater fundet",search_count_more:"flere resultater.",quick_select:"Hurtigvalg:",gen_result:"Resultat",write_done:"Øvelse færdig!",write_correct:"✓ Korrekt!",write_wrong:"✗ Rigtigt svar: ",quiz_done:"🏆 Quiz færdig!",conj_quiz_done:"Quiz færdig!",conj_restart:"🔄 Gentag",conj_new_verb:"+ Nyt verbum",conj_saved_verbs:"⭐ Gemte verber",conj_loading:"AI opretter bøjningstabel...",conj_pronoun:"Pronomen",conj_tab_table:"📋 Tabel",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Bøj",conj_save:"⭐ Gem",conj_start_quiz:"🎯 Start quiz",srs_flip:"Klik for at afsløre",srs_not_at_all:"😰 Slet ikke",srs_hard:"😐 Svært",srs_ok:"🙂 Ok",srs_easy:"😊 Let",srs_perfect:"🚀 Perfekt",check_btn:"✓ Tjek",hint_btn:"💡 Tip",write_skip:"→ Spring over",back_lbl:"Tilbage",mv_empty_detail:"Tilføj ord eller generer dem med AI-generatoren."},
+  de:{ nav_home:'Start',nav_vocab:'Vokabeln',nav_quiz:'Quiz',nav_free:'Freies Lernen',nav_gen:'KI-Generator',nav_myvocab:'Meine Vokabeln',nav_translate:'Übersetzer',nav_ai:'KI-Assistent',nav_srs:'SRS',nav_write:'Schreiben',nav_stats:'Statistiken',nav_badges:'Abzeichen',nav_path:'Lernpfad',nav_deniveau:'DE Niveau',nav_search:'Suche',nav_conjugate:'Konjugation',welcome_back:'Willkommen zurück',learning:'Du lernst',change_lang:'🌍 Sprache wechseln',which_lang:'Welche Sprache möchtest du lernen?',choose_lang:'Wähle deine Lernsprache',stat_learned:'Gelernt',stat_streak:'Streak',stat_correct:'% Korrekt',stat_total:'Quiz Total',vocab_title:'Vokabeltraining',quiz_title:'Quiz',free_title:'Freies Lernen',gen_title:'KI-Vokabel-Generator',myvocab_title:'Meine Vokabeln',translate_title:'Übersetzer',ai_title:'KI-Sprachassistent',reveal:'Klicken zum Aufdecken',again:'✗ Nochmal',listen:'🔊 Anhören',skip:'→ Überspringen',knew:'✓ Gewusst',translate_btn:'Übersetzen',speak_out:'🔊 Vorlesen',copy:'⧉ Kopieren',input:'EINGABE',output:'AUSGABE',send:'Senden',new_quiz:'🔄 Neu starten',next:'Weiter →',correct:'✓ Richtig!',wrong:'✗ Falsch. Richtig:',enter_topic:'Thema eingeben',generate:'✨ Generieren',generating:'KI generiert Vokabeln...',save_all:'⭐ Alle speichern',to_training:'📚 Zum Training',add_word:'➕ Eigenes Wort hinzufügen',foreign_word:'FREMDWORT',translation_lbl:'DEUTSCH',phonetic:'AUSSPRACHE (optional)',add_btn:'+ Hinzufügen',train_mine:'📚 Meine Vokabeln trainieren',delete_all:'🗑 Alle löschen',no_vocab:'Noch keine eigenen Vokabeln. Füge Wörter hinzu oder generiere sie mit dem KI-Generator.',settings:'⚙ Einstellungen',save:'Speichern',delete:'Löschen',export:'⬇ Exportieren',reset:'🗑 Zurücksetzen',ai_welcome:'Hallo! Ich bin dein KI-Sprachassistent. Wähle eine Lernsprache und einen Modus, dann können wir loslegen!',mode_conv:'💬 Konversation',mode_grammar:'📝 Grammatik',mode_pron:'🎤 Aussprache',mode_corr:'✏️ Korrektur',quick_grammar:'📖 Grammatiktipp',quick_phrases:'💡 Sätze des Tages',quick_talk:'🗣 Gespräch starten',hc_vocab_desc:'Lerne neue Wörter mit Karteikarten und Sprachausgabe',hc_quiz_desc:'Teste dein Wissen mit Multiple-Choice-Fragen',hc_free_desc:'Wähle ein Thema und stöbere durch Vokabeln',hc_translate_desc:'Übersetze Begriffe und Sätze sofort',hc_ai_desc:'Übe Gespräche mit KI, Mikrofon & Sprachausgabe',hc_gen_desc:'Thema eingeben – KI generiert sofort 20 Vokabeln',hc_myvocab_desc:'Eigene Wörter speichern und gezielt trainieren',myvocab_desc:'Eigene Wörter hinzufügen, gespeicherte KI-Vokabeln verwalten und trainieren',gen_desc:'Gib ein Thema ein – die KI generiert passende Vokabeln für deine Lernsprache',footer_note:'Dein Fortschritt wird lokal gespeichert',chat_placeholder:'Nachricht eingeben oder 🎤 drücken...',pron_test:"🎤 Aussprache testen",srs_done:"Alle fälligen Karten erledigt!",srs_next:"Komm morgen wieder für neue Wiederholungen.",no_data:"Noch keine Daten",search_empty:"Kein Ergebnis gefunden.",search_hint:"Tippe um zu suchen — in allen Sprachen.",search_count_found:"Ergebnisse gefunden",search_count_more:"weitere Ergebnisse. Suche verfeinern.",quick_select:"Schnellauswahl:",gen_result:"Ergebnis",write_done:"Übung abgeschlossen!",write_correct:"✓ Richtig!",write_wrong:"✗ Richtig wäre: ",quiz_done:"🏆 Quiz abgeschlossen!",conj_quiz_done:"Quiz abgeschlossen!",conj_restart:"🔄 Wiederholen",conj_new_verb:"+ Neues Verb",conj_saved_verbs:"⭐ Gespeicherte Verben",conj_loading:"KI erstellt Konjugationstabelle...",conj_pronoun:"Pronomen",conj_tab_table:"📋 Tabelle",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Konjugieren",conj_save:"⭐ Speichern",conj_start_quiz:"🎯 Quiz starten",srs_flip:"Klicken zum Aufdecken",srs_not_at_all:"😰 Gar nicht",srs_hard:"😐 Schwer",srs_ok:"🙂 Ok",srs_easy:"😊 Leicht",srs_perfect:"🚀 Perfekt",check_btn:"✓ Prüfen",hint_btn:"💡 Hinweis",write_skip:"→ Überspringen",back_lbl:"Zurück",mv_empty_detail:"Füge Wörter hinzu oder generiere sie mit dem KI-Generator."},
+  en:{ nav_home:'Home',search_all:"Alle",nav_vocab:'Vocabulary',nav_quiz:'Quiz',nav_free:'Free Learning',nav_gen:'AI Generator',nav_myvocab:'My Words',nav_translate:'Translator',nav_ai:'AI Assistant',nav_srs:'SRS',nav_write:'Writing',nav_stats:'Statistics',nav_badges:'Badges',nav_path:'Learning path',nav_deniveau:'DE Level',nav_search:'Search',nav_conjugate:'Conjugation',welcome_back:'Welcome back',learning:'You are learning',change_lang:'🌍 Change language',which_lang:'Which language do you want to learn?',choose_lang:'Choose your learning language',stat_learned:'Learned',stat_streak:'Streak',stat_correct:'% Correct',stat_total:'Quiz Total',vocab_title:'Vocabulary Training',quiz_title:'Quiz',free_title:'Free Learning',gen_title:'✨ AI Vocabulary Generator',myvocab_title:'⭐ My Vocabulary',translate_title:'Translator',ai_title:'AI Language Assistant',reveal:'Tap to reveal',again:'✗ Again',listen:'🔊 Listen',skip:'→ Skip',knew:'✓ Got it',translate_btn:'Translate',speak_out:'🔊 Speak',copy:'⧉ Copy',input:'INPUT',output:'OUTPUT',send:'Send',new_quiz:'🔄 Restart',next:'Next →',correct:'✓ Correct!',wrong:'✗ Wrong. Correct:',enter_topic:'Enter topic',generate:'✨ Generate',generating:'AI is generating...',save_all:'⭐ Save all',to_training:'📚 To Training',add_word:'➕ Add custom word',foreign_word:'FOREIGN WORD',translation_lbl:'GERMAN',phonetic:'PRONUNCIATION (optional)',add_btn:'+ Add',train_mine:'📚 Train my vocabulary',delete_all:'🗑 Delete all',no_vocab:'No custom vocabulary yet. Add words or generate them with the AI Generator.',settings:'⚙ Settings',save:'Save',delete:'Delete',export:'⬇ Export',reset:'🗑 Reset',ai_welcome:'Hello! I am your AI language assistant. Choose a learning language and a mode to get started!',mode_conv:'💬 Conversation',mode_grammar:'📝 Grammar',mode_pron:'🎤 Pronunciation',mode_corr:'✏️ Correction',quick_grammar:'📖 Grammar tip',quick_phrases:'💡 Phrases of the day',quick_talk:'🗣 Start conversation',hc_vocab_desc:'Learn new words with flashcards and audio',hc_quiz_desc:'Test your knowledge with multiple choice questions',hc_free_desc:'Choose a topic and browse vocabulary',hc_translate_desc:'Translate words and sentences instantly',hc_ai_desc:'Practice conversations with AI and microphone',hc_gen_desc:'Enter a topic – AI generates 20 words instantly',hc_myvocab_desc:'Save custom words and train them',myvocab_desc:'Add words, manage AI vocabulary and train',gen_desc:'Enter a topic – the AI generates matching vocabulary',footer_note:'Your progress is saved locally',chat_placeholder:'Type a message or press 🎤...',pron_test:"🎤 Test pronunciation",srs_done:"All due cards done!",srs_next:"Come back tomorrow for new reviews.",no_data:"No data yet",search_empty:"No results found.",search_hint:"Type to search — across all languages.",search_count_found:"results found",search_count_more:"more results. Refine search.",quick_select:"Quick select:",gen_result:"Result",write_done:"Exercise completed!",write_correct:"✓ Correct!",write_wrong:"✗ Correct answer: ",quiz_done:"🏆 Quiz completed!",conj_quiz_done:"Quiz completed!",conj_restart:"🔄 Repeat",conj_new_verb:"+ New verb",conj_saved_verbs:"⭐ Saved verbs",conj_loading:"AI is creating conjugation table...",conj_pronoun:"Pronoun",conj_tab_table:"📋 Table",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Conjugate",conj_save:"⭐ Save",conj_start_quiz:"🎯 Start quiz",srs_flip:"Tap to reveal",srs_not_at_all:"😰 Not at all",srs_hard:"😐 Hard",srs_ok:"🙂 OK",srs_easy:"😊 Easy",srs_perfect:"🚀 Perfect",check_btn:"✓ Check",hint_btn:"💡 Hint",write_skip:"→ Skip",back_lbl:"Back",mv_empty_detail:"Add words or generate them with the AI Generator."},
+  ru:{ nav_home:'Главная',search_all:"All",nav_vocab:'Словарь',nav_quiz:'Тест',nav_free:'Свободное обучение',nav_gen:'ИИ-Генератор',nav_myvocab:'Мои слова',nav_translate:'Переводчик',nav_ai:'ИИ-Ассистент',nav_srs:'SRS',nav_write:'Письмо',nav_stats:'Статистика',nav_badges:'Значки',nav_path:'Учебный путь',nav_deniveau:'Уровень DE',nav_search:'Поиск',nav_conjugate:'Спряжение',welcome_back:'С возвращением',learning:'Вы изучаете',change_lang:'🌍 Сменить язык',which_lang:'Какой язык вы хотите учить?',choose_lang:'Выберите язык',stat_learned:'Изучено',stat_streak:'Серия',stat_correct:'% Правильных',stat_total:'Всего тестов',vocab_title:'Тренировка слов',quiz_title:'Тест',free_title:'Свободное обучение',gen_title:'✨ ИИ-Генератор словаря',myvocab_title:'⭐ Мои слова',translate_title:'Переводчик',ai_title:'ИИ-Языковой ассистент',reveal:'Нажмите, чтобы открыть',again:'✗ Ещё раз',listen:'🔊 Слушать',skip:'→ Пропустить',knew:'✓ Знал',translate_btn:'Перевести',speak_out:'🔊 Озвучить',copy:'⧉ Копировать',input:'ВВОД',output:'ВЫВОД',send:'Отправить',new_quiz:'🔄 Заново',next:'Далее →',correct:'✓ Правильно!',wrong:'✗ Неверно. Правильно:',enter_topic:'Введите тему',generate:'✨ Генерировать',generating:'ИИ генерирует...',save_all:'⭐ Сохранить все',to_training:'📚 К тренировке',add_word:'➕ Добавить слово',foreign_word:'ИНОСТРАННОЕ СЛОВО',translation_lbl:'НЕМЕЦКИЙ',phonetic:'ПРОИЗНОШЕНИЕ (необязательно)',add_btn:'+ Добавить',train_mine:'📚 Тренировать мои слова',delete_all:'🗑 Удалить все',no_vocab:'Пока нет своих слов.',settings:'⚙ Настройки',save:'Сохранить',delete:'Удалить',export:'⬇ Экспорт',reset:'🗑 Сбросить',ai_welcome:'Привет! Я ваш ИИ-языковой ассистент. Выберите язык и режим для начала!',mode_conv:'💬 Разговор',mode_grammar:'📝 Грамматика',mode_pron:'🎤 Произношение',mode_corr:'✏️ Коррекция',quick_grammar:'📖 Совет по грамматике',quick_phrases:'💡 Фразы дня',quick_talk:'🗣 Начать разговор',hc_vocab_desc:'Учите новые слова с карточками и аудио',hc_quiz_desc:'Проверьте знания с тестами',hc_free_desc:'Выберите тему и просматривайте слова',hc_translate_desc:'Переводите слова и предложения мгновенно',hc_ai_desc:'Практикуйте разговор с ИИ и микрофоном',hc_gen_desc:'Введите тему – ИИ мгновенно создаёт 20 слов',hc_myvocab_desc:'Сохраняйте слова и тренируйте их',myvocab_desc:'Добавляйте слова, управляйте словарём ИИ и тренируйтесь',gen_desc:'Введите тему – ИИ создаёт подходящие слова',footer_note:'Ваш прогресс сохраняется локально',chat_placeholder:'Введите сообщение или нажмите 🎤...',pron_test:"🎤 Тест произношения",srs_done:"Все карточки выполнены!",srs_next:"Возвращайтесь завтра для новых повторений.",no_data:"Нет данных",search_empty:"Ничего не найдено.",search_hint:"Введите текст для поиска — по всем языкам.",search_count_found:"результатов найдено",search_count_more:"ещё результатов.",quick_select:"Быстрый выбор:",gen_result:"Результат",write_done:"Упражнение завершено!",write_correct:"✓ Правильно!",write_wrong:"✗ Правильный ответ: ",quiz_done:"🏆 Тест завершён!",conj_quiz_done:"Тест завершён!",conj_restart:"🔄 Повторить",conj_new_verb:"+ Новый глагол",conj_saved_verbs:"⭐ Сохранённые глаголы",conj_loading:"ИИ создаёт таблицу спряжений...",conj_pronoun:"Местоимение",conj_tab_table:"📋 Таблица",conj_tab_quiz:"🎯 Тест",conj_gen_btn:"Спрягать",conj_save:"⭐ Сохранить",conj_start_quiz:"🎯 Начать тест",srs_flip:"Нажмите, чтобы открыть",srs_not_at_all:"😰 Совсем нет",srs_hard:"😐 Сложно",srs_ok:"🙂 Нормально",srs_easy:"😊 Легко",srs_perfect:"🚀 Отлично",check_btn:"✓ Проверить",hint_btn:"💡 Подсказка",write_skip:"→ Пропустить",back_lbl:"Назад",mv_empty_detail:"Добавьте слова или сгенерируйте их с помощью ИИ."},
+  it:{ nav_home:'Inizio',search_all:"Все",nav_vocab:'Vocaboli',nav_quiz:'Quiz',nav_free:'Studio libero',nav_gen:'Generatore IA',nav_myvocab:'Le mie parole',nav_translate:'Traduttore',nav_ai:'Assistente IA',nav_srs:'SRS',nav_write:'Scrittura',nav_stats:'Statistiche',nav_badges:'Insegne',nav_path:'Percorso',nav_deniveau:'Livello DE',nav_search:'Ricerca',nav_conjugate:'Coniugazione',welcome_back:'Bentornato',learning:'Stai imparando',change_lang:'🌍 Cambia lingua',which_lang:'Quale lingua vuoi imparare?',choose_lang:'Scegli la tua lingua',stat_learned:'Imparato',stat_streak:'Serie',stat_correct:'% Corretti',stat_total:'Quiz totali',vocab_title:'Allenamento vocaboli',quiz_title:'Quiz',free_title:'Studio libero',gen_title:'✨ Generatore vocaboli IA',myvocab_title:'⭐ I miei vocaboli',translate_title:'Traduttore',ai_title:'Assistente linguistico IA',reveal:'Clicca per rivelare',again:'✗ Di nuovo',listen:'🔊 Ascolta',skip:'→ Salta',knew:'✓ Lo sapevo',translate_btn:'Traduci',speak_out:'🔊 Leggi',copy:'⧉ Copia',input:'INGRESSO',output:'USCITA',send:'Invia',new_quiz:'🔄 Ricomincia',next:'Avanti →',correct:'✓ Corretto!',wrong:'✗ Sbagliato. Corretto:',enter_topic:'Inserisci argomento',generate:'✨ Genera',generating:'IA sta generando...',save_all:'⭐ Salva tutto',to_training:'📚 Allena',add_word:'➕ Aggiungi parola',foreign_word:'PAROLA STRANIERA',translation_lbl:'TEDESCO',phonetic:'PRONUNCIA (opzionale)',add_btn:'+ Aggiungi',train_mine:'📚 Allena i miei vocaboli',delete_all:'🗑 Elimina tutto',no_vocab:'Nessun vocabolo personale ancora.',settings:'⚙ Impostazioni',save:'Salva',delete:'Elimina',export:'⬇ Esporta',reset:'🗑 Reimposta',ai_welcome:'Ciao! Sono il tuo assistente linguistico IA. Scegli una lingua e una modalità per iniziare!',mode_conv:'💬 Conversazione',mode_grammar:'📝 Grammatica',mode_pron:'🎤 Pronuncia',mode_corr:'✏️ Correzione',quick_grammar:'📖 Consiglio grammaticale',quick_phrases:'💡 Frasi del giorno',quick_talk:'🗣 Inizia conversazione',hc_vocab_desc:'Impara nuove parole con flashcard e audio',hc_quiz_desc:'Testa la conoscenza con domande a scelta multipla',hc_free_desc:'Scegli un argomento e sfoglia il vocabolario',hc_translate_desc:'Traduci parole e frasi istantaneamente',hc_ai_desc:'Pratica conversazioni con IA e microfono',hc_gen_desc:'Inserisci un argomento – IA genera 20 parole',hc_myvocab_desc:'Salva parole personalizzate e allenale',myvocab_desc:'Aggiungi parole, gestisci il vocabolario IA e allenati',gen_desc:'Inserisci un argomento – IA genera vocaboli per la tua lingua',footer_note:'Il tuo progresso è salvato localmente',chat_placeholder:'Scrivi un messaggio o premi 🎤...',pron_test:"🎤 Testa pronuncia",srs_done:"Tutte le schede completate!",srs_next:"Torna domani per nuove ripetizioni.",no_data:"Nessun dato",search_empty:"Nessun risultato trovato.",search_hint:"Digita per cercare — in tutte le lingue.",search_count_found:"risultati trovati",search_count_more:"altri risultati.",quick_select:"Selezione rapida:",gen_result:"Risultato",write_done:"Esercizio completato!",write_correct:"✓ Corretto!",write_wrong:"✗ Risposta corretta: ",quiz_done:"🏆 Quiz completato!",conj_quiz_done:"Quiz completato!",conj_restart:"🔄 Ripeti",conj_new_verb:"+ Nuovo verbo",conj_saved_verbs:"⭐ Verbi salvati",conj_loading:"IA sta creando la tabella di coniugazione...",conj_pronoun:"Pronome",conj_tab_table:"📋 Tabella",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Coniuga",conj_save:"⭐ Salva",conj_start_quiz:"🎯 Inizia quiz",srs_flip:"Clicca per rivelare",srs_not_at_all:"😰 Per niente",srs_hard:"😐 Difficile",srs_ok:"🙂 Ok",srs_easy:"😊 Facile",srs_perfect:"🚀 Perfetto",check_btn:"✓ Controlla",hint_btn:"💡 Suggerimento",write_skip:"→ Salta",back_lbl:"Indietro",mv_empty_detail:"Aggiungi parole o generatele con il Generatore IA."},
+  es:{ nav_home:'Inicio',search_all:"Tutte",nav_vocab:'Vocabulario',nav_quiz:'Quiz',nav_free:'Aprendizaje libre',nav_gen:'Generador IA',nav_myvocab:'Mis palabras',nav_translate:'Traductor',nav_ai:'Asistente IA',nav_srs:'SRS',nav_write:'Escritura',nav_stats:'Estadísticas',nav_badges:'Insignias',nav_path:'Ruta',nav_deniveau:'Nivel DE',nav_search:'Búsqueda',nav_conjugate:'Conjugación',welcome_back:'Bienvenido de vuelta',learning:'Estás aprendiendo',change_lang:'🌍 Cambiar idioma',which_lang:'¿Qué idioma quieres aprender?',choose_lang:'Elige tu idioma',stat_learned:'Aprendido',stat_streak:'Racha',stat_correct:'% Correctas',stat_total:'Total quiz',vocab_title:'Entrenamiento de vocabulario',quiz_title:'Quiz',free_title:'Aprendizaje libre',gen_title:'✨ Generador de vocabulario IA',myvocab_title:'⭐ Mi vocabulario',translate_title:'Traductor',ai_title:'Asistente de idiomas IA',reveal:'Toca para revelar',again:'✗ Otra vez',listen:'🔊 Escuchar',skip:'→ Saltar',knew:'✓ Lo sabía',translate_btn:'Traducir',speak_out:'🔊 Leer',copy:'⧉ Copiar',input:'ENTRADA',output:'SALIDA',send:'Enviar',new_quiz:'🔄 Reiniciar',next:'Siguiente →',correct:'✓ ¡Correcto!',wrong:'✗ Incorrecto. Correcto:',enter_topic:'Introduce tema',generate:'✨ Generar',generating:'IA generando...',save_all:'⭐ Guardar todo',to_training:'📚 Entrenar',add_word:'➕ Añadir palabra',foreign_word:'PALABRA EXTRANJERA',translation_lbl:'ALEMÁN',phonetic:'PRONUNCIACIÓN (opcional)',add_btn:'+ Añadir',train_mine:'📚 Entrenar mi vocabulario',delete_all:'🗑 Eliminar todo',no_vocab:'Sin vocabulario propio todavía.',settings:'⚙ Ajustes',save:'Guardar',delete:'Eliminar',export:'⬇ Exportar',reset:'🗑 Restablecer',ai_welcome:'¡Hola! Soy tu asistente de idiomas IA. ¡Elige un idioma y un modo para comenzar!',mode_conv:'💬 Conversación',mode_grammar:'📝 Gramática',mode_pron:'🎤 Pronunciación',mode_corr:'✏️ Corrección',quick_grammar:'📖 Consejo gramatical',quick_phrases:'💡 Frases del día',quick_talk:'🗣 Iniciar conversación',hc_vocab_desc:'Aprende nuevas palabras con tarjetas y audio',hc_quiz_desc:'Pon a prueba tu conocimiento con preguntas de opción múltiple',hc_free_desc:'Elige un tema y navega por el vocabulario',hc_translate_desc:'Traduce palabras y frases al instante',hc_ai_desc:'Pratica conversaciones con IA y micrófono',hc_gen_desc:'Introduce un tema – IA genera 20 palabras',hc_myvocab_desc:'Guarda palabras personalizadas y entrénalas',myvocab_desc:'Añade palabras, gestiona vocabulario IA y entrena',gen_desc:'Introduce un tema – IA genera vocabulario para tu idioma',footer_note:'Tu progreso se guarda localmente',chat_placeholder:'Escribe un mensaje o pulsa 🎤...',pron_test:"🎤 Probar pronunciación",srs_done:"¡Todas las tarjetas completadas!",srs_next:"Vuelve mañana para nuevas revisiones.",no_data:"Sin datos",search_empty:"No se encontraron resultados.",search_hint:"Escribe para buscar — en todos los idiomas.",search_count_found:"resultados encontrados",search_count_more:"resultados más.",quick_select:"Selección rápida:",gen_result:"Resultado",write_done:"¡Ejercicio completado!",write_correct:"✓ ¡Correcto!",write_wrong:"✗ Respuesta correcta: ",quiz_done:"🏆 ¡Quiz completado!",conj_quiz_done:"¡Quiz completado!",conj_restart:"🔄 Repetir",conj_new_verb:"+ Nuevo verbo",conj_saved_verbs:"⭐ Verbos guardados",conj_loading:"IA creando tabla de conjugación...",conj_pronoun:"Pronombre",conj_tab_table:"📋 Tabla",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Conjugar",conj_save:"⭐ Guardar",conj_start_quiz:"🎯 Iniciar quiz",srs_flip:"Toca para revelar",srs_not_at_all:"😰 Para nada",srs_hard:"😐 Difícil",srs_ok:"🙂 Ok",srs_easy:"😊 Fácil",srs_perfect:"🚀 Perfecto",check_btn:"✓ Comprobar",hint_btn:"💡 Pista",write_skip:"→ Saltar",back_lbl:"Volver",mv_empty_detail:"Añade palabras o genéralas con el Generador IA."},
+  pl:{ nav_home:'Start',search_all:"Wszystkie",nav_vocab:'Słownictwo',nav_quiz:'Quiz',nav_free:'Nauka swobodna',nav_gen:'Generator AI',nav_myvocab:'Moje słowa',nav_translate:'Tłumacz',nav_ai:'Asystent AI',nav_srs:'SRS',nav_write:'Pisanie',nav_stats:'Statystyki',nav_badges:'Odznaki',nav_path:'Ścieżka nauki',nav_deniveau:'Poziom DE',nav_search:'Szukaj',nav_conjugate:'Koniugacja',welcome_back:'Witaj z powrotem',learning:'Uczysz się',change_lang:'🌍 Zmień język',which_lang:'Jakiego języka chcesz się uczyć?',choose_lang:'Wybierz język nauki',stat_learned:'Nauczono',stat_streak:'Seria',stat_correct:'% Poprawnych',stat_total:'Łącznie quizów',vocab_title:'Trening słownictwa',quiz_title:'Quiz',free_title:'Nauka swobodna',gen_title:'✨ Generator AI',myvocab_title:'⭐ Moje słowa',translate_title:'Tłumacz',ai_title:'Asystent językowy AI',reveal:'Dotknij, aby odkryć',again:'✗ Jeszcze raz',listen:'🔊 Słuchaj',skip:'→ Pomiń',knew:'✓ Wiedziałem',translate_btn:'Przetłumacz',speak_out:'🔊 Przeczytaj',copy:'⧉ Kopiuj',input:'WEJŚCIE',output:'WYJŚCIE',send:'Wyślij',new_quiz:'🔄 Zacznij od nowa',next:'Dalej →',correct:'✓ Poprawnie!',wrong:'✗ Błąd. Poprawnie:',enter_topic:'Wpisz temat',generate:'✨ Generuj',generating:'AI generuje...',save_all:'⭐ Zapisz wszystko',to_training:'📚 Do treningu',add_word:'➕ Dodaj słowo',foreign_word:'SŁOWO OBCE',translation_lbl:'NIEMIECKIE',phonetic:'WYMOWA (opcjonalnie)',add_btn:'+ Dodaj',train_mine:'📚 Trenuj moje słowa',delete_all:'🗑 Usuń wszystko',no_vocab:'Brak własnych słów.',settings:'⚙ Ustawienia',save:'Zapisz',delete:'Usuń',export:'⬇ Eksportuj',reset:'🗑 Resetuj',ai_welcome:'Cześć! Jestem Twoim asystentem językowym AI. Wybierz język i tryb, żeby zacząć!',mode_conv:'💬 Rozmowa',mode_grammar:'📝 Gramatyka',mode_pron:'🎤 Wymowa',mode_corr:'✏️ Korekta',quick_grammar:'📖 Wskazówka gramatyczna',quick_phrases:'💡 Zdania dnia',quick_talk:'🗣 Zacznij rozmowę',hc_vocab_desc:'Ucz się nowych słów z kartami i dźwiękiem',hc_quiz_desc:'Sprawdź wiedzę pytaniami wielokrotnego wyboru',hc_free_desc:'Wybierz temat i przeglądaj słownictwo',hc_translate_desc:'Tłumacz słowa i zdania natychmiast',hc_ai_desc:'Ćwicz rozmowy z AI i mikrofonem',hc_gen_desc:'Podaj temat – AI natychmiast generuje 20 słów',hc_myvocab_desc:'Zapisuj własne słowa i trenuj je',myvocab_desc:'Dodawaj słowa, zarządzaj słownictwem AI i trenuj',gen_desc:'Podaj temat – AI generuje odpowiednie słownictwo',footer_note:'Twój postęp jest zapisywany lokalnie',chat_placeholder:'Wpisz wiadomość lub naciśnij 🎤...',pron_test:"🎤 Testuj wymowę",srs_done:"Wszystkie karty wykonane!",srs_next:"Wróć jutro po nowe powtórzenia.",no_data:"Brak danych",search_empty:"Nie znaleziono wyników.",search_hint:"Wpisz, aby szukać — we wszystkich językach.",search_count_found:"wyników znaleziono",search_count_more:"więcej wyników.",quick_select:"Szybki wybór:",gen_result:"Wynik",write_done:"Ćwiczenie zakończone!",write_correct:"✓ Poprawnie!",write_wrong:"✗ Poprawna odpowiedź: ",quiz_done:"🏆 Quiz zakończony!",conj_quiz_done:"Quiz zakończony!",conj_restart:"🔄 Powtórz",conj_new_verb:"+ Nowy czasownik",conj_saved_verbs:"⭐ Zapisane czasowniki",conj_loading:"AI tworzy tabelę koniugacji...",conj_pronoun:"Zaimek",conj_tab_table:"📋 Tabela",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Koniuguj",conj_save:"⭐ Zapisz",conj_start_quiz:"🎯 Zacznij quiz",srs_flip:"Dotknij, aby odkryć",srs_not_at_all:"😰 Wcale",srs_hard:"😐 Trudne",srs_ok:"🙂 OK",srs_easy:"😊 Łatwe",srs_perfect:"🚀 Perfekcyjnie",check_btn:"✓ Sprawdź",hint_btn:"💡 Wskazówka",write_skip:"→ Pomiń",back_lbl:"Wstecz",mv_empty_detail:"Dodaj słowa lub wygeneruj je generatorem AI."},
+  tr:{ nav_home:'Ana Sayfa',search_all:"Todos",nav_vocab:'Kelimeler',nav_quiz:'Test',nav_free:'Serbest Öğrenme',nav_gen:'YZ Üretici',nav_myvocab:'Kelimelerim',nav_translate:'Çevirmen',nav_ai:'YZ Asistan',nav_srs:'SRS',nav_write:'Yazma',nav_stats:'İstatistikler',nav_badges:'Rozetler',nav_path:'Öğrenme yolu',nav_deniveau:'DE Seviye',nav_search:'Arama',nav_conjugate:'Çekim',welcome_back:'Tekrar hoş geldin',learning:'Öğreniyorsun',change_lang:'🌍 Dil değiştir',which_lang:'Hangi dili öğrenmek istiyorsun?',choose_lang:'Öğrenme dilini seç',stat_learned:'Öğrenildi',stat_streak:'Seri',stat_correct:'% Doğru',stat_total:'Test Toplam',vocab_title:'Kelime Antrenmanı',quiz_title:'Test',free_title:'Serbest Öğrenme',gen_title:'✨ YZ Kelime Üretici',myvocab_title:'⭐ Kelimelerim',translate_title:'Çevirmen',ai_title:'YZ Dil Asistanı',reveal:'Görmek için dokun',again:'✗ Tekrar',listen:'🔊 Dinle',skip:'→ Geç',knew:'✓ Bildim',translate_btn:'Çevir',speak_out:'🔊 Seslendir',copy:'⧉ Kopyala',input:'GİRİŞ',output:'ÇIKIŞ',send:'Gönder',new_quiz:'🔄 Yeniden başla',next:'İleri →',correct:'✓ Doğru!',wrong:'✗ Yanlış. Doğrusu:',enter_topic:'Konu girin',generate:'✨ Üret',generating:'YZ üretiyor...',save_all:'⭐ Hepsini kaydet',to_training:'📚 Antrenmana',add_word:'➕ Kelime ekle',foreign_word:'YABANCI KELİME',translation_lbl:'ALMANCA',phonetic:'OKUNUŞ (isteğe bağlı)',add_btn:'+ Ekle',train_mine:'📚 Kelimelerimi antrenman et',delete_all:'🗑 Hepsini sil',no_vocab:'Henüz kişisel kelime yok.',settings:'⚙ Ayarlar',save:'Kaydet',delete:'Sil',export:'⬇ Dışa aktar',reset:'🗑 Sıfırla',ai_welcome:'Merhaba! Ben senin YZ dil asistanınım. Başlamak için bir dil ve mod seç!',mode_conv:'💬 Konuşma',mode_grammar:'📝 Gramer',mode_pron:'🎤 Telaffuz',mode_corr:'✏️ Düzeltme',quick_grammar:'📖 Gramer ipucu',quick_phrases:'💡 Günün cümleleri',quick_talk:'🗣 Konuşma başlat',hc_vocab_desc:'Yeni kelimeleri kartlarla ve sesle öğren',hc_quiz_desc:'Bilgini çoktan seçmeli sorularla test et',hc_free_desc:'Bir konu seç ve kelimelere göz at',hc_translate_desc:'Kelimeleri ve cümleleri anında çevir',hc_ai_desc:'YZ ve mikrofon ile konuşma pratiği yap',hc_gen_desc:'Konu gir – YZ anında 20 kelime üretir',hc_myvocab_desc:'Kişisel kelimeleri kaydet ve antrenman yap',myvocab_desc:'Kelime ekle, YZ kelime haznesini yönet ve antrenman yap',gen_desc:'Konu gir – YZ öğrenme dilin için uygun kelimeler üretir',footer_note:'Gelişimin yerel olarak kaydedilir',chat_placeholder:'Mesaj yaz veya 🎤 düğmesine bas...',pron_test:"🎤 Telaffuzu test et",srs_done:"Tüm kartlar tamamlandı!",srs_next:"Yeni tekrarlar için yarın geri gel.",no_data:"Veri yok",search_empty:"Sonuç bulunamadı.",search_hint:"Aramak için yaz — tüm dillerde.",search_count_found:"sonuç bulundu",search_count_more:"sonuç daha.",quick_select:"Hızlı seçim:",gen_result:"Sonuç",write_done:"Alıştırma tamamlandı!",write_correct:"✓ Doğru!",write_wrong:"✗ Doğru cevap: ",quiz_done:"🏆 Test tamamlandı!",conj_quiz_done:"Test tamamlandı!",conj_restart:"🔄 Tekrarla",conj_new_verb:"+ Yeni fiil",conj_saved_verbs:"⭐ Kaydedilen fiiller",conj_loading:"YZ çekim tablosu oluşturuyor...",conj_pronoun:"Zamir",conj_tab_table:"📋 Tablo",conj_tab_quiz:"🎯 Test",conj_gen_btn:"Çekimle",conj_save:"⭐ Kaydet",conj_start_quiz:"🎯 Testi başlat",srs_flip:"Görmek için dokun",srs_not_at_all:"😰 Hiç",srs_hard:"😐 Zor",srs_ok:"🙂 Tamam",srs_easy:"😊 Kolay",srs_perfect:"🚀 Mükemmel",check_btn:"✓ Kontrol et",hint_btn:"💡 İpucu",write_skip:"→ Geç",back_lbl:"Geri",mv_empty_detail:"Kelime ekle veya YZ Üretici ile oluştur."},
+  sq:{ nav_home:'Fillimi',search_all:"Tümü",nav_vocab:'Fjalor',nav_quiz:'Test',nav_free:'Mësim i lirë',nav_gen:'Gjenerator IA',nav_myvocab:'Fjalët e mia',nav_translate:'Përkthyes',nav_ai:'Asistent IA',nav_srs:'SRS',nav_write:'Shkrim',nav_stats:'Statistika',nav_badges:'Distinkcione',nav_path:'Rrugë mësimi',nav_deniveau:'Niveli DE',nav_search:'Kërkim',nav_conjugate:'Zgjedhim',welcome_back:'Mirë se u kthe',learning:'Po mëson',change_lang:'🌍 Ndrysho gjuhën',which_lang:'Çfarë gjuhe dëshiron të mësosh?',choose_lang:'Zgjedh gjuhën tuaj',stat_learned:'Mësuar',stat_streak:'Varg',stat_correct:'% Saktë',stat_total:'Total test',vocab_title:'Stërvitje fjalori',quiz_title:'Test',free_title:'Mësim i lirë',gen_title:'✨ Gjenerator fjalori IA',myvocab_title:'⭐ Fjalori im',translate_title:'Përkthyes',ai_title:'Asistent gjuhësor IA',reveal:'Kliko për të zbuluar',again:'✗ Sërish',listen:'🔊 Dëgjo',skip:'→ Kalo',knew:'✓ E dija',translate_btn:'Përkthe',speak_out:'🔊 Lexo',copy:'⧉ Kopjo',input:'HYRJE',output:'DALJE',send:'Dërgo',new_quiz:'🔄 Rifillo',next:'Tjetri →',correct:'✓ Saktë!',wrong:'✗ Gabim. Saktë:',enter_topic:'Shkruaj temën',generate:'✨ Gjenero',generating:'IA po gjeneron...',save_all:'⭐ Ruaj të gjitha',to_training:'📚 Tek stërvitja',add_word:'➕ Shto fjalë',foreign_word:'FJALË E HUAJ',translation_lbl:'GJERMANISHT',phonetic:'SHQIPTIM (opsional)',add_btn:'+ Shto',train_mine:'📚 Stërvit fjalësinë time',delete_all:'🗑 Fshi të gjitha',no_vocab:'Ende asnjë fjalë personale.',settings:'⚙ Cilësimet',save:'Ruaj',delete:'Fshi',export:'⬇ Eksporto',reset:'🗑 Rivendos',ai_welcome:'Përshëndetje! Jam asistenti juaj gjuhësor IA. Zgjedh gjuhën dhe modalitetin për të filluar!',mode_conv:'💬 Bisedë',mode_grammar:'📝 Gramatikë',mode_pron:'🎤 Shqiptim',mode_corr:'✏️ Korrigjim',quick_grammar:'📖 Këshillë gramatikore',quick_phrases:'💡 Frazat e ditës',quick_talk:'🗣 Fillo bisedën',hc_vocab_desc:'Mëso fjalë të reja me kartela dhe audio',hc_quiz_desc:'Testo njohuritë me pyetje me shumë zgjedhje',hc_free_desc:'Zgjedh temën dhe shfleto fjalët',hc_translate_desc:'Përkthe fjalë dhe fjali menjëherë',hc_ai_desc:'Praktiko bisedën me IA dhe mikrofon',hc_gen_desc:'Shkruaj temën – IA gjeneron 20 fjalë',hc_myvocab_desc:'Ruaj fjalë personale dhe stërviti',myvocab_desc:'Shto fjalë, menaxho fjalësinë IA dhe stërvitu',gen_desc:'Shkruaj temën – IA gjeneron fjalë për gjuhën tënde',footer_note:'Progresi juaj ruhet lokalisht',chat_placeholder:'Shkruaj mesazh ose shtyp 🎤...',pron_test:"🎤 Testo shqiptimin",srs_done:"Të gjitha kartat u kryen!",srs_next:"Kthehu nesër për rishikime të reja.",no_data:"Nuk ka të dhëna",search_empty:"Nuk u gjet asnjë rezultat.",search_hint:"Shkruaj për të kërkuar — në të gjitha gjuhët.",search_count_found:"rezultate u gjetën",search_count_more:"rezultate të tjera.",quick_select:"Zgjedhje e shpejtë:",gen_result:"Rezultati",write_done:"Ushtrimi u përfundua!",write_correct:"✓ Saktë!",write_wrong:"✗ Përgjigja e saktë: ",quiz_done:"🏆 Testi u krye!",conj_quiz_done:"Testi u krye!",conj_restart:"🔄 Përsërit",conj_new_verb:"+ Folje e re",conj_saved_verbs:"⭐ Foljet e ruajtura",conj_loading:"IA po krijon tabelën e zgjedhimit...",conj_pronoun:"Përemër",conj_tab_table:"📋 Tabelë",conj_tab_quiz:"🎯 Test",conj_gen_btn:"Zgjedho",conj_save:"⭐ Ruaj",conj_start_quiz:"🎯 Fillo testin",srs_flip:"Kliko për të zbuluar",srs_not_at_all:"😰 Aspak",srs_hard:"😐 Vështirë",srs_ok:"🙂 Ok",srs_easy:"😊 Lehtë",srs_perfect:"🚀 Perfekt",check_btn:"✓ Kontrollo",hint_btn:"💡 Sugjerim",write_skip:"→ Kalo",back_lbl:"Kthehu",mv_empty_detail:"Shto fjalë ose gjenero ato me Gjeneratorin IA."},
+  th:{ nav_home:'หน้าหลัก',search_all:"Të gjitha",nav_vocab:'คำศัพท์',nav_quiz:'ทดสอบ',nav_free:'เรียนรู้อิสระ',nav_gen:'AI สร้างคำศัพท์',nav_myvocab:'คำศัพท์ของฉัน',nav_translate:'แปลภาษา',nav_ai:'AI ผู้ช่วย',nav_srs:'SRS',nav_write:'เขียน',nav_stats:'สถิติ',nav_badges:'รางวัล',nav_path:'เส้นทาง',nav_deniveau:'ระดับ DE',nav_search:'ค้นหา',nav_conjugate:'คำกริยา',welcome_back:'ยินดีต้อนรับกลับ',learning:'คุณกำลังเรียน',change_lang:'🌍 เปลี่ยนภาษา',which_lang:'คุณต้องการเรียนภาษาอะไร?',choose_lang:'เลือกภาษาที่ต้องการเรียน',stat_learned:'เรียนแล้ว',stat_streak:'ต่อเนื่อง',stat_correct:'% ถูก',stat_total:'ทำแบบทดสอบ',vocab_title:'ฝึกคำศัพท์',quiz_title:'ทดสอบ',free_title:'เรียนรู้อิสระ',gen_title:'AI สร้างคำศัพท์',myvocab_title:'คำศัพท์ของฉัน',translate_title:'แปลภาษา',ai_title:'AI ผู้ช่วยภาษา',reveal:'แตะเพื่อดู',again:'✗ อีกครั้ง',listen:'🔊 ฟัง',skip:'→ ข้าม',knew:'✓ รู้แล้ว',translate_btn:'แปล',speak_out:'🔊 อ่านออกเสียง',copy:'⧉ คัดลอก',input:'ป้อนข้อความ',output:'ผลลัพธ์',send:'ส่ง',new_quiz:'🔄 เริ่มใหม่',next:'ถัดไป →',correct:'✓ ถูกต้อง!',wrong:'✗ ผิด. ถูกต้องคือ:',enter_topic:'ใส่หัวข้อ',generate:'สร้าง',generating:'AI กำลังสร้าง...',save_all:'บันทึกทั้งหมด',to_training:'ไปฝึก',add_word:'เพิ่มคำ',foreign_word:'คำต่างประเทศ',translation_lbl:'ภาษาเยอรมัน',phonetic:'การออกเสียง (ไม่บังคับ)',add_btn:'+ เพิ่ม',train_mine:'ฝึกคำศัพท์ของฉัน',delete_all:'ลบทั้งหมด',no_vocab:'ยังไม่มีคำศัพท์ส่วนตัว',settings:'ตั้งค่า',save:'บันทึก',delete:'ลบ',export:'ส่งออก',reset:'รีเซ็ต',ai_welcome:'สวัสดี! ฉันคือผู้ช่วย AI ด้านภาษาของคุณ เลือกภาษาและโหมดเพื่อเริ่มต้น!',mode_conv:'สนทนา',mode_grammar:'ไวยากรณ์',mode_pron:'การออกเสียง',mode_corr:'แก้ไข',quick_grammar:'เคล็ดลับไวยากรณ์',quick_phrases:'ประโยคประจำวัน',quick_talk:'เริ่มสนทนา',hc_vocab_desc:'เรียนคำศัพท์ใหม่ด้วยบัตรและเสียง',hc_quiz_desc:'ทดสอบความรู้ด้วยคำถามแบบตัวเลือก',hc_free_desc:'เลือกหัวข้อและดูคำศัพท์',hc_translate_desc:'แปลคำและประโยคได้ทันที',hc_ai_desc:'ฝึกสนทนากับ AI และไมโครโฟน',hc_gen_desc:'ใส่หัวข้อ – AI สร้าง 20 คำทันที',hc_myvocab_desc:'บันทึกคำส่วนตัวและฝึกอย่างเจาะจง',myvocab_desc:'เพิ่มคำ จัดการคำ AI และฝึก',gen_desc:'ใส่หัวข้อ – AI สร้างคำศัพท์สำหรับภาษาที่เรียน',footer_note:'ความก้าวหน้าของคุณถูกบันทึกในเครื่อง',chat_placeholder:'พิมพ์ข้อความหรือกด 🎤...',pron_test:"🎤 ทดสอบการออกเสียง",srs_done:"เสร็จสิ้นทุกบัตรแล้ว!",srs_next:"กลับมาพรุ่งนี้เพื่อทบทวนใหม่",no_data:"ยังไม่มีข้อมูล",search_empty:"ไม่พบผลลัพธ์",search_hint:"พิมพ์เพื่อค้นหา — ทุกภาษา",search_count_found:"ผลลัพธ์",search_count_more:"ผลลัพธ์เพิ่มเติม",quick_select:"เลือกเร็ว:",gen_result:"ผลลัพธ์",write_done:"ทำแบบฝึกหัดเสร็จ!",write_correct:"✓ ถูกต้อง!",write_wrong:"✗ คำตอบที่ถูก: ",quiz_done:"🏆 ทำแบบทดสอบเสร็จ!",conj_quiz_done:"ทำแบบทดสอบเสร็จ!",conj_restart:"🔄 ทำซ้ำ",conj_new_verb:"+ คำกริยาใหม่",conj_saved_verbs:"⭐ คำกริยาที่บันทึกไว้",conj_loading:"AI กำลังสร้างตาราง...",conj_pronoun:"สรรพนาม",conj_tab_table:"📋 ตาราง",conj_tab_quiz:"🎯 ทดสอบ",conj_gen_btn:"ผัน",conj_save:"⭐ บันทึก",conj_start_quiz:"🎯 เริ่มทดสอบ",srs_flip:"แตะเพื่อดู",srs_not_at_all:"😰 ไม่รู้เลย",srs_hard:"😐 ยาก",srs_ok:"🙂 พอใช้",srs_easy:"😊 ง่าย",srs_perfect:"🚀 สมบูรณ์แบบ",check_btn:"✓ ตรวจ",hint_btn:"💡 คำใบ้",write_skip:"→ ข้าม",back_lbl:"กลับ",mv_empty_detail:"เพิ่มคำหรือสร้างด้วย AI"},
+  fr:{ nav_home:'Accueil',search_all:"ทั้งหมด",nav_vocab:'Vocabulaire',nav_quiz:'Quiz',nav_free:'Apprentissage libre',nav_gen:'Générateur IA',nav_myvocab:'Mes mots',nav_translate:'Traducteur',nav_ai:'Assistant IA',nav_srs:'SRS',nav_write:'Écriture',nav_stats:'Statistiques',nav_badges:'Badges',nav_path:'Parcours',nav_deniveau:'Niveau DE',nav_search:'Recherche',nav_conjugate:'Conjugaison',welcome_back:'Bon retour',learning:'Vous apprenez',change_lang:'🌍 Changer de langue',which_lang:'Quelle langue voulez-vous apprendre?',choose_lang:'Choisissez votre langue',stat_learned:'Appris',stat_streak:'Série',stat_correct:'% Correct',stat_total:'Quiz total',vocab_title:'Entraînement vocabulaire',quiz_title:'Quiz',free_title:'Apprentissage libre',gen_title:'Générateur IA',myvocab_title:'Mon vocabulaire',translate_title:'Traducteur',ai_title:'Assistant linguistique IA',reveal:'Cliquer pour révéler',again:'✗ Encore',listen:'🔊 Écouter',skip:'→ Passer',knew:'✓ Je savais',translate_btn:'Traduire',speak_out:'🔊 Lire',copy:'⧉ Copier',input:'ENTRÉE',output:'SORTIE',send:'Envoyer',new_quiz:'🔄 Recommencer',next:'Suivant →',correct:'✓ Correct!',wrong:'✗ Incorrect. Correct:',enter_topic:'Entrer un sujet',generate:'Générer',generating:'IA génère...',save_all:'Tout sauvegarder',to_training:'À l\'entraînement',add_word:'Ajouter un mot',foreign_word:'MOT ÉTRANGER',translation_lbl:'ALLEMAND',phonetic:'PRONONCIATION (optionnel)',add_btn:'+ Ajouter',train_mine:'Entraîner mon vocabulaire',delete_all:'Tout supprimer',no_vocab:'Pas encore de vocabulaire personnel.',settings:'⚙ Paramètres',save:'Sauvegarder',delete:'Supprimer',export:'⬇ Exporter',reset:'🗑 Réinitialiser',ai_welcome:'Bonjour! Je suis votre assistant linguistique IA. Choisissez une langue et un mode pour commencer!',mode_conv:'Conversation',mode_grammar:'Grammaire',mode_pron:'Prononciation',mode_corr:'Correction',quick_grammar:'Conseil grammatical',quick_phrases:'Phrases du jour',quick_talk:'Démarrer conversation',hc_vocab_desc:'Apprenez de nouveaux mots avec des fiches',hc_quiz_desc:'Testez vos connaissances en QCM',hc_free_desc:'Choisissez un thème et parcourez le vocabulaire',hc_translate_desc:'Traduisez mots et phrases instantanément',hc_ai_desc:'Pratiquez avec IA et microphone',hc_gen_desc:'Entrez un thème – IA génère 20 mots',hc_myvocab_desc:'Sauvegardez des mots personnalisés',myvocab_desc:'Ajoutez des mots et gérez votre vocabulaire',gen_desc:'Entrez un thème – IA génère du vocabulaire',footer_note:'Votre progression est sauvegardée localement',chat_placeholder:'Écrivez un message ou appuyez sur 🎤...',pron_test:"🎤 Tester la prononciation",srs_done:"Toutes les cartes terminées !",srs_next:"Revenez demain pour de nouvelles révisions.",no_data:"Pas encore de données",search_empty:"Aucun résultat trouvé.",search_hint:"Tapez pour rechercher — dans toutes les langues.",search_count_found:"résultats trouvés",search_count_more:"résultats de plus.",quick_select:"Sélection rapide :",gen_result:"Résultat",write_done:"Exercice terminé !",write_correct:"✓ Correct !",write_wrong:"✗ Bonne réponse : ",quiz_done:"🏆 Quiz terminé !",conj_quiz_done:"Quiz terminé !",conj_restart:"🔄 Répéter",conj_new_verb:"+ Nouveau verbe",conj_saved_verbs:"⭐ Verbes sauvegardés",conj_loading:"IA crée le tableau de conjugaison...",conj_pronoun:"Pronom",conj_tab_table:"📋 Tableau",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Conjuguer",conj_save:"⭐ Sauvegarder",conj_start_quiz:"🎯 Démarrer quiz",srs_flip:"Cliquer pour révéler",srs_not_at_all:"😰 Pas du tout",srs_hard:"😐 Difficile",srs_ok:"🙂 Ok",srs_easy:"😊 Facile",srs_perfect:"🚀 Parfait",check_btn:"✓ Vérifier",hint_btn:"💡 Indice",write_skip:"→ Passer",back_lbl:"Retour",mv_empty_detail:"Ajoutez des mots ou générez-les avec le Générateur IA."},
+  ro:{ nav_home:'Acasă',search_all:"Toutes",nav_vocab:'Vocabular',nav_quiz:'Quiz',nav_free:'Învățare liberă',nav_gen:'Generator IA',nav_myvocab:'Cuvintele mele',nav_translate:'Traducător',nav_ai:'Asistent IA',nav_srs:'SRS',nav_write:'Scriere',nav_stats:'Statistici',nav_badges:'Insigne',nav_path:'Traseu',nav_deniveau:'Nivel DE',nav_search:'Căutare',nav_conjugate:'Conjugare',welcome_back:'Bine ai revenit',learning:'Înveți',change_lang:'🌍 Schimbă limba',which_lang:'Ce limbă vrei să înveți?',choose_lang:'Alege limba ta',stat_learned:'Învățat',stat_streak:'Serie',stat_correct:'% Corect',stat_total:'Total quiz',vocab_title:'Antrenament vocabular',quiz_title:'Quiz',free_title:'Învățare liberă',gen_title:'Generator IA',myvocab_title:'Vocabularul meu',translate_title:'Traducător',ai_title:'Asistent lingvistic IA',reveal:'Click pentru a dezvălui',again:'✗ Din nou',listen:'🔊 Ascultă',skip:'→ Sari',knew:'✓ Știam',translate_btn:'Traduce',speak_out:'🔊 Citește',copy:'⧉ Copiază',input:'INTRARE',output:'IEȘIRE',send:'Trimite',new_quiz:'🔄 Reîncepe',next:'Următor →',correct:'✓ Corect!',wrong:'✗ Greșit. Corect:',enter_topic:'Introdu subiect',generate:'Generează',generating:'IA generează...',save_all:'Salvează tot',to_training:'La antrenament',add_word:'Adaugă cuvânt',foreign_word:'CUVÂNT STRĂIN',translation_lbl:'GERMANĂ',phonetic:'PRONUNȚIE (opțional)',add_btn:'+ Adaugă',train_mine:'Antrenează vocabularul meu',delete_all:'Șterge tot',no_vocab:'Niciun vocabular personal încă.',settings:'⚙ Setări',save:'Salvează',delete:'Șterge',export:'⬇ Exportă',reset:'🗑 Resetează',ai_welcome:'Bună! Sunt asistentul tău lingvistic IA. Alege o limbă și un mod pentru a începe!',mode_conv:'Conversație',mode_grammar:'Gramatică',mode_pron:'Pronunție',mode_corr:'Corecție',quick_grammar:'Sfat gramatical',quick_phrases:'Fraze ale zilei',quick_talk:'Începe conversație',hc_vocab_desc:'Învață cuvinte noi cu fișe',hc_quiz_desc:'Testează cunoștințele cu QCM',hc_free_desc:'Alege o temă și răsfoiește vocabularul',hc_translate_desc:'Traduce cuvinte și fraze instant',hc_ai_desc:'Exersează cu IA și microfon',hc_gen_desc:'Introdu temă – IA generează 20 cuvinte',hc_myvocab_desc:'Salvează cuvinte personalizate',myvocab_desc:'Adaugă cuvinte și gestionează vocabularul',gen_desc:'Introdu o temă – IA generează vocabular',footer_note:'Progresul tău este salvat local',chat_placeholder:'Scrie un mesaj sau apasă 🎤...',pron_test:"🎤 Testează pronunția",srs_done:"Toate cardurile completate!",srs_next:"Revino mâine pentru noi recapitulări.",no_data:"Fără date",search_empty:"Nu s-au găsit rezultate.",search_hint:"Tastează pentru a căuta — în toate limbile.",search_count_found:"rezultate găsite",search_count_more:"rezultate în plus.",quick_select:"Selecție rapidă:",gen_result:"Rezultat",write_done:"Exercițiu finalizat!",write_correct:"✓ Corect!",write_wrong:"✗ Răspuns corect: ",quiz_done:"🏆 Quiz finalizat!",conj_quiz_done:"Quiz finalizat!",conj_restart:"🔄 Repetă",conj_new_verb:"+ Verb nou",conj_saved_verbs:"⭐ Verbe salvate",conj_loading:"IA creează tabelul de conjugare...",conj_pronoun:"Pronume",conj_tab_table:"📋 Tabel",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Conjugă",conj_save:"⭐ Salvează",conj_start_quiz:"🎯 Începe quiz",srs_flip:"Click pentru a dezvălui",srs_not_at_all:"😰 Deloc",srs_hard:"😐 Dificil",srs_ok:"🙂 Ok",srs_easy:"😊 Ușor",srs_perfect:"🚀 Perfect",check_btn:"✓ Verifică",hint_btn:"💡 Indiciu",write_skip:"→ Sari",back_lbl:"Înapoi",mv_empty_detail:"Adaugă cuvinte sau generează-le cu Generatorul IA."},
+  sv:{ nav_home:'Hem',search_all:"Toate",nav_vocab:'Ordförråd',nav_quiz:'Quiz',nav_free:'Fri inlärning',nav_gen:'AI-generator',nav_myvocab:'Mina ord',nav_translate:'Översättare',nav_ai:'AI-assistent',nav_srs:'SRS',nav_write:'Skrivning',nav_stats:'Statistik',nav_badges:'Märken',nav_path:'Inlärningsväg',nav_deniveau:'DE Nivå',nav_search:'Sök',nav_conjugate:'Konjugation',welcome_back:'Välkommen tillbaka',learning:'Du lär dig',change_lang:'🌍 Byt språk',which_lang:'Vilket språk vill du lära dig?',choose_lang:'Välj ditt inlärningsspråk',stat_learned:'Inlärt',stat_streak:'Serie',stat_correct:'% Rätt',stat_total:'Quiz totalt',vocab_title:'Ordträning',quiz_title:'Quiz',free_title:'Fri inlärning',gen_title:'AI-ordgenerator',myvocab_title:'Mitt ordförråd',translate_title:'Översättare',ai_title:'AI språkassistent',reveal:'Klicka för att avslöja',again:'✗ Igen',listen:'🔊 Lyssna',skip:'→ Hoppa över',knew:'✓ Visste det',translate_btn:'Översätt',speak_out:'🔊 Läs upp',copy:'⧉ Kopiera',input:'INMATNING',output:'UTDATA',send:'Skicka',new_quiz:'🔄 Börja om',next:'Nästa →',correct:'✓ Rätt!',wrong:'✗ Fel. Rätt:',enter_topic:'Ange ämne',generate:'Generera',generating:'AI genererar...',save_all:'Spara alla',to_training:'Till träning',add_word:'Lägg till ord',foreign_word:'FRÄMMANDE ORD',translation_lbl:'TYSKA',phonetic:'UTTAL (valfritt)',add_btn:'+ Lägg till',train_mine:'Träna mitt ordförråd',delete_all:'Ta bort alla',no_vocab:'Inget personligt ordförråd ännu.',settings:'⚙ Inställningar',save:'Spara',delete:'Ta bort',export:'⬇ Exportera',reset:'🗑 Återställ',ai_welcome:'Hej! Jag är din AI-språkassistent. Välj ett inlärningsspråk och ett läge för att börja!',mode_conv:'Konversation',mode_grammar:'Grammatik',mode_pron:'Uttal',mode_corr:'Korrigering',quick_grammar:'Grammatiktips',quick_phrases:'Dagens fraser',quick_talk:'Starta konversation',hc_vocab_desc:'Lär dig nya ord med flashkort och ljud',hc_quiz_desc:'Testa dina kunskaper med flervalsfrågor',hc_free_desc:'Välj ett ämne och bläddra igenom ordförrådet',hc_translate_desc:'Översätt ord och meningar direkt',hc_ai_desc:'Öva konversationer med AI och mikrofon',hc_gen_desc:'Ange ett ämne – AI genererar 20 ord direkt',hc_myvocab_desc:'Spara anpassade ord och träna dem',myvocab_desc:'Lägg till ord och hantera AI-ordförråd',gen_desc:'Ange ett ämne – AI genererar ordförråd',footer_note:'Dina framsteg sparas lokalt',chat_placeholder:'Skriv ett meddelande eller tryck 🎤...',pron_test:"🎤 Testa uttal",srs_done:"Alla kort klara!",srs_next:"Kom tillbaka imorgon för nya repetitioner.",no_data:"Inga data ännu",search_empty:"Inga resultat hittades.",search_hint:"Skriv för att söka — på alla språk.",search_count_found:"resultat hittades",search_count_more:"fler resultat.",quick_select:"Snabbval:",gen_result:"Resultat",write_done:"Övning klar!",write_correct:"✓ Rätt!",write_wrong:"✗ Rätt svar: ",quiz_done:"🏆 Quiz klar!",conj_quiz_done:"Quiz klar!",conj_restart:"🔄 Upprepa",conj_new_verb:"+ Nytt verb",conj_saved_verbs:"⭐ Sparade verb",conj_loading:"AI skapar konjugationstabell...",conj_pronoun:"Pronomen",conj_tab_table:"📋 Tabell",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Konjugera",conj_save:"⭐ Spara",conj_start_quiz:"🎯 Starta quiz",srs_flip:"Klicka för att avslöja",srs_not_at_all:"😰 Inte alls",srs_hard:"😐 Svårt",srs_ok:"🙂 Ok",srs_easy:"😊 Lätt",srs_perfect:"🚀 Perfekt",check_btn:"✓ Kontrollera",hint_btn:"💡 Ledtråd",write_skip:"→ Hoppa över",back_lbl:"Tillbaka",mv_empty_detail:"Lägg till ord eller generera dem med AI-generatorn."},
+  da:{ nav_home:'Start',search_all:"Alla",nav_vocab:'Ordforråd',nav_quiz:'Quiz',nav_free:'Fri læring',nav_gen:'AI-generator',nav_myvocab:'Mine ord',nav_translate:'Oversætter',nav_ai:'AI-assistent',nav_srs:'SRS',nav_write:'Skrivning',nav_stats:'Statistik',nav_badges:'Badges',nav_path:'Læringssti',nav_deniveau:'DE Niveau',nav_search:'Søg',nav_conjugate:'Bøjning',welcome_back:'Velkommen tilbage',learning:'Du lærer',change_lang:'🌍 Skift sprog',which_lang:'Hvilket sprog vil du lære?',choose_lang:'Vælg dit lærersprog',stat_learned:'Lært',stat_streak:'Serie',stat_correct:'% Korrekt',stat_total:'Quiz i alt',vocab_title:'Ordtræning',quiz_title:'Quiz',free_title:'Fri læring',gen_title:'AI-ordgenerator',myvocab_title:'Mit ordforråd',translate_title:'Oversætter',ai_title:'AI sprogassistent',reveal:'Klik for at afsløre',again:'✗ Igen',listen:'🔊 Lyt',skip:'→ Spring over',knew:'✓ Vidste det',translate_btn:'Oversæt',speak_out:'🔊 Oplæs',copy:'⧉ Kopier',input:'INPUT',output:'OUTPUT',send:'Send',new_quiz:'🔄 Start forfra',next:'Næste →',correct:'✓ Korrekt!',wrong:'✗ Forkert. Korrekt:',enter_topic:'Indtast emne',generate:'Generer',generating:'AI genererer...',save_all:'Gem alle',to_training:'Til træning',add_word:'Tilføj ord',foreign_word:'FREMMEDORD',translation_lbl:'TYSK',phonetic:'UDTALE (valgfrit)',add_btn:'+ Tilføj',train_mine:'Træn mit ordforråd',delete_all:'Slet alle',no_vocab:'Intet personligt ordforråd endnu.',settings:'⚙ Indstillinger',save:'Gem',delete:'Slet',export:'⬇ Eksporter',reset:'🗑 Nulstil',ai_welcome:'Hej! Jeg er din AI-sprogassistent. Vælg et lærersprog og en tilstand for at begynde!',mode_conv:'Samtale',mode_grammar:'Grammatik',mode_pron:'Udtale',mode_corr:'Rettelse',quick_grammar:'Grammatiktip',quick_phrases:'Dagens sætninger',quick_talk:'Start samtale',hc_vocab_desc:'Lær nye ord med flashkort og lyd',hc_quiz_desc:'Test din viden med multiple choice',hc_free_desc:'Vælg et emne og gennemse ordforrådet',hc_translate_desc:'Oversæt ord og sætninger med det samme',hc_ai_desc:'Øv samtaler med AI og mikrofon',hc_gen_desc:'Indtast et emne – AI genererer 20 ord',hc_myvocab_desc:'Gem tilpassede ord og træn dem',myvocab_desc:'Tilføj ord og administrer AI-ordforråd',gen_desc:'Indtast et emne – AI genererer ordforråd',footer_note:'Dine fremskridt gemmes lokalt',chat_placeholder:'Skriv en besked eller tryk 🎤...',pron_test:"🎤 Test udtale",srs_done:"Alle kort færdige!",srs_next:"Kom tilbage i morgen for nye gennemgange.",no_data:"Ingen data endnu",search_empty:"Ingen resultater fundet.",search_hint:"Skriv for at søge — på alle sprog.",search_count_found:"resultater fundet",search_count_more:"flere resultater.",quick_select:"Hurtigvalg:",gen_result:"Resultat",write_done:"Øvelse færdig!",write_correct:"✓ Korrekt!",write_wrong:"✗ Rigtigt svar: ",quiz_done:"🏆 Quiz færdig!",conj_quiz_done:"Quiz færdig!",conj_restart:"🔄 Gentag",conj_new_verb:"+ Nyt verbum",conj_saved_verbs:"⭐ Gemte verber",conj_loading:"AI opretter bøjningstabel...",conj_pronoun:"Pronomen",conj_tab_table:"📋 Tabel",conj_tab_quiz:"🎯 Quiz",conj_gen_btn:"Bøj",conj_save:"⭐ Gem",conj_start_quiz:"🎯 Start quiz",srs_flip:"Klik for at afsløre",srs_not_at_all:"😰 Slet ikke",srs_hard:"😐 Svært",srs_ok:"🙂 Ok",srs_easy:"😊 Let",srs_perfect:"🚀 Perfekt",check_btn:"✓ Tjek",hint_btn:"💡 Tip",write_skip:"→ Spring over",back_lbl:"Tilbage",mv_empty_detail:"Tilføj ord eller generer dem med AI-generatoren."},
 };
 
 let uiLang = localStorage.getItem('lingua_ui_lang') || 'de';
@@ -5317,7 +5460,7 @@ function applyUILanguage() {
   uiLang = localStorage.getItem('lingua_ui_lang') || 'de';
   function setText(id, text) { var el = document.getElementById(id); if (el) el.textContent = text; }
   // Nav
-  var navIcons = {home:'⌂',vocab:'📚',quiz:'❓',free:'🗂',generator:'✨',myvocab:'⭐',translate:'⇄',ai:'✦',srs:'🧠',write:'✍',stats:'📊',badges:'🏆',path:'🗺',search:'🔍',conjugate:'🔀'};
+  var navIcons = {home:'⌂',vocab:'📚',quiz:'❓',free:'🗂',generator:'✨',myvocab:'⭐',translate:'⇄',ai:'✦',srs:'🧠',write:'✍',stats:'📊',badges:'🏆',path:'🗺',search:'🔍',conjugate:'🔀',deniveau:'🇩🇪'};
   var navKeys  = {home:'nav_home',vocab:'nav_vocab',quiz:'nav_quiz',free:'nav_free',generator:'nav_gen',myvocab:'nav_myvocab',translate:'nav_translate',ai:'nav_ai',srs:'nav_srs',write:'nav_write',stats:'nav_stats',badges:'nav_badges',path:'nav_path',search:'nav_search',conjugate:'nav_conjugate'};
   document.querySelectorAll('.nav-btn[data-section]').forEach(function(b) {
     var sec = b.dataset.section;
@@ -11108,6 +11251,705 @@ function importVocabCode() {
   }
 }
 
+
+// ============================================================
+// DEUTSCH SPRACHNIVEAU — Vollständiges Lernmodul
+// A1/A2 · B1/B2 · C1/C2 mit Vokabeln, Grammatik, Sätzen, Quiz
+// ============================================================
+var NIVEAU_DATA = {
+
+  a1: {
+    label:'A1',
+    topics: [
+      { id:'a1-gruss',     icon:'👋', title:'Begrüßung & Abschied',
+        vocab:[
+          {de:'Hallo',ru:'Привет',tr:'Merhaba',ph:'halo'},
+          {de:'Guten Morgen',ru:'Доброе утро',tr:'Günaydın',ph:'guutn morgn'},
+          {de:'Guten Tag',ru:'Добрый день',tr:'İyi günler',ph:'guutn taak'},
+          {de:'Guten Abend',ru:'Добрый вечер',tr:'İyi akşamlar',ph:'guutn aabnt'},
+          {de:'Gute Nacht',ru:'Спокойной ночи',tr:'İyi geceler',ph:'guutn nakht'},
+          {de:'Auf Wiedersehen',ru:'До свидания',tr:'Güle güle',ph:'auf viiderzeen'},
+          {de:'Tschüss',ru:'Пока',tr:'Hoşça kal',ph:'chyus'},
+          {de:'Bis bald',ru:'До скорого',tr:'Görüşürüz',ph:'bis balt'},
+          {de:'Wie geht es Ihnen?',ru:'Как вы поживаете?',tr:'Nasılsınız?',ph:'vii geet es iinan'},
+          {de:'Wie geht\'s?',ru:'Как дела?',ph:'vii geets'},
+          {de:'Danke, gut.',ru:'Спасибо, хорошо.',tr:'Teşekkürler, iyiyim.',ph:'danke gut'},
+          {de:'Und Ihnen?',ru:'А вам?',tr:'Ya siz?',ph:'unt iinan'},
+        ],
+        grammar:[
+          {title:'Sie vs. du', text:'Im Deutschen gibt es zwei Anredeformen:\n• <b>du</b> — informell, für Freunde und Familie\n• <b>Sie</b> — formell, für Unbekannte, Vorgesetzte\n\nRussisch: «ты» = du / «Вы» = Sie', examples:['Wie heißt <b>du</b>? (Freund)', 'Wie heißen <b>Sie</b>? (Chef)']},
+          {title:'Satzstellung', text:'Im deutschen Hauptsatz steht das Verb immer an <b>zweiter Stelle</b>.\n\nRussisch: Wortstellung viel freier!\n\nSchema: <b>Subjekt — Verb — Rest</b>', examples:['<b>Ich</b> heiße Anna.', '<b>Sie</b> kommt aus Moskau.','<b>Heute</b> gehe ich einkaufen.']},
+        ],
+        sentences:[
+          {de:'Hallo, ich heiße Anna.',ru:'Привет, меня зовут Анна.',tr:'Merhaba, benim adım Anna.'},
+          {de:'Wie heißen Sie?',ru:'Как вас зовут?',tr:'Adınız ne?'},
+          {de:'Woher kommen Sie?',ru:'Откуда вы?',tr:'Nerelisiniz?'},
+          {de:'Ich komme aus Russland.',ru:'Я из России.',tr:'Rusya\u2019dan geliyorum.'},
+          {de:'Schön, Sie kennenzulernen!',ru:'Приятно познакомиться!',tr:'Tanıştığımıza memnun oldum!'},
+        ]
+      },
+      { id:'a1-zahlen',    icon:'🔢', title:'Zahlen 1–100',
+        vocab:[
+          {de:'eins',ru:'один',tr:'bir',ph:'ayns'},{de:'zwei',ru:'два',tr:'iki',ph:'tsvay'},
+          {de:'drei',ru:'три',tr:'üç',ph:'dray'},{de:'vier',ru:'четыре',tr:'dört',ph:'feer'},
+          {de:'fünf',ru:'пять',tr:'beş',ph:'fuenf'},{de:'sechs',ru:'шесть',tr:'altı',ph:'zeks'},
+          {de:'sieben',ru:'семь',tr:'yedi',ph:'zibn'},{de:'acht',ru:'восемь',tr:'sekiz',ph:'akht'},
+          {de:'neun',ru:'девять',tr:'dokuz',ph:'noyn'},{de:'zehn',ru:'десять',tr:'on',ph:'tseen'},
+          {de:'zwanzig',ru:'двадцать',tr:'yirmi',ph:'tsvantsikh'},{de:'dreißig',ru:'тридцать',tr:'otuz',ph:'draysikh'},
+          {de:'vierzig',ru:'сорок',tr:'kırk',ph:'feertsikh'},{de:'fünfzig',ru:'пятьдесят',tr:'elli',ph:'fuenftsikh'},
+          {de:'hundert',ru:'сто',tr:'yüz',ph:'hundert'},{de:'tausend',ru:'тысяча',tr:'bin',ph:'tauznt'},
+        ],
+        grammar:[
+          {title:'Artikel: der/die/das', text:'Deutsch hat 3 Artikel — anders als Russisch!\n• <b>der</b> — männlich (maskulin)\n• <b>die</b> — weiblich (feminin)\n• <b>das</b> — sächlich (neutral)\n\n⚠️ Muss auswendig gelernt werden!', examples:['<b>der</b> Mann','<b>die</b> Frau','<b>das</b> Kind']},
+          {title:'Plural-Formen', text:'Pluralbildung im Deutschen ist unregelmäßig:\n• -e: der Tag → die Tag<b>e</b>\n• -er: das Kind → die Kind<b>er</b>\n• -en: die Frau → die Frau<b>en</b>\n• -s: das Auto → die Auto<b>s</b>\n• Umlaut: der Mann → die M<b>ä</b>nner', examples:['der Hund → die Hunde','das Buch → die Bücher','die Mutter → die Mütter']},
+        ],
+        sentences:[
+          {de:'Ich bin 25 Jahre alt.',ru:'Мне 25 лет.',tr:'25 yaşındayım.'},{de:'Das kostet fünf Euro.',ru:'Это стоит пять евро.',tr:'Bu beş Euro tutar.'},
+          {de:'Ich wohne in der zweiten Etage.',ru:'Я живу на втором этаже.',tr:'İkinci katta oturuyorum.'},{de:'Meine Nummer ist 0176 12345.',ru:'Мой номер 0176 12345.',tr:'Numaram 0176 12345.'},
+        ]
+      },
+      { id:'a1-familie',   icon:'👨‍👩‍👧', title:'Familie',
+        vocab:[
+          {de:'die Mutter',ru:'мать',tr:'anne',ph:'muter'},{de:'der Vater',ru:'отец',tr:'baba',ph:'faater'},
+          {de:'die Eltern',ru:'родители',tr:'ebeveynler',ph:'eltern'},{de:'der Bruder',ru:'брат',tr:'erkek kardeş',ph:'bruuder'},
+          {de:'die Schwester',ru:'сестра',tr:'kız kardeş',ph:'shvester'},{de:'der Sohn',ru:'сын',tr:'oğul',ph:'zon'},
+          {de:'die Tochter',ru:'дочь',tr:'kız',ph:'tokhter'},{de:'die Großmutter',ru:'бабушка',tr:'büyükanne',ph:'grosmuter'},
+          {de:'der Großvater',ru:'дедушка',tr:'büyükbaba',ph:'grosfaater'},{de:'der Mann',ru:'муж',tr:'koca/erkek',ph:'man'},
+          {de:'die Frau',ru:'жена',tr:'eş/kadın',ph:'frau'},{de:'das Kind',ru:'ребёнок',tr:'çocuk',ph:'kint'},
+          {de:'der Onkel',ru:'дядя',tr:'amca/dayı',ph:'onkl'},{de:'die Tante',ru:'тётя',tr:'teyze/hala',ph:'tante'},
+        ],
+        grammar:[
+          {title:'Possessivpronomen: mein/meine', text:'Wie "мой/моя/моё" im Russischen, aber mit Artikel-Endung:\n• mein (masc/neutr): <b>mein</b> Vater, <b>mein</b> Kind\n• meine (fem/plural): <b>meine</b> Mutter, <b>meine</b> Eltern', examples:['Das ist <b>mein</b> Bruder.','Das ist <b>meine</b> Schwester.','Das sind <b>meine</b> Kinder.']},
+        ],
+        sentences:[
+          {de:'Meine Familie ist groß.',ru:'Моя семья большая.',tr:'Ailem büyük.'},{de:'Ich habe zwei Schwestern.',ru:'У меня две сестры.',tr:'İki kız kardeşim var.'},
+          {de:'Meine Mutter heißt Maria.',ru:'Мою маму зовут Мария.',tr:'Annemin adı Maria.'},{de:'Wir wohnen zusammen.',ru:'Мы живём вместе.',tr:'Birlikte yaşıyoruz.'},
+        ]
+      },
+      { id:'a1-farben',    icon:'🎨', title:'Farben & Formen',
+        vocab:[
+          {de:'rot',ru:'красный',tr:'kırmızı',ph:'rot'},{de:'blau',ru:'синий',tr:'mavi',ph:'blau'},
+          {de:'grün',ru:'зелёный',tr:'yeşil',ph:'gruen'},{de:'gelb',ru:'жёлтый',tr:'sarı',ph:'gelp'},
+          {de:'schwarz',ru:'чёрный',tr:'siyah',ph:'shvarts'},{de:'weiß',ru:'белый',tr:'beyaz',ph:'vays'},
+          {de:'grau',ru:'серый',tr:'gri',ph:'grau'},{de:'braun',ru:'коричневый',tr:'kahverengi',ph:'braun'},
+          {de:'orange',ru:'оранжевый',tr:'turuncu',ph:'orange'},{de:'lila',ru:'фиолетовый',tr:'mor',ph:'liila'},
+          {de:'rund',ru:'круглый',tr:'yuvarlak',ph:'runt'},{de:'eckig',ru:'угловатый',tr:'köşeli',ph:'ekikh'},
+          {de:'groß',ru:'большой',tr:'büyük',ph:'gros'},{de:'klein',ru:'маленький',tr:'küçük',ph:'klayn'},
+        ],
+        grammar:[
+          {title:'Adjektivdeklination (Nominativ)', text:'Adjektive ändern ihre Endung je nach Artikel und Genus:\n\n<b>Mit definitem Artikel:</b>\nder rot<b>e</b> Ball · die grün<b>e</b> Pflanze · das blaue Buch\n\n<b>Ohne Artikel:</b>\nrot<b>er</b> Wein · grün<b>e</b> Wiese · blaues Wasser', examples:['Das ist ein <b>roter</b> Apfel.','Sie trägt ein <b>grünes</b> Kleid.']},
+        ],
+        sentences:[
+          {de:'Der Himmel ist blau.',ru:'Небо синее.',tr:'Gökyüzü mavi.'},{de:'Das Auto ist rot.',ru:'Машина красная.',tr:'Araba kırmızı.'},
+          {de:'Meine Lieblingsfarbe ist grün.',ru:'Мой любимый цвет — зелёный.',tr:'En sevdiğim renk yeşil.'},{de:'Das Haus ist groß und weiß.',ru:'Дом большой и белый.',tr:'Ev büyük ve beyaz.'},
+        ]
+      },
+      { id:'a1-alltag',    icon:'🏠', title:'Alltag & Wohnen',
+        vocab:[
+          {de:'das Haus',ru:'дом',tr:'ev',ph:'haus'},{de:'die Wohnung',ru:'квартира',tr:'daire',ph:'vonung'},
+          {de:'das Zimmer',ru:'комната',tr:'oda',ph:'tsimer'},{de:'die Küche',ru:'кухня',tr:'mutfak',ph:'kyukhe'},
+          {de:'das Badezimmer',ru:'ванная',tr:'banyo',ph:'baadetsimer'},{de:'das Bett',ru:'кровать',tr:'yatak',ph:'bet'},
+          {de:'der Tisch',ru:'стол',tr:'masa',ph:'tish'},{de:'der Stuhl',ru:'стул',tr:'sandalye',ph:'shtul'},
+          {de:'das Fenster',ru:'окно',tr:'pencere',ph:'fenster'},{de:'die Tür',ru:'дверь',tr:'kapı',ph:'tuer'},
+          {de:'schlafen',ru:'спать',tr:'uyumak',ph:'shlaafen'},{de:'essen',ru:'есть',tr:'yemek yemek',ph:'esn'},
+          {de:'trinken',ru:'пить',tr:'içmek',ph:'trinken'},{de:'kochen',ru:'готовить',tr:'yemek pişirmek',ph:'kokhn'},
+        ],
+        grammar:[
+          {title:'Trennbare Verben', text:'Viele deutsche Verben haben ein abtrennbares Präfix:\n<b>aufstehen → ich stehe auf</b>\n\nDas Präfix wandert ans Satzende!\n\nVergleich Russisch: встаю — kein getrenntes Präfix', examples:['Ich <b>stehe</b> um 7 Uhr <b>auf</b>.','Er <b>räumt</b> das Zimmer <b>auf</b>.','Wir <b>rufen</b> dich <b>an</b>.']},
+        ],
+        sentences:[
+          {de:'Ich wohne in einer kleinen Wohnung.',ru:'Я живу в маленькой квартире.',tr:'Küçük bir dairede yaşıyorum.'},{de:'Das Schlafzimmer ist rechts.',ru:'Спальня справа.',tr:'Yatak odası sağda.'},
+          {de:'Wir essen zusammen am Tisch.',ru:'Мы едим вместе за столом.',tr:'Masada birlikte yiyoruz.'},{de:'Ich stehe um 7 Uhr auf.',ru:'Я встаю в 7 часов.',tr:'Saat 7de kalkıyorum.'},
+        ]
+      },
+      { id:'a1-essen',     icon:'🍽️', title:'Essen & Trinken',
+        vocab:[
+          {de:'das Brot',ru:'хлеб',tr:'ekmek',ph:'brot'},{de:'die Butter',ru:'масло',tr:'tereyağı',ph:'buter'},
+          {de:'der Käse',ru:'сыр',tr:'peynir',ph:'keeze'},{de:'das Fleisch',ru:'мясо',tr:'et',ph:'flaysh'},
+          {de:'der Fisch',ru:'рыба',tr:'balık',ph:'fish'},{de:'das Gemüse',ru:'овощи',tr:'sebze',ph:'gemiize'},
+          {de:'das Obst',ru:'фрукты',tr:'meyve',ph:'opst'},{de:'die Milch',ru:'молоко',tr:'süt',ph:'milkh'},
+          {de:'das Wasser',ru:'вода',tr:'su',ph:'vaser'},{de:'der Tee',ru:'чай',tr:'çay',ph:'tee'},
+          {de:'der Kaffee',ru:'кофе',tr:'kahve',ph:'kafe'},{de:'das Bier',ru:'пиво',tr:'bira',ph:'beer'},
+          {de:'lecker',ru:'вкусный',tr:'lezzetli',ph:'leker'},{de:'Hunger haben',ru:'быть голодным',tr:'acıkmak',ph:'hunger habn'},
+        ],
+        grammar:[
+          {title:'Modalverb: möchten', text:'«möchten» = хотеть (höfliche Form)\n\nKonjugation:\nych möchte · du möchtest · er/sie möchte\nwir möchten · ihr möchtet · Sie möchten\n\nVerwendung: Bestellung im Restaurant, Wunsch', examples:['Ich <b>möchte</b> einen Kaffee, bitte.','Was <b>möchten</b> Sie essen?','Wir <b>möchten</b> zahlen.']},
+        ],
+        sentences:[
+          {de:'Ich möchte bitte einen Tee.',ru:'Я бы хотел чай, пожалуйста.',tr:'Bir çay istiyorum lütfen.'},{de:'Das Brot ist frisch und lecker.',ru:'Хлеб свежий и вкусный.',tr:'Ekmek taze ve lezzetli.'},
+          {de:'Haben Sie Hunger?',ru:'Вы голодны?',tr:'Acıktınız mı?'},{de:'Was kostet das Mittagessen?',ru:'Сколько стоит обед?',tr:'Öğle yemeği ne kadar?'},
+        ]
+      },
+    ]
+  },
+
+  a2: {
+    label:'A2',
+    topics: [
+      { id:'a2-einkauf',   icon:'🛒', title:'Einkaufen',
+        vocab:[
+          {de:'der Supermarkt',ru:'супермаркет',tr:'süpermarket',ph:'zupermarkt'},{de:'der Markt',ru:'рынок',tr:'pazar',ph:'markt'},
+          {de:'die Kasse',ru:'касса',tr:'kasa',ph:'kase'},{de:'der Preis',ru:'цена',tr:'fiyat',ph:'prays'},
+          {de:'teuer',ru:'дорогой',tr:'pahalı',ph:'toyer'},{de:'billig',ru:'дешёвый',tr:'ucuz',ph:'bilikH'},
+          {de:'bezahlen',ru:'платить',tr:'ödemek',ph:'betsalen'},{de:'der Rabatt',ru:'скидка',tr:'indirim',ph:'rabat'},
+          {de:'das Angebot',ru:'предложение',tr:'teklif/kampanya',ph:'angebot'},{de:'die Tüte',ru:'пакет',tr:'torba',ph:'tyute'},
+          {de:'Haben Sie…?',ru:'У вас есть…?',tr:'... var mı?',ph:'habn zi'},{de:'Was kostet…?',ru:'Сколько стоит…?',tr:'... ne kadar?',ph:'vas kostet'},
+          {de:'Ich nehme…',ru:'Я возьму…',tr:'... alıyorum.',ph:'ikh neeme'},{de:'der Wechselgeld',ru:'сдача',tr:'para üstü',ph:'vekshelgelt'},
+        ],
+        grammar:[
+          {title:'Akkusativ — direkte Objekte', text:'Im Deutschen gibt es 4 Fälle (Kasus).\nAkkusativ = Wen oder Was? (= объект действия)\n\n• der → <b>den</b> (maskulin)\n• die → die (feminin)\n• das → das (neutral)\n\nRussisch: Vinitel\'nyy padezh', examples:['Ich kaufe <b>den</b> Apfel.','Ich nehme <b>die</b> Tasche.','Ich sehe <b>das</b> Kind.']},
+          {title:'Imperativ', text:'Befehle / Bitten auf Deutsch:\n\n<b>du:</b> Kauf! (kauf + Stamm)\n<b>ihr:</b> Kauft!\n<b>Sie:</b> Kaufen Sie!\n\nOft mit «bitte» höflicher.', examples:['<b>Gib</b> mir den Apfel, bitte.','<b>Kommen</b> Sie bitte hierher.','<b>Zeig</b> mir das!']},
+        ],
+        sentences:[
+          {de:'Wo ist die Kasse, bitte?',ru:'Где касса, пожалуйста?',tr:'Kasa nerede, lütfen?'},{de:'Das ist zu teuer.',ru:'Это слишком дорого.',tr:'Bu çok pahalı.'},
+          {de:'Haben Sie das auch in Größe M?',ru:'Есть ли это в размере M?',tr:'Bunun M bedeni de var mı?'},{de:'Ich zahle mit Karte.',ru:'Я плачу картой.',tr:'Kartla ödüyorum.'},
+        ]
+      },
+      { id:'a2-verkehr',   icon:'🚌', title:'Verkehr & Wege',
+        vocab:[
+          {de:'der Bus',ru:'автобус',tr:'otobüs',ph:'bus'},{de:'die U-Bahn',ru:'метро',tr:'metro',ph:'u-baan'},
+          {de:'der Zug',ru:'поезд',tr:'tren',ph:'tsuk'},{de:'das Taxi',ru:'такси',tr:'taksi',ph:'taksi'},
+          {de:'die Straße',ru:'улица',tr:'cadde/yol',ph:'shtrasse'},{de:'die Haltestelle',ru:'остановка',tr:'durak',ph:'haltestele'},
+          {de:'links',ru:'налево',tr:'sol',ph:'links'},{de:'rechts',ru:'направо',tr:'sağ',ph:'rekhts'},
+          {de:'geradeaus',ru:'прямо',tr:'düz git',ph:'geraadeaus'},{de:'die Kreuzung',ru:'перекрёсток',tr:'kavşak',ph:'kroytsung'},
+          {de:'weit',ru:'далеко',tr:'uzak',ph:'vayt'},{de:'nah',ru:'близко',tr:'yakın',ph:'naa'},
+          {de:'der Bahnhof',ru:'вокзал',tr:'istasyon',ph:'baanhof'},{de:'abfahren',ru:'отправляться',tr:'kalkmak/hareket etmek',ph:'apfaarn'},
+        ],
+        grammar:[
+          {title:'Lokale Präpositionen + Dativ', text:'Ortsangaben mit Dativ:\n• in + Dat: <b>im</b> Bus (in dem)\n• an + Dat: <b>am</b> Bahnhof (an dem)\n• auf + Dat: <b>auf</b> der Straße\n• bei + Dat: <b>beim</b> Markt (bei dem)\n\nRussisch: Predlozhny padezh', examples:['Ich warte <b>an der</b> Haltestelle.','Das Café ist <b>auf der</b> linken Seite.','Wir treffen uns <b>am</b> Bahnhof.']},
+        ],
+        sentences:[
+          {de:'Wie komme ich zum Bahnhof?',ru:'Как добраться до вокзала?',tr:'İstasyona nasıl gidebilirim?'},{de:'Der Bus fährt in 5 Minuten ab.',ru:'Автобус отправляется через 5 минут.',tr:'Otobüs 5 dakika sonra kalkıyor.'},
+          {de:'Biegen Sie an der Kreuzung links ab.',ru:'На перекрёстке поверните налево.',tr:'Kavşakta sola dönün.'},{de:'Ist es weit von hier?',ru:'Это далеко отсюда?',tr:'Buradan uzak mı?'},
+        ]
+      },
+      { id:'a2-arbeit',    icon:'💼', title:'Beruf & Arbeit',
+        vocab:[
+          {de:'der Arzt / die Ärztin',ru:'врач',tr:'doktor',ph:'artst'},{de:'der Lehrer / die Lehrerin',ru:'учитель',tr:'öğretmen',ph:'leerer'},
+          {de:'der Ingenieur',ru:'инженер',tr:'mühendis',ph:'inzheniör'},{de:'der Koch / die Köchin',ru:'повар',tr:'aşçı',ph:'kokh'},
+          {de:'arbeiten',ru:'работать',tr:'çalışmak',ph:'arbaytn'},{de:'der Beruf',ru:'профессия',tr:'meslek',ph:'beruf'},
+          {de:'die Stelle',ru:'должность',tr:'pozisyon',ph:'shtele'},{de:'das Büro',ru:'офис',tr:'ofis',ph:'byuro'},
+          {de:'der Kollege',ru:'коллега',tr:'meslektaş',ph:'kolege'},{de:'die Firma',ru:'фирма',tr:'şirket',ph:'firma'},
+          {de:'das Gehalt',ru:'зарплата',tr:'maaş',ph:'gehalt'},{de:'der Chef',ru:'начальник',tr:'patron/müdür',ph:'shef'},
+          {de:'kündigen',ru:'увольняться',tr:'istifa etmek',ph:'kyndign'},{de:'einstellen',ru:'принимать на работу',tr:'işe almak',ph:'aynshteln'},
+        ],
+        grammar:[
+          {title:'Perfekt — Vergangenheit', text:'Im Deutschen nutzt man Perfekt für abgeschlossene Handlungen im Gespräch:\n\n<b>haben/sein + Partizip II</b>\n\n• gearbeitet: ich <b>habe</b> gearbeitet\n• gegangen: ich <b>bin</b> gegangen\n\nRussisch: прошедшее время проще!', examples:['Ich <b>habe</b> heute 8 Stunden <b>gearbeitet</b>.','Er <b>ist</b> um 9 Uhr <b>gekommen</b>.','Wir <b>haben</b> viel <b>gelernt</b>.']},
+        ],
+        sentences:[
+          {de:'Was sind Sie von Beruf?',ru:'Кем вы работаете?',tr:'Mesleğiniz ne?'},{de:'Ich arbeite als Ingenieur.',ru:'Я работаю инженером.',tr:'Mühendis olarak çalışıyorum.'},
+          {de:'Mein Büro ist in der Innenstadt.',ru:'Мой офис в центре города.',tr:'Ofisim şehir merkezinde.'},{de:'Ich fange um 8 Uhr an.',ru:'Я начинаю в 8 часов.',tr:'Saat 8de başlıyorum.'},
+        ]
+      },
+      { id:'a2-freizeit',  icon:'🎭', title:'Freizeit & Hobbys',
+        vocab:[
+          {de:'das Hobby',ru:'хобби',tr:'hobi',ph:'hobi'},{de:'Sport treiben',ru:'заниматься спортом',tr:'spor yapmak',ph:'shport traybn'},
+          {de:'lesen',ru:'читать',tr:'okumak',ph:'leezn'},{de:'reisen',ru:'путешествовать',tr:'seyahat etmek',ph:'rayzn'},
+          {de:'Musik hören',ru:'слушать музыку',tr:'müzik dinlemek',ph:'muzik hörn'},{de:'tanzen',ru:'танцевать',tr:'dans etmek',ph:'tantsn'},
+          {de:'zeichnen',ru:'рисовать',tr:'çizmek',ph:'tsaykhn'},{de:'kochen',ru:'готовить',tr:'yemek pişirmek',ph:'kokhn'},
+          {de:'schwimmen',ru:'плавать',tr:'yüzmek',ph:'shvimn'},{de:'wandern',ru:'ходить в походы',tr:'yürüyüş yapmak',ph:'vandern'},
+          {de:'das Konzert',ru:'концерт',tr:'konser',ph:'kontsert'},{de:'das Museum',ru:'музей',tr:'müze',ph:'muzeum'},
+          {de:'gern',ru:'охотно/с удовольствием',tr:'memnuniyetle',ph:'gern'},{de:'lieber',ru:'лучше/предпочтительно',tr:'daha çok',ph:'liber'},
+        ],
+        grammar:[
+          {title:'Modalverb: können / mögen', text:'Können = мочь (способность/возможность)\nMögen = нравиться (предпочтение)\n\nKönnen: ich <b>kann</b> · du <b>kannst</b> · er <b>kann</b>\nMögen: ich <b>mag</b> · du <b>magst</b> · er <b>mag</b>', examples:['Ich <b>kann</b> gut schwimmen.','<b>Kannst</b> du morgen kommen?','Ich <b>mag</b> Musik sehr gern.']},
+        ],
+        sentences:[
+          {de:'In meiner Freizeit lese ich gern.',ru:'В свободное время я люблю читать.',tr:'Boş zamanlarımda okumayı severim.'},{de:'Ich treibe dreimal pro Woche Sport.',ru:'Я занимаюсь спортом три раза в неделю.',tr:'Haftada üç kez spor yapıyorum.'},
+          {de:'Mein Hobby ist Fotografieren.',ru:'Моё хобби — фотография.',tr:'Hobim fotoğraf çekmek.'},{de:'Magst du Kino?',ru:'Ты любишь кино?',tr:'Sinemayı sever misin?'},
+        ]
+      },
+      { id:'a2-gesundheit',icon:'🏥', title:'Gesundheit & Körper',
+        vocab:[
+          {de:'der Kopf',ru:'голова',tr:'baş',ph:'kopf'},{de:'der Rücken',ru:'спина',tr:'sırt',ph:'ryukn'},
+          {de:'der Bauch',ru:'живот',tr:'karın',ph:'baukh'},{de:'krank',ru:'больной',tr:'hasta',ph:'krank'},
+          {de:'Schmerzen haben',ru:'болеть',tr:'ağrısı olmak',ph:'shmertsen habn'},{de:'der Arzt',ru:'врач',tr:'doktor',ph:'artst'},
+          {de:'die Apotheke',ru:'аптека',tr:'eczane',ph:'apoteeke'},{de:'das Medikament',ru:'лекарство',tr:'ilaç',ph:'medikament'},
+          {de:'Fieber haben',ru:'иметь температуру',tr:'ateşi olmak',ph:'fiber habn'},{de:'der Husten',ru:'кашель',tr:'öksürük',ph:'hustn'},
+          {de:'der Schnupfen',ru:'насморк',tr:'nezle',ph:'shnupfn'},{de:'sich erholen',ru:'выздоравливать',tr:'iyileşmek',ph:'zikh erhooln'},
+          {de:'der Termin',ru:'приём/запись',tr:'randevu',ph:'termin'},{de:'die Krankenversicherung',ru:'медицинская страховка',tr:'sağlık sigortası',ph:'krankenferzikherung'},
+        ],
+        grammar:[
+          {title:'Reflexive Verben', text:'Viele Verben mit «sich» — Reflexivpronomen:\nsich fühlen, sich erholen, sich waschen...\n\nRussisch: возвратные глаголы (-ся/-сь)\n\nKonjugation:\nych fühle <b>mich</b> · du fühlst <b>dich</b> · er fühlt <b>sich</b>', examples:['Ich fühle <b>mich</b> nicht gut.','Er erholt <b>sich</b> im Urlaub.','Wir freuen <b>uns</b> auf die Reise.']},
+        ],
+        sentences:[
+          {de:'Ich fühle mich nicht wohl.',ru:'Я чувствую себя нехорошо.',tr:'Kendimi iyi hissetmiyorum.'},{de:'Ich habe Kopfschmerzen.',ru:'У меня болит голова.',tr:'Başım ağrıyor.'},
+          {de:'Ich brauche einen Arzttermin.',ru:'Мне нужна запись к врачу.',tr:'Doktora randevu almam gerekiyor.'},{de:'Nehmen Sie dieses Medikament.',ru:'Принимайте это лекарство.',tr:'Bu ilacı alın.'},
+        ]
+      },
+      { id:'a2-wetter',    icon:'☀️', title:'Wetter & Jahreszeiten',
+        vocab:[
+          {de:'das Wetter',ru:'погода',tr:'hava',ph:'veter'},{de:'die Sonne',ru:'солнце',tr:'güneş',ph:'zone'},
+          {de:'der Regen',ru:'дождь',tr:'yağmur',ph:'reegn'},{de:'der Schnee',ru:'снег',tr:'kar',ph:'shnee'},
+          {de:'der Wind',ru:'ветер',tr:'rüzgar',ph:'vint'},{de:'warm',ru:'тёплый',tr:'sıcak',ph:'varm'},
+          {de:'kalt',ru:'холодный',tr:'soğuk',ph:'kalt'},{de:'heiß',ru:'жаркий',tr:'kavurucu sıcak',ph:'hays'},
+          {de:'der Frühling',ru:'весна',tr:'ilkbahar',ph:'frylinkh'},{de:'der Sommer',ru:'лето',tr:'yaz',ph:'zomer'},
+          {de:'der Herbst',ru:'осень',tr:'sonbahar',ph:'herpst'},{de:'der Winter',ru:'зима',tr:'kış',ph:'vinter'},
+          {de:'Es regnet.',ru:'Идёт дождь.',tr:'Yağmur yağıyor.',ph:'es reegnet'},{de:'Es schneit.',ru:'Идёт снег.',tr:'Kar yağıyor.',ph:'es shnayt'},
+        ],
+        grammar:[
+          {title:'Es + Wetter-Verben', text:'Wetter beschreibt man mit «es» als Subjekt:\n\n<b>Es regnet.</b> — Идёт дождь.\n<b>Es schneit.</b> — Идёт снег.\n<b>Es ist kalt.</b> — Холодно.\n<b>Es gibt Gewitter.</b> — Есть гроза.\n\nKein echtes Subjekt — unpersönliche Konstruktion!', examples:['<b>Es</b> ist heute sehr warm.','<b>Es</b> regnet seit Stunden.','<b>Es</b> gibt morgen Gewitter.']},
+        ],
+        sentences:[
+          {de:'Wie ist das Wetter heute?',ru:'Какая сегодня погода?',tr:'Bugün hava nasıl?'},{de:'Es ist bewölkt und kalt.',ru:'Облачно и холодно.',tr:'Bulutlu ve soğuk.'},
+          {de:'Im Sommer fahre ich ans Meer.',ru:'Летом я еду к морю.',tr:'Yazın denize gidiyorum.'},{de:'Der Winter in Deutschland ist mild.',ru:'Зима в Германии мягкая.',tr:'Almanyada kış ılımandır.'},
+        ]
+      },
+    ]
+  },
+
+  b1: {
+    label:'B1',
+    topics: [
+      { id:'b1-reise',     icon:'✈️', title:'Reisen & Tourismus',
+        vocab:[
+          {de:'die Unterkunft',ru:'жильё/проживание',tr:'konaklama',ph:'unterkunft'},{de:'buchen',ru:'бронировать',tr:'rezervasyon yaptırmak',ph:'bukhn'},
+          {de:'der Flughafen',ru:'аэропорт',tr:'havalimanı',ph:'flukhafen'},{de:'das Gepäck',ru:'багаж',tr:'bagaj',ph:'gepek'},
+          {de:'der Reisepass',ru:'загранпаспорт',tr:'pasaport',ph:'rayzepas'},{de:'das Visum',ru:'виза',tr:'vize',ph:'vizum'},
+          {de:'die Sehenswürdigkeit',ru:'достопримечательность',tr:'turistik yer',ph:'zeensvyrdikhayt'},
+          {de:'die Stadtführung',ru:'экскурсия по городу',tr:'şehir turu',ph:'shtatfyrung'},
+          {de:'einreisen',ru:'въезжать',tr:'giriş yapmak',ph:'aynrayzn'},{de:'ausreisen',ru:'выезжать',tr:'çıkış yapmak',ph:'ausrayzn'},
+          {de:'umsteigen',ru:'делать пересадку',tr:'aktarma yapmak',ph:'umshtaygn'},{de:'verspätet',ru:'с опозданием',tr:'gecikmeli',ph:'fershpetet'},
+          {de:'die Pension',ru:'пансион',tr:'pansiyon',ph:'penzion'},{de:'das Einzelzimmer',ru:'одноместный номер',tr:'tek kişilik oda',ph:'ayntseltsimer'},
+        ],
+        grammar:[
+          {title:'Nebensätze mit weil & dass', text:'Verbindung zweier Sätze:\n\n<b>weil</b> (потому что) — Verb geht ans Ende!\n<b>dass</b> (что) — Verb geht ans Ende!\n\nRussisch: «потому что», «что» — Verb bleibt in Mitte', examples:['Ich reise gern, <b>weil</b> ich neue Kulturen kennenlernen <b>möchte</b>.','Ich glaube, <b>dass</b> das Ticket teuer <b>ist</b>.',]},
+          {title:'Konjunktiv II — höfliche Bitten', text:'Für Bitten und Wünsche:\n\n<b>ich hätte gern</b> — я бы хотел\n<b>könnten Sie</b> — не могли бы вы\n<b>ich würde gern</b> — я бы с удовольствием', examples:['<b>Hätten</b> Sie ein Zimmer frei?','<b>Könnten</b> Sie mir helfen?','Ich <b>würde</b> gern ein Ticket <b>kaufen</b>.']},
+        ],
+        sentences:[
+          {de:'Ich würde gern ein Einzelzimmer buchen.',ru:'Я хотел бы забронировать одноместный номер.',tr:'Tek kişilik oda rezervasyonu yapmak istiyorum.'},{de:'Unser Flug hat zwei Stunden Verspätung.',ru:'Наш рейс задержан на два часа.',tr:'Uçuşumuz iki saat gecikiyor.'},
+          {de:'Könnten Sie mir eine Stadtführung empfehlen?',ru:'Не могли бы вы порекомендовать экскурсию?',tr:'Bir şehir turu önerir misiniz?'},{de:'Ich reise, weil ich die Welt sehen möchte.',ru:'Я путешествую, потому что хочу видеть мир.',tr:'Seyahat ediyorum çünkü dünyayı görmek istiyorum.'},
+        ]
+      },
+      { id:'b1-medien',    icon:'📱', title:'Medien & Kommunikation',
+        vocab:[
+          {de:'die Nachricht',ru:'сообщение/новость',tr:'haber/mesaj',ph:'nakhrikt'},{de:'die Zeitung',ru:'газета',tr:'gazete',ph:'tsaytung'},
+          {de:'der Beitrag',ru:'публикация/статья',tr:'gönderi/makale',ph:'baytrak'},{de:'teilen',ru:'делиться',tr:'paylaşmak',ph:'tayln'},
+          {de:'folgen',ru:'подписываться',tr:'takip etmek',ph:'folgn'},{de:'kommentieren',ru:'комментировать',tr:'yorum yapmak',ph:'komentiirn'},
+          {de:'das soziale Netzwerk',ru:'социальная сеть',tr:'sosyal ağ',ph:'zotsiale netsverk'},
+          {de:'streamen',ru:'стримить',tr:'yayın yapmak',ph:'shtrimen'},{de:'herunterladen',ru:'скачивать',tr:'indirmek',ph:'herunterlaadn'},
+          {de:'der Datenschutz',ru:'защита данных',tr:'veri koruma',ph:'daatnshhuts'},{de:'die Privatsphäre',ru:'приватность',tr:'mahremiyet',ph:'privatsfeere'},
+          {de:'viral gehen',ru:'стать вирусным',tr:'viral olmak',ph:'viral geehn'},{de:'bearbeiten',ru:'редактировать',tr:'düzenlemek',ph:'bearbaytn'},
+          {de:'die Falschmeldung',ru:'фейковая новость',tr:'yanlış haber/dezenformasyon',ph:'falshmelddung'},
+        ],
+        grammar:[
+          {title:'Relativsätze', text:'Beschreibung von Personen/Dingen im Satz:\n\nDas ist der Mann, <b>der</b> mir geholfen hat.\n(Relative Pronomen = Artikel mit Kasusform)\n\nRussisch: который/которая/которое', examples:['Das ist die App, <b>die</b> ich benutze.','Er liest einen Artikel, <b>der</b> sehr interessant ist.','Das Foto, <b>das</b> du gepostet hast, ist toll.']},
+          {title:'Passiv', text:'Passiv = Vorgangspassiv\n<b>werden + Partizip II</b>\n\nAktiv: Man schreibt den Artikel.\nPassiv: Der Artikel <b>wird</b> geschrieben.\n\nRussisch: страдательный залог', examples:['Das Bild <b>wird</b> gepostet.','Die Daten <b>werden</b> gespeichert.','Der Fehler <b>wurde</b> entdeckt.']},
+        ],
+        sentences:[
+          {de:'Ich lese täglich online Nachrichten.',ru:'Я ежедневно читаю новости онлайн.',tr:'Her gün çevrimiçi haber okuyorum.'},{de:'Das Video wurde millionenfach geteilt.',ru:'Видео было поделено миллионы раз.',tr:'Video milyonlarca kez paylaşıldı.'},
+          {de:'Man sollte Falschmeldungen kritisch prüfen.',ru:'Нужно критически проверять фейки.',tr:'Sahte haberleri eleştirel gözle incelemelisiniz.'},{de:'Ich folge diesem Kanal seit Jahren.',ru:'Я подписан на этот канал уже несколько лет.',tr:'Bu kanalı yıllardır takip ediyorum.'},
+        ]
+      },
+      { id:'b1-umwelt',    icon:'🌿', title:'Umwelt & Nachhaltigkeit',
+        vocab:[
+          {de:'der Klimawandel',ru:'изменение климата',tr:'iklim değişikliği',ph:'klimavanddel'},{de:'nachhaltig',ru:'устойчивый/экологичный',tr:'sürdürülebilir',ph:'nakhhalttikh'},
+          {de:'recyceln',ru:'перерабатывать',tr:'geri dönüştürmek',ph:'retsykeln'},{de:'die Energie',ru:'энергия',tr:'enerji',ph:'energi'},
+          {de:'erneuerbar',ru:'возобновляемый',tr:'yenilenebilir',ph:'ernöyerbaar'},{de:'der Müll',ru:'мусор',tr:'çöp',ph:'myl'},
+          {de:'schützen',ru:'защищать',tr:'korumak',ph:'shuttsn'},{de:'die Treibhausgase',ru:'парниковые газы',tr:'sera gazları',ph:'traybhausgaaze'},
+          {de:'der Fußabdruck',ru:'след/отпечаток',tr:'ayak izi',ph:'fuusapdrukk'},{de:'verzichten auf',ru:'отказываться от',tr:'vazgeçmek',ph:'fertsiktn auf'},
+          {de:'umweltfreundlich',ru:'экологически чистый',tr:'çevre dostu',ph:'umveltfroyndlikh'},{de:'der öffentliche Verkehr',ru:'общественный транспорт',tr:'toplu taşıma',ph:'öfntlikhe ferkeehr'},
+          {de:'das Elektroauto',ru:'электромобиль',tr:'elektrikli araba',ph:'elektroauto'},{de:'die Solarenergie',ru:'солнечная энергия',tr:'güneş enerjisi',ph:'zoolarenergi'},
+        ],
+        grammar:[
+          {title:'Finalsätze mit um…zu / damit', text:'Zweck/Ziel ausdrücken:\n\n<b>um…zu</b> — чтобы (одно Subjekt)\n<b>damit</b> — чтобы (разные субъекты)\n\nUm…zu: Infinitiv am Ende', examples:['Ich fahre Fahrrad, <b>um</b> die Umwelt <b>zu</b> schonen.','Wir sparen Energie, <b>damit</b> die Kinder eine bessere Zukunft <b>haben</b>.']},
+        ],
+        sentences:[
+          {de:'Der Klimawandel ist eine globale Herausforderung.',ru:'Изменение климата — глобальная проблема.',tr:'İklim değişikliği küresel bir zorluktur.'},{de:'Ich versuche, weniger Plastik zu verwenden.',ru:'Я стараюсь использовать меньше пластика.',tr:'Daha az plastik kullanmaya çalışıyorum.'},
+          {de:'Erneuerbare Energien sind die Zukunft.',ru:'Возобновляемые источники энергии — это будущее.',tr:'Yenilenebilir enerji geleceğimizdir.'},{de:'Wir alle können zum Klimaschutz beitragen.',ru:'Все мы можем внести вклад в защиту климата.',tr:'Hepimiz iklim korumaya katkıda bulunabiliriz.'},
+        ]
+      },
+      { id:'b1-bildung',   icon:'🎓', title:'Bildung & Schule',
+        vocab:[
+          {de:'das Abitur',ru:'аттестат зрелости',tr:'lise diploması',ph:'abituur'},{de:'das Studium',ru:'учёба/обучение',tr:'üniversite eğitimi',ph:'shtuudium'},
+          {de:'die Universität',ru:'университет',tr:'üniversite',ph:'univerzi'},{de:'der Abschluss',ru:'диплом/окончание',tr:'diploma/mezuniyet',ph:'apshluus'},
+          {de:'die Ausbildung',ru:'профессиональное образование',tr:'mesleki eğitim',ph:'ausbilddung'},{de:'die Note',ru:'оценка',tr:'not',ph:'note'},
+          {de:'das Fach',ru:'предмет/специальность',tr:'ders/alan',ph:'fakh'},{de:'forschen',ru:'исследовать',tr:'araştırmak',ph:'forsshn'},
+          {de:'die Prüfung',ru:'экзамен',tr:'sınav',ph:'pryfung'},{de:'bestehen',ru:'сдать (экзамен)',tr:'geçmek (sınav)',ph:'beshteehn'},
+          {de:'durchfallen',ru:'провалиться',tr:'kalmak (sınav)',ph:'durkhfaln'},{de:'das Stipendium',ru:'стипендия',tr:'burs',ph:'shtipendium'},
+          {de:'das Praktikum',ru:'практика',tr:'staj',ph:'praktikum'},{de:'die Hausarbeit',ru:'реферат/домашняя работа',tr:'ödev/bitirme tezi',ph:'hausarbyt'},
+        ],
+        grammar:[
+          {title:'Konjunktionen: obwohl / trotzdem', text:'Gegensatz ausdrücken:\n\n<b>obwohl</b> (хотя) — Nebensatz, Verb am Ende\n<b>trotzdem</b> (тем не менее) — Hauptsatz, Verb Position 2 nach trotzdem\n\nRussisch: «хотя», «тем не менее»', examples:['<b>Obwohl</b> das Studium schwer <b>ist</b>, macht es Spaß.','Es war schwer; <b>trotzdem</b> habe ich bestanden.']},
+        ],
+        sentences:[
+          {de:'Ich studiere Informatik an der Universität Berlin.',ru:'Я изучаю информатику в Берлинском университете.',tr:'Berlin Üniversitesinde bilgisayar bilimleri okuyorum.'},{de:'Obwohl die Prüfung schwer war, habe ich bestanden.',ru:'Хотя экзамен был трудным, я сдал его.',tr:'Sınav zor olmasına rağmen geçtim.'},
+          {de:'Das Praktikum hat mir viel gebracht.',ru:'Практика дала мне многое.',tr:'Staj bana çok şey kattı.'},{de:'Ich bewerbe mich um ein Stipendium.',ru:'Я подаю заявку на стипендию.',tr:'Burs için başvuruyorum.'},
+        ]
+      },
+    ]
+  },
+
+  b2: {
+    label:'B2',
+    topics: [
+      { id:'b2-beruf',     icon:'📊', title:'Berufsleben & Karriere',
+        vocab:[
+          {de:'die Bewerbung',ru:'заявление о приёме на работу',tr:'iş başvurusu',ph:'beverbung'},{de:'das Vorstellungsgespräch',ru:'собеседование',tr:'iş görüşmesi',ph:'forshttelungsgeshprekh'},
+          {de:'der Lebenslauf',ru:'резюме',tr:'özgeçmiş',ph:'lebenslaauf'},{de:'die Qualifikation',ru:'квалификация',tr:'nitelik',ph:'kvalifikatsion'},
+          {de:'befördern',ru:'продвигать по службе',tr:'terfi ettirmek',ph:'beförddern'},{de:'die Gehaltserhöhung',ru:'повышение зарплаты',tr:'maaş artışı',ph:'gehaltserhoyhung'},
+          {de:'das Netzwerk',ru:'профессиональная сеть',tr:'ağ/network',ph:'netsverk'},{de:'selbstständig',ru:'самозанятый',tr:'serbest çalışan',ph:'zelpsshtendikh'},
+          {de:'kündigen',ru:'увольняться',tr:'istifa etmek',ph:'kyndign'},{de:'entlassen',ru:'увольнять',tr:'işten çıkarmak',ph:'entlaasn'},
+          {de:'das Burnout',ru:'выгорание',tr:'tükenmişlik',ph:'burnout'},{de:'die Work-Life-Balance',ru:'баланс работы и жизни',tr:'iş-yaşam dengesi',ph:'vork-layf-balans'},
+          {de:'die Unternehmenskultur',ru:'корпоративная культура',tr:'şirket kültürü',ph:'unterneemenzkultuur'},{de:'agil arbeiten',ru:'работать гибко',tr:'çevik çalışmak',ph:'agiil arbaytn'},
+        ],
+        grammar:[
+          {title:'Genitiv', text:'4. Kasus: Zugehörigkeit, Besitz\n\n<b>des/der/des + (e)s</b>\n\n• der Vertrag des Mitarbeiters\n• die Meinung der Chefin\n• wegen des Problems\n\nRussisch: родительный падеж', examples:['Das Büro <b>des Direktors</b> ist oben.','Trotz <b>des Stresses</b> arbeite ich gern.','Wegen <b>der Kündigung</b> bin ich nervös.']},
+          {title:'Infinitivkonstruktionen', text:'ohne…zu / anstatt…zu / um…zu\n\n<b>ohne…zu</b> — не + инфинитив\n<b>anstatt…zu</b> — вместо того чтобы', examples:['Er geht, <b>ohne</b> zu <b>grüßen</b>.','<b>Anstatt</b> zu <b>arbeiten</b>, schläft er.','Ich lerne, <b>um</b> Karriere <b>zu machen</b>.']},
+        ],
+        sentences:[
+          {de:'Mein Vorstellungsgespräch war gestern sehr gut.',ru:'Вчера моё собеседование прошло очень хорошо.',tr:'Dünkü iş görüşmem çok iyiydi.'},{de:'Trotz des Stresses liebe ich meinen Beruf.',ru:'Несмотря на стресс, я люблю свою работу.',tr:'Strese rağmen mesleğimi seviyorum.'},
+          {de:'Ich bewerbe mich um eine Stelle als Projektmanager.',ru:'Я претендую на должность менеджера проекта.',tr:'Proje yöneticisi pozisyonuna başvuruyorum.'},{de:'Die Unternehmenskultur beeinflusst die Mitarbeiterzufriedenheit.',ru:'Корпоративная культура влияет на удовлетворённость сотрудников.',tr:'Şirket kültürü çalışan memnuniyetini etkiler.'},
+        ]
+      },
+      { id:'b2-kultur',    icon:'🎭', title:'Kultur & Gesellschaft',
+        vocab:[
+          {de:'die Vielfalt',ru:'многообразие',ph:'fiilfalt'},{de:'die Integration',ru:'интеграция',ph:'integratsion'},
+          {de:'tolerant',ru:'терпимый',ph:'tolerant'},{de:'das Vorurteil',ru:'предрассудок',ph:'forurtayl'},
+          {de:'die Diskriminierung',ru:'дискриминация',ph:'diskriminirung'},{de:'der Dialekt',ru:'диалект',ph:'dialekt'},
+          {de:'das Brauchtum',ru:'обычай/традиция',ph:'braaukhtum'},{de:'die Tradition',ru:'традиция',ph:'traditsion'},
+          {de:'geprägt von',ru:'формируемый',ph:'gepregt fon'},{de:'der Zeitgeist',ru:'дух времени',ph:'tsaytgayst'},
+          {de:'die Leitkultur',ru:'ведущая культура',ph:'laytkultuur'},{de:'das Zusammenleben',ru:'совместная жизнь',ph:'tsuzammenleben'},
+          {de:'interkulturell',ru:'межкультурный',ph:'interkulturel'},{de:'die Globalisierung',ru:'глобализация',ph:'globalizirung'},
+        ],
+        grammar:[
+          {title:'Partizip I als Attribut', text:'Partizip I = Verb + d\nDrückt gleichzeitige Handlung aus:\n\n<b>der lesende Student</b> — студент, который читает\n<b>die steigende Zahl</b> — растущее число\n\nRussisch: Причастие настоящего времени', examples:['Die <b>wachsende</b> Vielfalt bereichert die Gesellschaft.','Ein <b>lächelndes</b> Kind kam herein.','Das <b>steigende</b> Interesse ist erfreulich.']},
+        ],
+        sentences:[
+          {de:'Die kulturelle Vielfalt macht unsere Gesellschaft reicher.',ru:'Культурное многообразие обогащает наше общество.'},{de:'Vorurteile entstehen oft aus mangelndem Wissen.',ru:'Предрассудки часто возникают из-за недостатка знаний.'},
+          {de:'Integration gelingt durch Dialog und Offenheit.',ru:'Интеграция удаётся через диалог и открытость.'},{de:'Der Zeitgeist verändert sich ständig.',ru:'Дух времени постоянно меняется.'},
+        ]
+      },
+      { id:'b2-wirtschaft',icon:'📈', title:'Wirtschaft & Finanzen',
+        vocab:[
+          {de:'die Inflation',ru:'инфляция',ph:'inflatsion'},{de:'die Rezession',ru:'рецессия',ph:'retsesion'},
+          {de:'das Bruttoinlandsprodukt',ru:'ВВП',ph:'bruttoilandsprodukt'},{de:'investieren',ru:'инвестировать',ph:'investirn'},
+          {de:'die Aktie',ru:'акция',ph:'aktsie'},{de:'die Steuer',ru:'налог',ph:'shtöyer'},
+          {de:'das Budget',ru:'бюджет',ph:'budzhet'},{de:'die Schulden',ru:'долги',ph:'shuldddn'},
+          {de:'der Haushalt',ru:'бюджет/хозяйство',ph:'haushalt'},{de:'sparen',ru:'экономить',ph:'shaarn'},
+          {de:'die Rente',ru:'пенсия',ph:'rente'},{de:'der Kredit',ru:'кредит',ph:'kredit'},
+          {de:'die Börse',ru:'биржа',ph:'borse'},{de:'der Marktanteil',ru:'доля рынка',ph:'markttantayl'},
+        ],
+        grammar:[
+          {title:'Modalverben im Konjunktiv II', text:'Für Ratschläge und Hypothesen:\n\n<b>sollte</b> — должен был бы\n<b>könnte</b> — мог бы\n<b>dürfte</b> — возможно\n<b>müsste</b> — должен был бы (необходимость)', examples:['Man <b>sollte</b> früh für die Rente sparen.','Die Inflation <b>könnte</b> weiter steigen.','Das <b>dürfte</b> schwierig werden.']},
+        ],
+        sentences:[
+          {de:'Die Inflation hat die Kaufkraft geschwächt.',ru:'Инфляция ослабила покупательную способность.'},{de:'Man sollte früh mit dem Sparen beginnen.',ru:'Следует начинать откладывать деньги заранее.'},
+          {de:'Das Unternehmen plant, in neue Märkte zu investieren.',ru:'Компания планирует инвестировать в новые рынки.'},{de:'Der Haushalt muss ausgeglichen sein.',ru:'Бюджет должен быть сбалансированным.'},
+        ]
+      },
+    ]
+  },
+
+  c1: {
+    label:'C1',
+    topics: [
+      { id:'c1-rhetorik',  icon:'🎤', title:'Rhetorik & Argumentation',
+        vocab:[
+          {de:'die These',ru:'тезис',tr:'tez',ph:'teeze'},{de:'das Argument',ru:'аргумент',tr:'argüman',ph:'argument'},
+          {de:'widerlegen',ru:'опровергать',tr:'çürütmek',ph:'vidderlegn'},{de:'bekräftigen',ru:'подкреплять',tr:'pekiştirmek',ph:'bekreftighn'},
+          {de:'die Prämisse',ru:'предпосылка',ph:'premeese'},{de:'schlüssig',ru:'убедительный',ph:'shlysikh'},
+          {de:'überzeugend',ru:'убедительный',tr:'ikna edici',ph:'ybertsöygnd'},{de:'das Gegenargument',ru:'контраргумент',ph:'geegnargoment'},
+          {de:'differenzieren',ru:'дифференцировать',ph:'diferentsirn'},{de:'hinterfragen',ru:'ставить под сомнение',ph:'hinterfraagn'},
+          {de:'pointiert',ru:'меткий',ph:'poantiirt'},{de:'nachvollziehen',ru:'понять/проследовать',ph:'nakhfoltsiin'},
+          {de:'die Schlussfolgerung',ru:'вывод',ph:'shlusfolgderung'},{de:'der Einwand',ru:'возражение',ph:'aynvant'},
+        ],
+        grammar:[
+          {title:'Erweiterte Partizipialkonstruktionen', text:'Komprimierte Relativsätze als Attribut:\n\nStatt: der Bericht, der von allen kritisiert wurde\n→ <b>der von allen kritisierte Bericht</b>\n\nMuster: Partizip II mit Erweiterungen zwischen Artikel und Nomen', examples:['Das <b>von der EU beschlossene</b> Gesetz gilt ab morgen.','Die <b>seit Jahren diskutierte</b> Reform kommt endlich.','Ein <b>sorgfältig vorbereitetes</b> Argument überzeugt.']},
+          {title:'Konjunktiv I — Indirekte Rede', text:'Berichten was jemand gesagt hat:\n\n<b>Er sagt, er sei krank.</b> (Konjunktiv I von «sein»)\n\nBildung: Infinitivstamm + Endung\nsein → er <b>sei</b>\nhaben → er <b>habe</b>\nkommen → er <b>komme</b>\n\nRussisch: keine eigene Form — Kontext+Verb', examples:['Sie sagte, sie <b>könne</b> nicht kommen.','Er behauptete, er <b>habe</b> nichts gewusst.','Der Minister erklärte, die Lage <b>sei</b> stabil.']},
+        ],
+        sentences:[
+          {de:'Ihr Argument ist schlüssig, aber es fehlt ein empirischer Beleg.',ru:'Ваш аргумент убедителен, но не хватает эмпирических доказательств.'},{de:'Man muss zwischen Korrelation und Kausalität differenzieren.',ru:'Нужно различать корреляцию и причинно-следственную связь.'},
+          {de:'Der Minister erklärte, die Reform sei unumgänglich.',ru:'Министр заявил, что реформа неизбежна.'},{de:'Ihre These lässt sich leicht widerlegen.',ru:'Ваш тезис легко опровергнуть.'},
+        ]
+      },
+      { id:'c1-wissensch', icon:'🔬', title:'Wissenschaft & Forschung',
+        vocab:[
+          {de:'die Hypothese',ru:'гипотеза',ph:'hypooteeze'},{de:'das Experiment',ru:'эксперимент',ph:'experiment'},
+          {de:'die Stichprobe',ru:'выборка',ph:'shtikhrobe'},{de:'signifikant',ru:'значимый',ph:'zignifikant'},
+          {de:'replizieren',ru:'воспроизводить',ph:'repliitsirn'},{de:'peer-reviewed',ru:'рецензируемый',ph:'peer-reviewd'},
+          {de:'die Forschungslücke',ru:'пробел в исследованиях',ph:'forshungslyke'},{de:'interdisziplinär',ru:'междисциплинарный',ph:'interdistsipliner'},
+          {de:'evidenzbasiert',ru:'основанный на доказательствах',ph:'eviidentsbasirt'},{de:'das Ergebnis',ru:'результат',ph:'ergeebnis'},
+          {de:'die Schlussfolgerung',ru:'вывод',ph:'shlusfolgderung'},{de:'quantitativ',ru:'количественный',ph:'kvantitatiiv'},
+          {de:'qualitativ',ru:'качественный',ph:'kvalitatiiv'},{de:'das Peer-Review',ru:'рецензирование',ph:'peer-review'},
+        ],
+        grammar:[
+          {title:'Nominalisierungen', text:'Verben und Adjektive werden zu Nomen:\n\nverb → Nomen: <b>untersuchen → die Untersuchung</b>\nAdjektiv → Nomen: <b>genau → die Genauigkeit</b>\n\nHäufig in Wissenschaftstexten!\nRussisch: отглагольные существительные', examples:['Die <b>Durchführung</b> des Experiments war komplex.','Die <b>Entwicklung</b> neuer Methoden ist nötig.','Die <b>Überprüfbarkeit</b> ist ein Gütekriterium.']},
+        ],
+        sentences:[
+          {de:'Die Studie weist methodische Schwächen auf.',ru:'Исследование имеет методологические слабости.'},{de:'Die Ergebnisse sind statistisch signifikant, aber praktisch wenig relevant.',ru:'Результаты статистически значимы, но малопрактичны.'},
+          {de:'Weitere Forschung ist nötig, um die Kausalität zu belegen.',ru:'Необходимы дополнительные исследования для подтверждения причинности.'},{de:'Das Experiment wurde unter kontrollierten Bedingungen durchgeführt.',ru:'Эксперимент был проведён в контролируемых условиях.'},
+        ]
+      },
+    ]
+  },
+
+  c2: {
+    label:'C2',
+    topics: [
+      { id:'c2-stilistik', icon:'✍️', title:'Stilistik & Literatur',
+        vocab:[
+          {de:'die Metapher',ru:'метафора',tr:'metafor',ph:'metafer'},{de:'die Ironie',ru:'ирония',tr:'ironi',ph:'ironie'},
+          {de:'der Sarkasmus',ru:'сарказм',tr:'sarkasm',ph:'zarkasmus'},{de:'die Allegorie',ru:'аллегория',ph:'alegorie'},
+          {de:'das Stilmittel',ru:'стилистический приём',ph:'shtiilmitl'},{de:'die Konnotation',ru:'коннотация',ph:'konotatsion'},
+          {de:'das Leitmotiv',ru:'лейтмотив',ph:'laytmotiif'},{de:'die Ambiguität',ru:'двусмысленность',ph:'ambiguitet'},
+          {de:'subversiv',ru:'подрывной',ph:'subverziif'},{de:'die Pointe',ru:'изюминка/соль',ph:'poante'},
+          {de:'nuanciert',ru:'нюансированный',tr:'nüanslı',ph:'nuansiirt'},{de:'der Subtext',ru:'подтекст',ph:'zuptext'},
+          {de:'rhetorisch',ru:'риторический',ph:'retorissh'},{de:'die Parabel',ru:'притча',ph:'parabel'},
+        ],
+        grammar:[
+          {title:'Absolute Konstruktionen & Ellipsen', text:'Hochsprachliche Verdichtung:\n\n<b>Ellipse</b>: Weglassen von Satzteilen\n«Ich komme morgen» → «Morgen.»\n\n<b>Absolute Partizipialkonstruktion</b>:\n«Die Aufgabe gelöst, verließ er das Zimmer.»\n\nRussisch: деепричастные обороты', examples:['Die Augen geschlossen, <b>lauschte</b> er der Musik.','<b>Fertig?</b> — <b>Fertig!</b> (Ellipse)','<b>Kaum angekommen</b>, begann er zu arbeiten.']},
+          {title:'Archaismen & Stilebenen', text:'Deutsch hat verschiedene Stilebenen:\n\n<b>Gehoben</b>: erbitten, erblicken, entgegnen\n<b>Neutral</b>: bitten, sehen, antworten\n<b>Umgangssprachlich</b>: Bitte!, gucken, sagen\n<b>Vulgär</b>: (zu meiden)\n\nArchaismen: veraltete Wörter für Stileffekt', examples:['Er <b>erblickte</b> in der Ferne ein Licht. (gehoben)','Sie <b>entgegnete</b> mit einem Lächeln. (gehoben)','Ich <b>gucke</b> mal. (umgangssprachlich)']},
+        ],
+        sentences:[
+          {de:'Die Metapher verdichtet Bedeutung auf engstem Raum.',ru:'Метафора концентрирует значение в минимальном пространстве.'},{de:'Der Subtext verrät mehr als der explizite Text.',ru:'Подтекст говорит больше, чем явный текст.'},
+          {de:'Die Autorin bedient sich der Ironie, um Kritik zu üben.',ru:'Автор использует иронию для выражения критики.'},{de:'Nuanciertes Schreiben erfordert ein feines Sprachgefühl.',ru:'Нюансированное письмо требует тонкого языкового чутья.'},
+        ]
+      },
+      { id:'c2-idiome',    icon:'💡', title:'Idiome & Sprachgefühl',
+        vocab:[
+          {de:'jemanden auf den Arm nehmen',ru:'разыгрывать кого-то',ph:'yemanden auf den arm nemen'},
+          {de:'den Nagel auf den Kopf treffen',ru:'попасть в точку',ph:'den naagel auf den kopf treffn'},
+          {de:'auf dem Holzweg sein',ru:'быть на ложном пути',ph:'auf dem holtsveg zayn'},
+          {de:'jemandem auf den Zahn fühlen',ru:'прощупать кого-то',ph:'yemanden auf den tsaan fyln'},
+          {de:'ins Fettnäpfchen treten',ru:'попасть впросак',ph:'ins fettnepfkhn treten'},
+          {de:'um den heißen Brei herumreden',ru:'ходить вокруг да около',ph:'um den haysen bray herumreden'},
+          {de:'die Katze aus dem Sack lassen',ru:'раскрыть секрет',ph:'die katse aus dem zak lassen'},
+          {de:'Eulen nach Athen tragen',ru:'ехать в Тулу со своим самоваром',ph:'öylen nakh aten tragen'},
+          {de:'das Handtuch werfen',ru:'сдаться',ph:'das hanttukh verfn'},
+          {de:'jemandem Honig ums Maul schmieren',ru:'льстить кому-то',ph:'yemanden honikh ums maul shmirn'},
+          {de:'eine Extrawurst braten',ru:'делать исключение',ph:'ayne ekstraavurst bratn'},
+          {de:'auf Biegen und Brechen',ru:'любой ценой',ph:'auf biign und brekhn'},
+        ],
+        grammar:[
+          {title:'Konzessive Konstruktionen — C2', text:'Komplexe Einräumungen:\n\n<b>wenngleich / wiewohl / obschon</b>\n(архаичные/литературные синонимы «obwohl»)\n\n<b>so…auch</b> — хотя и…\n<b>ungeachtet</b> + Gen. — невзирая на\n\nFür literarische und akademische Texte', examples:['<b>Wenngleich</b> der Beweis fehlt, ist die Theorie plausibel.','<b>So schwer die Aufgabe auch</b> sei, er gibt nicht auf.','<b>Ungeachtet aller Widerstände</b> setzte er sein Ziel um.']},
+        ],
+        sentences:[
+          {de:'Er hat den Nagel auf den Kopf getroffen — genau das meine ich.',ru:'Он попал в точку — именно это я и имею в виду.'},{de:'Hör auf, um den heißen Brei herumzureden!',ru:'Хватит ходить вокруг да около!'},
+          {de:'Wenngleich ich seine Meinung nicht teile, respektiere ich sie.',ru:'Хотя я не разделяю его мнения, я его уважаю.'},{de:'Ungeachtet der Kritik blieb sie bei ihrer Entscheidung.',ru:'Невзирая на критику, она осталась при своём решении.'},
+        ]
+      },
+    ]
+  },
+};
+
+// Aktueller Zustand der Niveau-Übung
+var niveauState = {
+  level: null, topicId: null, topic: null,
+  mode: 'vocab', vocabIdx: 0, revealed: false,
+  grammarIdx: 0, sentenceIdx: 0,
+  quizIdx: 0, quizScore: 0, quizAnswered: false,
+  lang: 'ru', // Übersetzungssprache: 'ru' oder 'tr'
+  progress: {} // topicId → {vocab: n, done: bool}
+};
+
+function setNiveauLang(lang) {
+  niveauState.lang = lang;
+  document.getElementById('nlang-ru').className = 'btn'+(lang==='ru'?' primary':'');
+  document.getElementById('nlang-tr').className = 'btn'+(lang==='tr'?' primary':'');
+  if (niveauState.topic) renderNiveauVocab();
+}
+
+function showNiveau(lvl) {
+  ['a1a2','b1b2','c1c2'].forEach(function(l) {
+    document.getElementById('niveau-'+l).style.display = l===lvl?'block':'none';
+    document.getElementById('tab-'+l).className = 'btn'+(l===lvl?' primary':'');
+  });
+  renderNiveauTopics();
+}
+
+function renderNiveauTopics() {
+  ['a1','a2','b1','b2','c1','c2'].forEach(function(lvl) {
+    var el = document.getElementById('topics-'+lvl);
+    if (!el) return;
+    var topics = NIVEAU_DATA[lvl] ? NIVEAU_DATA[lvl].topics : [];
+    el.innerHTML = topics.map(function(t) {
+      var prog = niveauState.progress[t.id];
+      var pct = prog ? Math.round((prog.vocab/t.vocab.length)*100) : 0;
+      var doneClass = pct>=100 ? ' done' : '';
+      return '<button class="niveau-topic-btn'+doneClass+'" onclick="openNiveauTopic(\''+lvl+'\',\''+t.id+'\')">' +
+        '<span class="ntb-icon">'+t.icon+'</span>' +
+        t.title +
+        '<span class="ntb-prog">'+(pct>0?pct+'% ✓':'0%')+'</span></button>';
+    }).join('');
+  });
+}
+
+function openNiveauTopic(lvl, topicId) {
+  var topic = NIVEAU_DATA[lvl].topics.find(function(t){ return t.id===topicId; });
+  if (!topic) return;
+  niveauState.level = lvl;
+  niveauState.topicId = topicId;
+  niveauState.topic = topic;
+  niveauState.vocabIdx = 0;
+  niveauState.revealed = false;
+  niveauState.grammarIdx = 0;
+  niveauState.sentenceIdx = 0;
+  niveauState.quizIdx = 0;
+  niveauState.quizScore = 0;
+
+  document.getElementById('niveau-ex-title').textContent = topic.icon+' '+topic.title;
+  document.getElementById('niveau-ex-badge').textContent = NIVEAU_DATA[lvl].label;
+  document.getElementById('niveau-exercise').style.display = 'block';
+  document.getElementById('niveau-a1a2').style.display = 'none';
+  document.getElementById('niveau-b1b2').style.display = 'none';
+  document.getElementById('niveau-c1c2').style.display = 'none';
+
+  niveauMode('vocab');
+}
+
+function closeNiveauExercise() {
+  document.getElementById('niveau-exercise').style.display = 'none';
+  renderNiveauTopics();
+  var cur = document.querySelector('#niveau-tabs .btn.primary');
+  var tab = cur ? cur.id.replace('tab-','') : 'a1a2';
+  showNiveau(tab);
+}
+
+function niveauMode(mode) {
+  niveauState.mode = mode;
+  ['vocab','grammar','sentences','quiz'].forEach(function(m) {
+    document.getElementById('nmode-'+m).className = 'btn'+(m===mode?' primary':'');
+    document.getElementById('nex-'+m+'-area').style.display = m===mode?'block':'none';
+  });
+  if (mode==='vocab') renderNiveauVocab();
+  if (mode==='grammar') renderNiveauGrammar();
+  if (mode==='sentences') renderNiveauSentence();
+  if (mode==='quiz') startNiveauQuiz();
+}
+
+// ---- VOKABELN ----
+function renderNiveauVocab() {
+  var t = niveauState.topic;
+  var idx = niveauState.vocabIdx;
+  var w = t.vocab[idx];
+  document.getElementById('nex-word').textContent = w.de;
+  document.getElementById('nex-phonetic').textContent = '['+w.ph+']';
+  var trans = niveauState.lang === 'tr' ? (w.tr || w.ru) : w.ru;
+  document.getElementById('nex-translation').textContent = trans;
+  document.getElementById('nex-translation').style.opacity = '0';
+  niveauState.revealed = false;
+  document.getElementById('nex-vocab-btns').style.display = 'none';
+  document.getElementById('nex-vocab-counter').textContent = (idx+1)+' / '+t.vocab.length;
+}
+
+function niveauReveal() {
+  if (niveauState.revealed) return;
+  niveauState.revealed = true;
+  document.getElementById('nex-translation').style.opacity = '1';
+  document.getElementById('nex-vocab-btns').style.display = 'flex';
+}
+
+function niveauSpeakWord() {
+  var w = niveauState.topic.vocab[niveauState.vocabIdx];
+  speak(w.de, 'de');
+}
+
+function niveauVocabAnswer(knew) {
+  var t = niveauState.topic;
+  if (knew) {
+    if (!niveauState.progress[t.id]) niveauState.progress[t.id] = {vocab:0};
+    niveauState.progress[t.id].vocab = Math.min(t.vocab.length, (niveauState.progress[t.id].vocab||0)+1);
+    addXP(1);
+  }
+  niveauState.vocabIdx++;
+  if (niveauState.vocabIdx >= t.vocab.length) {
+    niveauState.vocabIdx = 0;
+    showToast('🎉 Alle Vokabeln dieser Einheit geübt!');
+    if (niveauState.progress[t.id]) niveauState.progress[t.id].done = true;
+  }
+  renderNiveauVocab();
+}
+
+// ---- GRAMMATIK ----
+function renderNiveauGrammar() {
+  var t = niveauState.topic;
+  var rules = t.grammar || [];
+  if (!rules.length) {
+    document.getElementById('nex-grammar-card').innerHTML = '<p style="color:var(--muted);text-align:center;">Keine Grammatikregeln für dieses Thema.</p>';
+    return;
+  }
+  var r = rules[niveauState.grammarIdx];
+  document.getElementById('nex-grammar-rule-title').textContent = '📖 '+r.title;
+  document.getElementById('nex-grammar-content').innerHTML = r.text.replace(/\n/g,'<br>');
+  document.getElementById('nex-grammar-examples').innerHTML =
+    '<div style="font-weight:700;font-size:.75rem;color:var(--muted);margin-bottom:.4rem;">Beispiele:</div>' +
+    r.examples.map(function(ex){ return '<div style="background:var(--surface2);border-radius:8px;padding:.4rem .6rem;margin-bottom:.3rem;font-size:.8rem;">'+ex+'</div>'; }).join('');
+}
+function niveauPrevGrammar() { if(niveauState.grammarIdx>0){niveauState.grammarIdx--;renderNiveauGrammar();} }
+function niveauNextGrammar() {
+  var rules=(niveauState.topic.grammar||[]);
+  if(niveauState.grammarIdx<rules.length-1){niveauState.grammarIdx++;renderNiveauGrammar();}
+  else showToast('✅ Alle Regeln dieser Einheit!');
+}
+
+// ---- SÄTZE ----
+function renderNiveauSentence() {
+  var t = niveauState.topic;
+  var sentences = t.sentences || [];
+  if (!sentences.length) { document.getElementById('nex-sentence-de').textContent='Keine Sätze verfügbar.'; return; }
+  var s = sentences[niveauState.sentenceIdx % sentences.length];
+  document.getElementById('nex-sentence-de').textContent = s.de;
+  var sTranslation = niveauState.lang === 'tr' ? (s.tr||s.ru) : s.ru;
+  document.getElementById('nex-sentence-ru').textContent = sTranslation;
+  document.getElementById('nex-sentence-counter').textContent = (niveauState.sentenceIdx%sentences.length+1)+' / '+sentences.length;
+}
+function niveauSpeakSentence() {
+  var s=niveauState.topic.sentences[niveauState.sentenceIdx%niveauState.topic.sentences.length];
+  speak(s.de,'de');
+}
+function niveauNextSentence() {
+  niveauState.sentenceIdx++;
+  renderNiveauSentence();
+  addXP(1);
+}
+
+// ---- QUIZ ----
+function startNiveauQuiz() {
+  niveauState.quizIdx=0; niveauState.quizScore=0; niveauState.quizAnswered=false;
+  renderNiveauQuiz();
+}
+function renderNiveauQuiz() {
+  var t = niveauState.topic;
+  var vocab = t.vocab;
+  if (niveauState.quizIdx >= vocab.length) {
+    document.getElementById('nex-quiz-question').textContent='🏆 Quiz abgeschlossen!';
+    document.getElementById('nex-quiz-options').innerHTML='';
+    document.getElementById('nex-quiz-score').textContent='Ergebnis: '+niveauState.quizScore+' / '+vocab.length+' richtig';
+    document.getElementById('nex-quiz-next').style.display='none';
+    document.getElementById('nex-quiz-feedback').textContent='';
+    if(niveauState.quizScore===vocab.length) addXP(3);
+    return;
+  }
+  var w = vocab[niveauState.quizIdx];
+  document.getElementById('nex-quiz-counter').textContent='Frage '+(niveauState.quizIdx+1)+' / '+vocab.length;
+  var qLang = niveauState.lang === 'tr' ? (w.tr||w.ru) : w.ru;
+  var qFlag = niveauState.lang === 'tr' ? '🇹🇷' : '🇷🇺';
+  document.getElementById('nex-quiz-question').textContent=qFlag+' '+qLang+' = ?';
+  document.getElementById('nex-quiz-feedback').textContent='';
+  document.getElementById('nex-quiz-next').style.display='none';
+  niveauState.quizAnswered=false;
+
+  // 4 Antworten: 1 richtig + 3 falsch
+  var wrong=[]; var pool=vocab.filter(function(x){return x.de!==w.de;});
+  while(wrong.length<3&&pool.length>0){ var ri=Math.floor(Math.random()*pool.length); wrong.push(pool[ri]); pool.splice(ri,1); }
+  var options=[{de:w.de,correct:true}].concat(wrong.map(function(x){return{de:x.de,correct:false};}));
+  options.sort(function(){return Math.random()-.5;});
+
+  document.getElementById('nex-quiz-options').innerHTML=options.map(function(o){
+    return '<button class="btn" style="text-align:left;justify-content:flex-start;" onclick="niveauCheckQuizAnswer(this,'+o.correct+',\''+w.de.replace(/'/g,"\\'")+'\')">'+(o.correct?'':'')+''+o.de+'</button>';
+  }).join('');
+  document.getElementById('nex-quiz-score').textContent='Punkte: '+niveauState.quizScore;
+}
+function niveauCheckQuizAnswer(btn, correct, correctDe) {
+  if(niveauState.quizAnswered) return;
+  niveauState.quizAnswered=true;
+  if(correct){ btn.style.background='var(--accent3)'; btn.style.color='#fff'; niveauState.quizScore++; document.getElementById('nex-quiz-feedback').textContent='✓ Richtig!'; document.getElementById('nex-quiz-feedback').style.color='var(--accent3)'; }
+  else{ btn.style.background='rgba(239,68,68,.2)'; btn.style.color='#ef4444'; document.getElementById('nex-quiz-feedback').textContent='✗ Richtig wäre: '+correctDe; document.getElementById('nex-quiz-feedback').style.color='#ef4444'; }
+  document.getElementById('nex-quiz-next').style.display='block';
+}
+function niveauNextQuiz() { niveauState.quizIdx++; renderNiveauQuiz(); }
+
 // ============================================================
 // OVERRIDE switchSection to handle new sections
 // ============================================================
@@ -11119,6 +11961,7 @@ switchSection = function(id) {
   if (id === 'stats') { updateAllStats(); renderGoalOptions(); }
   if (id === 'badges') renderBadges();
   if (id === 'path') renderLearningPath();
+  if (id === 'deniveau') { showNiveau('a1a2'); renderNiveauTopics(); }
 };
 
 // ============================================================
@@ -11210,7 +12053,7 @@ checkQuiz = function(btn, correct, correctAnswer) {
 var ONBOARDING_STEPS = [
   {
     emoji:'👋',
-    title:'Willkommen bei LINGUA v4.1!',
+    title:'Willkommen bei LINGUA v4.4!',
     text:'Die KI-gestützte Sprachlern-App für 12 Sprachen. Lass uns die wichtigsten Features kurz vorstellen — dauert nur 1 Minute!',
     features:null,
     btnText:'Los geht\'s →'
@@ -11230,7 +12073,7 @@ var ONBOARDING_STEPS = [
   {
     emoji:'🔀',
     title:'Verben meistern',
-    text:'Neu in v4.1: Der Konjugationstrainer! Gib ein Verb ein — die KI erstellt eine vollständige Tabelle. Dann kannst du direkt üben.',
+    text:'Neu in v4.4: Der Konjugationstrainer! Gib ein Verb ein — die KI erstellt eine vollständige Tabelle. Dann kannst du direkt üben.',
     features:[
       {icon:'🔀', name:'Konjugationstabelle', desc:'KI-generiert, alle Zeiten'},
       {icon:'🎯', name:'Konjugations-Quiz', desc:'Lücken ausfüllen'},
@@ -11362,86 +12205,104 @@ function showOnboardingNow() {
 // ============================================================
 // AUTO-VERSION-SYSTEM
 // BUILD wird bei jedem Deployment erhöht.
-// Version zählt automatisch: 4.1 → 4.2 → 4.9 → 5.0 → 5.1...
-// Beim ersten Laden der neuen BUILD-Nummer wird die Version
-// automatisch um 0.1 erhöht und überall im UI aktualisiert.
+// Version zählt automatisch: 4.4 → 4.5 → 4.9 → 5.0 → 5.1...
+// BUILD_VERSION = die Version die für diesen BUILD gilt.
+// Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 40;
+var BUILD = 46;
+var BUILD_VERSION = '4.5'; // ← Diese zwei Zeilen bei jedem Deploy anpassen
+
+// Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
   var storedBuild = parseInt(localStorage.getItem('lingua_build_num') || '0', 10);
-  var storedVer   = localStorage.getItem('lingua_version') || '4.1';
+
+  // Wenn neuer Build → immer BUILD_VERSION verwenden (kein Increment vom alten Wert)
   if (storedBuild < BUILD) {
-    var parts = storedVer.split('.');
-    var major = parseInt(parts[0]);
-    var minor = parseInt(parts[1] || '0') + 1;
-    if (minor >= 10) { major++; minor = 0; }
-    storedVer = major + '.' + minor;
     localStorage.setItem('lingua_build_num', String(BUILD));
-    localStorage.setItem('lingua_version', storedVer);
+    localStorage.setItem('lingua_version', BUILD_VERSION);
   }
-  window.CURRENT_VERSION = storedVer;
 
-  // Alle UI-Stellen mit der aktuellen Version befüllen
-  function updateAllVersionDisplays() {
-    var vStr = 'v' + window.CURRENT_VERSION;
+  var activeVer = localStorage.getItem('lingua_version') || BUILD_VERSION;
 
-    // 1. Logo
-    var el = document.getElementById('logo-version');
-    if (el) el.textContent = vStr;
+  // Globale Variable setzen — wird überall genutzt
+  window.CURRENT_VERSION = activeVer;
+  CURRENT_VERSION = activeVer;
+})();
 
-    // 2. Footer
-    el = document.getElementById('footer-version');
-    if (el) el.textContent = vStr;
+// Alle UI-Stellen mit der aktuellen Version befüllen
+function updateAllVersionDisplays() {
+  var v = window.CURRENT_VERSION || _BASE_VERSION;
+  var vStr = 'v' + v;
 
-    // 3. Settings-Footer
-    el = document.getElementById('settings-version');
-    if (el) el.textContent = vStr;
+  // 1. Logo-Span
+  var el = document.getElementById('logo-version');
+  if (el) el.textContent = vStr;
 
-    // 4. <title>
-    document.title = document.title.replace(/v\d+\.\d+/, vStr);
+  // 2. Footer
+  el = document.getElementById('footer-version');
+  if (el) el.textContent = vStr;
 
-    // 5. meta description
-    el = document.getElementById('meta-description');
-    if (el) el.setAttribute('content', el.getAttribute('content').replace(/v\d+\.\d+/, vStr));
+  // 3. Settings-Footer
+  el = document.getElementById('settings-version');
+  if (el) el.textContent = vStr;
 
-    // 6. Onboarding Willkommen-Text (wird dynamisch gerendert — per MutationObserver)
-    var ob = new MutationObserver(function() {
-      document.querySelectorAll('.onboarding-title, .onboarding-text').forEach(function(node) {
-        if (node.textContent.match(/v\d+\.\d+/)) {
-          node.innerHTML = node.innerHTML.replace(/v\d+\.\d+/g, vStr);
+  // 4. Browser-Tab-Titel
+  document.title = document.title.replace(/v\d+\.\d+/, vStr);
+
+  // 5. Meta-Description
+  el = document.getElementById('meta-description');
+  if (el) el.setAttribute('content', el.getAttribute('content').replace(/v\d+\.\d+/, vStr));
+
+  // 6. Alle sonstigen Elemente mit data-version Attribut
+  document.querySelectorAll('[data-version]').forEach(function(node) {
+    node.textContent = vStr;
+  });
+
+  // 7. Jede sichtbare Textstelle die v4.x enthält (Scan nach Laden)
+  var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+  while (walker.nextNode()) {
+    var node = walker.currentNode;
+    if (node.textContent.match(/v4\.\d|v3\.\d/) &&
+        node.parentElement &&
+        !['SCRIPT','STYLE'].includes(node.parentElement.tagName)) {
+      node.textContent = node.textContent.replace(/v\d+\.\d+/g, vStr);
+    }
+  }
+}
+
+// MutationObserver: auch dynamisch gerenderte Elemente (Onboarding, Changelog)
+(function() {
+  var ob = new MutationObserver(function(mutations) {
+    var v = window.CURRENT_VERSION || _BASE_VERSION;
+    var vStr = 'v' + v;
+    mutations.forEach(function(m) {
+      m.addedNodes.forEach(function(node) {
+        if (node.nodeType === 1) { // Element
+          node.querySelectorAll('*').forEach(function(child) {
+            if (child.children.length === 0 && child.textContent.match(/v4\.\d|v3\.\d/)) {
+              child.textContent = child.textContent.replace(/v\d+\.\d+/g, vStr);
+            }
+          });
+          // Node selbst
+          if (node.children && node.children.length === 0 && node.textContent.match(/v4\.\d|v3\.\d/)) {
+            node.textContent = node.textContent.replace(/v\d+\.\d+/g, vStr);
+          }
         }
       });
     });
+  });
+  document.addEventListener('DOMContentLoaded', function() {
     ob.observe(document.body, { childList: true, subtree: true });
-
-    // 7. Changelog-Titel (ebenfalls dynamisch)
-    var origShowChangelog = window.showChangelog;
-    if (origShowChangelog) {
-      window.showChangelog = function(ver) {
-        origShowChangelog(ver);
-        setTimeout(function() {
-          document.querySelectorAll('.changelog-title, .modal-title').forEach(function(node) {
-            if (node.textContent.match(/v\d+\.\d+/)) {
-              node.innerHTML = node.innerHTML.replace(/v\d+\.\d+/g, vStr);
-            }
-          });
-        }, 100);
-      };
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', updateAllVersionDisplays);
-  } else {
     updateAllVersionDisplays();
-  }
-  // Zusätzlich nach kurzem Delay (für dynamisch gerenderte Elemente)
-  setTimeout(updateAllVersionDisplays, 500);
+  });
+  // Fallback: nach 200ms und 800ms nochmal
+  setTimeout(updateAllVersionDisplays, 200);
+  setTimeout(updateAllVersionDisplays, 800);
 })();
 
 var CHANGELOG = {
   '3.0': {
-    title: 'Was ist neu in v4.1?',
+    title: 'Was ist neu in v4.4?',
     emoji: '🚀',
     items: [
       '🌍 DeepL-Integration — automatische Übersetzung in deine App-Sprache',
