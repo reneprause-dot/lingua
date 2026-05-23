@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" id="meta-description" content="LINGUA v4.4 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" id="meta-description" content="LINGUA v4.7 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v4.4 · by René Prause</title>
+<title>LINGUA v4.7 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -659,7 +659,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v4.4</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v4.7</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -1395,7 +1395,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v4.4</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v4.7</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -1563,7 +1563,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v4.4</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v4.7</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -12409,8 +12409,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 49;
-var BUILD_VERSION = '4.6'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 50;
+var BUILD_VERSION = '4.7'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -12517,66 +12517,93 @@ function updateAllVersionDisplays() {
 // ============================================================
 var CHANGELOG = {
   // BUILD → {emoji, title, items[]}
+  49: {
+    emoji: '📋',
+    title: 'Changelog-System neu aufgebaut',
+    items: [
+      '📋 Changelog ist jetzt BUILD-basiert — jeder Build hat eigenen Eintrag',
+      '🔍 getChangelogEntry() sucht automatisch den passenden Build-Eintrag',
+      '📌 Fallback auf nächstniedrigeren Eintrag wenn kein exakter Treffer',
+      '🏷️ Changelog zeigt jetzt Version + Build-Nummer als Untertitel',
+      '🔢 Versionierung zählt nie rückwärts — höhere Version gewinnt immer',
+      '✅ checkAndShowChangelog() doppeltes Version-Increment entfernt',
+    ]
+  },
   48: {
     emoji: '✍️',
-    title: 'Schreiben im Sprachniveau',
+    title: 'Schreiben-Modus im Sprachniveau',
     items: [
       '✍️ Schreiben-Modus in allen A1–C2 Themen — tippe das deutsche Wort',
-      '💡 Live-Buchstaben-Tipp während des Tippens',
-      '🔊 Aussprache-Funktion im Schreib-Modus',
-      '📊 Fortschrittsbalken mit ✓/✗ Zähler',
-      '🇹🇷 Türkisch als Übersetzungssprache im Sprachniveau',
-      '🔢 Versionierung: zählt nie rückwärts',
+      '💡 Live-Tipp: zeigt richtige/falsche Buchstaben während des Tippens',
+      '🔊 Aussprache-Button im Schreib-Modus',
+      '📊 Fortschrittsbalken mit ✓ korrekt / ✗ falsch Zähler',
+      '🔄 Artikel-Toleranz: "haus" wird als "das Haus" akzeptiert',
+      '🎯 +1 XP bei richtigem Wort, +3 XP bei fehlerfreier Runde',
     ]
   },
   47: {
-    emoji: '🇩🇪',
-    title: 'Deutsch Sprachniveau + Türkisch',
+    emoji: '🇩🇪🇹🇷',
+    title: 'Türkisch im Sprachniveau + Navigationsleiste',
     items: [
-      '🇩🇪 Neues Modul: Deutsch Sprachniveau (A1–C2)',
-      '🇹🇷 Türkisch als Übersetzungssprache wählbar',
-      '📚 Vokabeln, Grammatik, Sätze, Quiz pro Thema',
-      '🗺 Navigation: DE Niveau in der Navigationsleiste',
-      '📝 Grammatikregeln mit Russisch-Vergleichen',
+      '🇹🇷 Türkisch als zweite Übersetzungssprache im Sprachniveau wählbar',
+      '246 türkische Vokabelübersetzungen eingebaut (A1–C2)',
+      '69 türkische Satzübersetzungen eingebaut',
+      '🗺 Deutsch Sprachniveau in der Navigationsleiste ergänzt',
+      '🌍 nav_deniveau in allen 13 App-Sprachen übersetzt',
     ]
   },
   46: {
-    emoji: '🇵🇱',
-    title: 'Polnisch & Sprachniveau',
+    emoji: '🇩🇪',
+    title: 'Deutsch Sprachniveau A1–C2',
     items: [
-      '🇵🇱 Polnisch als Lern- und App-Sprache vollständig',
-      '🇩🇪 Deutsch Sprachniveau A1–C2 eingeführt',
-      '📊 5.005 russisch-deutsche Wortpaare',
-      '🔢 Auto-Version-System überarbeitet',
+      '🇩🇪 Neues Modul: Deutsch Sprachniveau mit 6 Leveln (A1/A2/B1/B2/C1/C2)',
+      '📚 23 Themen mit Vokabeln, Grammatik, Sätzen und Quiz',
+      '🏠 Home-Card und Navigationsleiste ergänzt',
+      '🇷🇺 Übersetzungssprache Russisch mit Grammatik-Vergleichen',
+      '🎯 Fortschrittsanzeige pro Thema in % ',
+    ]
+  },
+  45: {
+    emoji: '🇵🇱',
+    title: 'Polnisch vollständig integriert',
+    items: [
+      '🇵🇱 Polnisch als Lern- UND App-Sprache komplett eingebaut',
+      '📚 150+ polnische Vokabelpaare in 5 Themen',
+      '🌍 Vollständige polnische UI-Übersetzung aller Strings',
+      '🔤 Header-Pill 🇵🇱 PL in der Sprachleiste ergänzt',
+      '🔗 DeepL-Unterstützung für Polnisch (PL) hinzugefügt',
+    ]
+  },
+  44: {
+    emoji: '🔢',
+    title: 'Auto-Versionierung an allen Stellen',
+    items: [
+      '🔢 updateAllVersionDisplays() aktualisiert Logo, Footer, Title, Meta',
+      '👁 TreeWalker scannt alle sichtbaren Texte nach Versionsnummern',
+      '🔄 MutationObserver für dynamisch gerenderte Elemente (Onboarding, Changelog)',
+      '🏷️ IDs logo-version, footer-version, settings-version eingebaut',
+      '⏱ Fallback-Timer nach 200ms + 800ms für späte DOM-Elemente',
     ]
   },
   43: {
-    emoji: '🔢',
-    title: 'Auto-Versionierung',
+    emoji: '🌍',
+    title: 'Sprachen alphabetisch + Duplikat-Fix',
     items: [
-      '🔢 Versionsnummer wird automatisch hochgezählt',
-      '🎯 updateAllVersionDisplays() aktualisiert alle Stellen',
-      '📱 TreeWalker + MutationObserver für dynamische Elemente',
+      '🔤 Alle 13 Sprachen alphabetisch sortiert: sq,da,de,en,fr,it,pl,ro,ru,sv,es,th,tr',
+      '🗂 Doppelter Sprach-Karten-Block in "Sprache wählen" entfernt',
+      '🎮 XP nur bei verifizierter Aussprache — kein Cheaten möglich',
+      '🔥 Tutorial erscheint bei jedem Start mit Skip-Option',
     ]
   },
   40: {
-    emoji: '🌍',
-    title: 'Mehrsprachig & Alphabetisch',
-    items: [
-      '🔤 Alle Sprachen alphabetisch sortiert an allen Stellen',
-      '🇵🇱 Polnisch komplett integriert',
-      '🔥 Streak-System: zählt nur bei erfülltem Tagesziel',
-      '⏱ Tagesziel: Wörter oder Zeit wählbar',
-    ]
-  },
-  29: {
     emoji: '📚',
-    title: '5.000 Russisch-Deutsch Wörter',
+    title: '5.005 Russisch-Deutsch Wörter',
     items: [
-      '📚 5.005 russisch-deutsche Wortpaare eingebaut',
-      '🎯 Gamification: XP nur bei verifizierter Aussprache',
-      '🇩🇪 Deutsch als Lernsprache vollständig unterstützt',
-      '🌍 DeepL-Integration mit Proxy-Fallback',
+      '📚 5.005 russisch-deutsche Wortpaare in 100+ Themen eingebaut',
+      '🇩🇪 Deutsch als Lernsprache aus dem Russischen vollständig',
+      '⏱ Tagesziel: Wörter ODER Zeit wählbar (5/10/15/30 Min.)',
+      '🔥 Streak zählt nur bei erfülltem Tagesziel',
+      '🌍 DeepL-Integration mit eingebettetem Key + Proxy-Fallback',
     ]
   },
 };
