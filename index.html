@@ -12409,7 +12409,7 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 48;
+var BUILD = 49;
 var BUILD_VERSION = '4.6'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
@@ -12511,22 +12511,96 @@ function updateAllVersionDisplays() {
   setTimeout(updateAllVersionDisplays, 800);
 })();
 
+// ============================================================
+// CHANGELOG — Ein Eintrag pro BUILD
+// Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
+// ============================================================
 var CHANGELOG = {
-  '3.0': {
-    title: 'Was ist neu in v4.4?',
-    emoji: '🚀',
+  // BUILD → {emoji, title, items[]}
+  48: {
+    emoji: '✍️',
+    title: 'Schreiben im Sprachniveau',
     items: [
-      '🌍 DeepL-Integration — automatische Übersetzung in deine App-Sprache',
-      '🇷🇺 Russische App-Sprache + Deutsch lernen jetzt vollständig unterstützt',
-      '📦 Vokabeln, SRS, Quiz & Schreiben zeigen Übersetzung in App-Sprache',
-      '⚡ Batch-Vorladen — alle Übersetzungen vor Übungsbeginn gecacht',
-      '🔄 Service Worker aktualisiert — API-Calls werden nicht mehr blockiert',
-      '⇄ Übersetzer nutzt jetzt DeepL (schneller & präziser)',
-      '💾 DeepL-Cache in localStorage — jedes Wort nur einmal übersetzt',
-      '🔑 DeepL Standard-Key eingebettet — sofort nutzbar ohne Eingabe',
+      '✍️ Schreiben-Modus in allen A1–C2 Themen — tippe das deutsche Wort',
+      '💡 Live-Buchstaben-Tipp während des Tippens',
+      '🔊 Aussprache-Funktion im Schreib-Modus',
+      '📊 Fortschrittsbalken mit ✓/✗ Zähler',
+      '🇹🇷 Türkisch als Übersetzungssprache im Sprachniveau',
+      '🔢 Versionierung: zählt nie rückwärts',
+    ]
+  },
+  47: {
+    emoji: '🇩🇪',
+    title: 'Deutsch Sprachniveau + Türkisch',
+    items: [
+      '🇩🇪 Neues Modul: Deutsch Sprachniveau (A1–C2)',
+      '🇹🇷 Türkisch als Übersetzungssprache wählbar',
+      '📚 Vokabeln, Grammatik, Sätze, Quiz pro Thema',
+      '🗺 Navigation: DE Niveau in der Navigationsleiste',
+      '📝 Grammatikregeln mit Russisch-Vergleichen',
+    ]
+  },
+  46: {
+    emoji: '🇵🇱',
+    title: 'Polnisch & Sprachniveau',
+    items: [
+      '🇵🇱 Polnisch als Lern- und App-Sprache vollständig',
+      '🇩🇪 Deutsch Sprachniveau A1–C2 eingeführt',
+      '📊 5.005 russisch-deutsche Wortpaare',
+      '🔢 Auto-Version-System überarbeitet',
+    ]
+  },
+  43: {
+    emoji: '🔢',
+    title: 'Auto-Versionierung',
+    items: [
+      '🔢 Versionsnummer wird automatisch hochgezählt',
+      '🎯 updateAllVersionDisplays() aktualisiert alle Stellen',
+      '📱 TreeWalker + MutationObserver für dynamische Elemente',
+    ]
+  },
+  40: {
+    emoji: '🌍',
+    title: 'Mehrsprachig & Alphabetisch',
+    items: [
+      '🔤 Alle Sprachen alphabetisch sortiert an allen Stellen',
+      '🇵🇱 Polnisch komplett integriert',
+      '🔥 Streak-System: zählt nur bei erfülltem Tagesziel',
+      '⏱ Tagesziel: Wörter oder Zeit wählbar',
+    ]
+  },
+  29: {
+    emoji: '📚',
+    title: '5.000 Russisch-Deutsch Wörter',
+    items: [
+      '📚 5.005 russisch-deutsche Wortpaare eingebaut',
+      '🎯 Gamification: XP nur bei verifizierter Aussprache',
+      '🇩🇪 Deutsch als Lernsprache vollständig unterstützt',
+      '🌍 DeepL-Integration mit Proxy-Fallback',
     ]
   },
 };
+
+// Fallback für unbekannte Builds
+function getChangelogEntry(build) {
+  // Exakter Treffer
+  if (CHANGELOG[build]) return CHANGELOG[build];
+  // Nächstniedrigeren Eintrag finden
+  var keys = Object.keys(CHANGELOG).map(Number).sort(function(a,b){return b-a;});
+  for (var i=0; i<keys.length; i++) {
+    if (keys[i] <= build) return CHANGELOG[keys[i]];
+  }
+  return {
+    emoji: '🚀',
+    title: 'LINGUA wurde aktualisiert!',
+    items: [
+      '✅ Neue Funktionen und Verbesserungen',
+      '⚡ Performance optimiert',
+      '🔧 Stabilität verbessert',
+      '🇩🇪 Deutsch Sprachniveau A1–C2',
+    ]
+  };
+}
 
 function checkForUpdate() {
   var btn = document.getElementById('set-update-btn');
@@ -12535,31 +12609,25 @@ function checkForUpdate() {
   setTimeout(function() { window.location.reload(true); }, 800);
 }
 
-function showChangelog(version) {
-  var log = CHANGELOG[version] || {
-    title: 'LINGUA wurde aktualisiert!',
-    emoji: '🔄',
-    items: [
-      '✅ Verbesserungen und Fehlerbehebungen',
-      '⚡ Performance optimiert',
-      '🔧 Stabilität verbessert',
-    ]
-  };
+function showChangelog(versionOrBuild) {
+  var log = getChangelogEntry(BUILD);
+  var v = 'v' + (window.CURRENT_VERSION || BUILD_VERSION);
   var overlay = document.createElement('div');
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(12px);';
   var box = document.createElement('div');
   box.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.75rem;max-width:400px;width:100%;animation:fadeIn .35s ease;max-height:90vh;overflow-y:auto;';
   var itemsHTML = log.items.map(function(item) {
-    var emoji = item.slice(0,2);
-    var text = item.slice(2).trim();
+    var parts = item.match(/^(\S+)\s(.*)/);
+    var emoji = parts ? parts[1] : '•';
+    var text  = parts ? parts[2] : item;
     return '<div style="padding:.5rem 0;font-size:.82rem;border-bottom:1px solid var(--border);display:flex;gap:.6rem;align-items:flex-start;">' +
       '<span style="flex-shrink:0;font-size:1rem;">' + emoji + '</span>' +
       '<span style="color:var(--muted);line-height:1.5;">' + text + '</span></div>';
   }).join('');
   box.innerHTML =
-    '<div style="font-size:2.5rem;margin-bottom:.4rem;text-align:center;">' + (log.emoji || '🎉') + '</div>' +
-    '<div style="font-family:Syne,sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:.25rem;text-align:center;">' + log.title + '</div>' +
-    '<div style="font-size:.72rem;color:var(--muted);text-align:center;margin-bottom:1rem;">LINGUA · Mai 2026 · René Prause</div>' +
+    '<div style="font-size:2.5rem;margin-bottom:.4rem;text-align:center;">' + log.emoji + '</div>' +
+    '<div style="font-family:Syne,sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:.2rem;text-align:center;">' + log.title + '</div>' +
+    '<div style="font-size:.72rem;color:var(--muted);text-align:center;margin-bottom:1rem;">' + v + ' · Build ' + BUILD + ' · LINGUA</div>' +
     '<div style="margin-bottom:1.25rem;">' + itemsHTML + '</div>' +
     '<button class="btn primary" style="width:100%;padding:.8rem;" onclick="this.closest(\'[style*=fixed]\').remove()">Los geht\'s! 🚀</button>';
   overlay.appendChild(box);
@@ -12571,18 +12639,11 @@ function checkAndShowChangelog() {
   var storedBuild = parseInt(localStorage.getItem('lingua_build') || '0', 10);
   if (storedBuild === 0) {
     localStorage.setItem('lingua_build', String(BUILD));
-    return;
+    return; // Erststart — kein Changelog
   }
   if (storedBuild < BUILD) {
-    // Auto-Version hochzählen: 3.6→3.7→3.8→3.9→4.0
-    var parts = CURRENT_VERSION.split('.');
-    var major = parseInt(parts[0]);
-    var minor = parseInt(parts[1]);
-    minor++;
-    if (minor >= 10) { major++; minor = 0; }
-    CURRENT_VERSION = major + '.' + minor;
     localStorage.setItem('lingua_build', String(BUILD));
-    setTimeout(function() { showChangelog(CURRENT_VERSION); }, 1200);
+    setTimeout(function() { showChangelog(BUILD); }, 1200);
   }
 }
 
