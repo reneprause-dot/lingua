@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" id="meta-description" content="LINGUA v4.8 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" id="meta-description" content="LINGUA v4.9 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v4.8 · by René Prause</title>
+<title>LINGUA v4.9 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -659,7 +659,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v4.8</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v4.9</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -1234,7 +1234,14 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
       <span style="font-size:1.1rem;">🇩🇪</span>
       <span class="section-title" id="ui-deniveau-title">Deutsch Sprachniveau</span>
     </div>
-    <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem;" id="ui-deniveau-sub">Strukturiertes Deutsch lernen nach Europäischem Referenzrahmen (GER)</p>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem;" id="ui-deniveau-sub">Strukturiertes Sprachlernen nach GER — Deutsch oder Englisch</p>
+
+    <!-- Lernsprache wählen: Deutsch oder Englisch -->
+    <div style="display:flex;gap:.4rem;margin-bottom:.75rem;align-items:center;">
+      <span style="font-size:.72rem;color:var(--muted);flex-shrink:0;">Lernen:</span>
+      <button class="btn primary" id="nlang-learn-de" onclick="setNiveauLearnLang('de')" style="flex:1;">🇩🇪 Deutsch</button>
+      <button class="btn" id="nlang-learn-en" onclick="setNiveauLearnLang('en')" style="flex:1;">🇬🇧 Englisch</button>
+    </div>
 
     <!-- Übersetzungssprache wählen -->
     <div style="display:flex;gap:.4rem;margin-bottom:1rem;align-items:center;">
@@ -1398,7 +1405,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v4.8</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v4.9</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -1566,7 +1573,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v4.8</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v4.9</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -11796,8 +11803,36 @@ var niveauState = {
   progress: {} // topicId → {vocab: n, done: bool}
 };
 
+// niveauLearnLang: 'de' = Deutsch lernen, 'en' = Englisch lernen
+var niveauLearnLang = 'de';
+
+function setNiveauLearnLang(lang) {
+  niveauLearnLang = lang;
+  ['de','en'].forEach(function(l) {
+    var btn = document.getElementById('nlang-learn-'+l);
+    if (btn) btn.className = 'btn'+(lang===l?' primary':'');
+  });
+  // Englisch lernen: Übersetzungssprache kann nicht Englisch sein
+  if (lang === 'en') {
+    var enBtn = document.getElementById('nlang-en');
+    if (enBtn) enBtn.style.display = 'none';
+    if (niveauState.lang === 'en') setNiveauLang('ru');
+  } else {
+    var enBtn2 = document.getElementById('nlang-en');
+    if (enBtn2) enBtn2.style.display = '';
+  }
+  // Themen neu laden
+  niveauState.level = null; niveauState.topic = null;
+  document.getElementById('niveau-exercise').style.display = 'none';
+  showNiveau('a1a2');
+  renderNiveauTopics();
+}
+
+function getNiveauData() {
+  return niveauLearnLang === 'en' ? NIVEAU_DATA_EN : NIVEAU_DATA;
+}
+
 function setNiveauLang(lang) {
-  niveauState.lang = lang;
   ['ru','tr','en'].forEach(function(l) {
     var btn = document.getElementById('nlang-'+l);
     if (btn) btn.className = 'btn'+(lang===l?' primary':'');
@@ -11817,7 +11852,7 @@ function renderNiveauTopics() {
   ['a1','a2','b1','b2','c1','c2'].forEach(function(lvl) {
     var el = document.getElementById('topics-'+lvl);
     if (!el) return;
-    var topics = NIVEAU_DATA[lvl] ? NIVEAU_DATA[lvl].topics : [];
+    var topics = getNiveauData()[lvl] ? getNiveauData()[lvl].topics : [];
     el.innerHTML = topics.map(function(t) {
       var prog = niveauState.progress[t.id];
       var pct = prog ? Math.round((prog.vocab/t.vocab.length)*100) : 0;
@@ -11831,7 +11866,7 @@ function renderNiveauTopics() {
 }
 
 function openNiveauTopic(lvl, topicId) {
-  var topic = NIVEAU_DATA[lvl].topics.find(function(t){ return t.id===topicId; });
+  var topic = getNiveauData()[lvl].topics.find(function(t){ return t.id===topicId; });
   if (!topic) return;
   niveauState.level = lvl;
   niveauState.topicId = topicId;
@@ -11844,7 +11879,7 @@ function openNiveauTopic(lvl, topicId) {
   niveauState.quizScore = 0;
 
   document.getElementById('niveau-ex-title').textContent = topic.icon+' '+topic.title;
-  document.getElementById('niveau-ex-badge').textContent = NIVEAU_DATA[lvl].label;
+  document.getElementById('niveau-ex-badge').textContent = getNiveauData()[lvl].label;
   document.getElementById('niveau-exercise').style.display = 'block';
   document.getElementById('niveau-a1a2').style.display = 'none';
   document.getElementById('niveau-b1b2').style.display = 'none';
@@ -12008,7 +12043,340 @@ function niveauCheckQuizAnswer(btn, correct, correctDe) {
 function niveauNextQuiz() { niveauState.quizIdx++; renderNiveauQuiz(); }
 
 // ============================================================
-// NIVEAU SCHREIBEN — Tippübungen
+// ENGLISH SPRACHNIVEAU — Englisch LERNEN (A1–C2)
+// f = Englisch (Lernsprache), t = Deutsch (Muttersprache)
+// ============================================================
+var NIVEAU_DATA_EN = {
+  a1: { label:'A1', topics: [
+    { id:'en-a1-greet', icon:'👋', title:'Greetings & Goodbye',
+      vocab:[
+        {f:'Hello',t:'Hallo',p:'hɛˈloʊ'},{f:'Good morning',t:'Guten Morgen',p:'ɡʊd ˈmɔːrnɪŋ'},
+        {f:'Good afternoon',t:'Guten Tag',p:'ɡʊd ˌæftərˈnuːn'},{f:'Good evening',t:'Guten Abend',p:'ɡʊd ˈiːvnɪŋ'},
+        {f:'Good night',t:'Gute Nacht',p:'ɡʊd naɪt'},{f:'Goodbye',t:'Auf Wiedersehen',p:'ɡʊdˈbaɪ'},
+        {f:'Bye!',t:'Tschüss!',p:'baɪ'},{f:'See you soon',t:'Bis bald',p:'siː juː suːn'},
+        {f:'How are you?',t:'Wie geht es Ihnen?',p:'haʊ ɑːr juː'},{f:'Fine, thanks.',t:'Gut, danke.',p:'faɪn θæŋks'},
+        {f:'And you?',t:'Und Ihnen?',p:'ænd juː'},{f:'Nice to meet you!',t:'Schön, Sie kennenzulernen!',p:'naɪs tə miːt juː'},
+        {f:'My name is...',t:'Ich heiße...',p:'maɪ neɪm ɪz'},{f:'What is your name?',t:'Wie heißen Sie?',p:'wɒt ɪz jɔːr neɪm'},
+        {f:'Where are you from?',t:'Woher kommen Sie?',p:'wɛr ɑːr juː frɒm'},{f:'I am from Germany.',t:'Ich komme aus Deutschland.',p:'aɪ æm frɒm ˈdʒɜːrməni'},
+        {f:'Please',t:'Bitte',p:'pliːz'},{f:'Thank you',t:'Danke',p:'θæŋk juː'},
+        {f:'You are welcome',t:'Gern geschehen',p:'juː ɑːr ˈwɛlkəm'},{f:'Sorry!',t:'Entschuldigung!',p:'ˈsɒri'},
+      ],
+      grammar:[
+        {title:'Subject Pronouns', text:'Englische Personalpronomen:\n<b>I</b> — ich\n<b>you</b> — du/Sie\n<b>he/she/it</b> — er/sie/es\n<b>we</b> — wir\n<b>they</b> — sie\n\nKein Unterschied du/Sie auf Englisch!', examples:['<b>I</b> am Anna.','<b>He</b> is from London.','<b>We</b> are students.']},
+        {title:'Verb "to be"', text:'Das wichtigste Verb:\n<b>I am</b> / <b>I\'m</b>\n<b>You are</b> / <b>You\'re</b>\n<b>He/She/It is</b> / <b>He\'s</b>\n<b>We are</b> / <b>They are</b>', examples:['<b>I am</b> 25 years old.','<b>She is</b> a teacher.','<b>We are</b> from Russia.']},
+      ],
+      sentences:[
+        {f:'Hello, my name is Anna.',t:'Hallo, ich heiße Anna.'},{f:'Nice to meet you!',t:'Schön, Sie kennenzulernen!'},
+        {f:'I am from Russia.',t:'Ich komme aus Russland.'},{f:'How are you? Fine, thanks!',t:'Wie geht es dir? Gut, danke!'},
+        {f:'See you tomorrow!',t:'Bis morgen!'},
+      ]
+    },
+    { id:'en-a1-numbers', icon:'🔢', title:'Numbers & Dates',
+      vocab:[
+        {f:'one',t:'eins',p:'wʌn'},{f:'two',t:'zwei',p:'tuː'},{f:'three',t:'drei',p:'θriː'},
+        {f:'four',t:'vier',p:'fɔːr'},{f:'five',t:'fünf',p:'faɪv'},{f:'six',t:'sechs',p:'sɪks'},
+        {f:'seven',t:'sieben',p:'ˈsɛvən'},{f:'eight',t:'acht',p:'eɪt'},{f:'nine',t:'neun',p:'naɪn'},
+        {f:'ten',t:'zehn',p:'tɛn'},{f:'eleven',t:'elf',p:'ɪˈlɛvən'},{f:'twelve',t:'zwölf',p:'twɛlv'},
+        {f:'twenty',t:'zwanzig',p:'ˈtwɛnti'},{f:'hundred',t:'hundert',p:'ˈhʌndrəd'},
+        {f:'thousand',t:'tausend',p:'ˈθaʊzənd'},{f:'Monday',t:'Montag',p:'ˈmʌndeɪ'},
+        {f:'Tuesday',t:'Dienstag',p:'ˈtjuːzdeɪ'},{f:'Wednesday',t:'Mittwoch',p:'ˈwɛnzdeɪ'},
+        {f:'Thursday',t:'Donnerstag',p:'ˈθɜːrzdeɪ'},{f:'Friday',t:'Freitag',p:'ˈfraɪdeɪ'},
+        {f:'Saturday',t:'Samstag',p:'ˈsætərdeɪ'},{f:'Sunday',t:'Sonntag',p:'ˈsʌndeɪ'},
+      ],
+      grammar:[
+        {title:'Articles: a / an / the', text:'Englisch hat 3 Artikel:\n<b>a</b> — unbestimmt (vor Konsonant)\n<b>an</b> — unbestimmt (vor Vokal)\n<b>the</b> — bestimmt\n\nKein grammatisches Geschlecht!', examples:['I have <b>a</b> dog.','She is <b>an</b> engineer.','<b>The</b> sun is shining.']},
+        {title:'Plural -s / -es', text:'Pluralbildung meist mit <b>-s</b>:\ncat → cat<b>s</b>\nbook → book<b>s</b>\n\nNach -ch, -sh, -x, -s: <b>-es</b>\nbus → bus<b>es</b>\n\nUnregelmäßig:\nchild → children\nman → men', examples:['two <b>cats</b>','three <b>buses</b>','five <b>children</b>']},
+      ],
+      sentences:[
+        {f:'I am 25 years old.',t:'Ich bin 25 Jahre alt.'},{f:'Today is Monday.',t:'Heute ist Montag.'},
+        {f:'The meeting is on Friday.',t:'Das Meeting ist am Freitag.'},{f:'It costs ten pounds.',t:'Es kostet zehn Pfund.'},
+      ]
+    },
+    { id:'en-a1-family', icon:'👨‍👩‍👧', title:'Family',
+      vocab:[
+        {f:'mother',t:'Mutter',p:'ˈmʌðər'},{f:'father',t:'Vater',p:'ˈfɑːðər'},
+        {f:'parents',t:'Eltern',p:'ˈpɛrənts'},{f:'brother',t:'Bruder',p:'ˈbrʌðər'},
+        {f:'sister',t:'Schwester',p:'ˈsɪstər'},{f:'son',t:'Sohn',p:'sʌn'},
+        {f:'daughter',t:'Tochter',p:'ˈdɔːtər'},{f:'grandmother',t:'Großmutter',p:'ˈɡrænˌmʌðər'},
+        {f:'grandfather',t:'Großvater',p:'ˈɡrænˌfɑːðər'},{f:'husband',t:'Ehemann',p:'ˈhʌzbənd'},
+        {f:'wife',t:'Ehefrau',p:'waɪf'},{f:'child',t:'Kind',p:'tʃaɪld'},
+        {f:'uncle',t:'Onkel',p:'ˈʌŋkəl'},{f:'aunt',t:'Tante',p:'ɑːnt'},
+        {f:'cousin',t:'Cousin/Cousine',p:'ˈkʌzən'},{f:'family',t:'Familie',p:'ˈfæməli'},
+      ],
+      grammar:[
+        {title:'Possessives: my, your, his, her', text:'Possessivpronomen (unveränderlich):\n<b>my</b> — mein/meine\n<b>your</b> — dein/Ihr\n<b>his</b> — sein\n<b>her</b> — ihr\n<b>our</b> — unser\n<b>their</b> — ihr (Pl.)\n\nKeine Endungen!', examples:['<b>My</b> mother is 50.','<b>His</b> sister lives in London.','<b>Their</b> children are lovely.']},
+      ],
+      sentences:[
+        {f:'My family is big.',t:'Meine Familie ist groß.'},{f:'I have two brothers.',t:'Ich habe zwei Brüder.'},
+        {f:'Her mother is a doctor.',t:'Ihre Mutter ist Ärztin.'},{f:'We live together.',t:'Wir wohnen zusammen.'},
+      ]
+    },
+    { id:'en-a1-colours', icon:'🎨', title:'Colours & Shapes',
+      vocab:[
+        {f:'red',t:'rot',p:'rɛd'},{f:'blue',t:'blau',p:'bluː'},{f:'green',t:'grün',p:'ɡriːn'},
+        {f:'yellow',t:'gelb',p:'ˈjɛloʊ'},{f:'black',t:'schwarz',p:'blæk'},{f:'white',t:'weiß',p:'waɪt'},
+        {f:'grey',t:'grau',p:'ɡreɪ'},{f:'brown',t:'braun',p:'braʊn'},{f:'orange',t:'orange',p:'ˈɒrɪndʒ'},
+        {f:'purple',t:'lila',p:'ˈpɜːrpəl'},{f:'pink',t:'rosa',p:'pɪŋk'},
+        {f:'big',t:'groß',p:'bɪɡ'},{f:'small',t:'klein',p:'smɔːl'},
+        {f:'round',t:'rund',p:'raʊnd'},{f:'square',t:'quadratisch',p:'skwɛr'},
+        {f:'long',t:'lang',p:'lɒŋ'},{f:'short',t:'kurz',p:'ʃɔːrt'},
+      ],
+      grammar:[
+        {title:'Adjectives before nouns', text:'Adjektive kommen VOR dem Nomen — keine Endungen!\n\nDeutsch: ein rot<b>er</b> Apfel\nEnglisch: a <b>red</b> apple (unveränderlich!)\n\nAdjektive sind immer gleich.', examples:['a <b>big</b> house','the <b>red</b> car','two <b>small</b> dogs']},
+      ],
+      sentences:[
+        {f:'The sky is blue.',t:'Der Himmel ist blau.'},{f:'I like green.',t:'Ich mag Grün.'},
+        {f:'The car is red and big.',t:'Das Auto ist rot und groß.'},{f:'My favourite colour is blue.',t:'Meine Lieblingsfarbe ist Blau.'},
+      ]
+    },
+    { id:'en-a1-home', icon:'🏠', title:'Home & Daily Life',
+      vocab:[
+        {f:'house',t:'Haus',p:'haʊs'},{f:'flat / apartment',t:'Wohnung',p:'flæt'},
+        {f:'room',t:'Zimmer',p:'ruːm'},{f:'kitchen',t:'Küche',p:'ˈkɪtʃɪn'},
+        {f:'bathroom',t:'Badezimmer',p:'ˈbæθruːm'},{f:'bedroom',t:'Schlafzimmer',p:'ˈbɛdruːm'},
+        {f:'table',t:'Tisch',p:'ˈteɪbəl'},{f:'chair',t:'Stuhl',p:'tʃɛr'},
+        {f:'window',t:'Fenster',p:'ˈwɪndoʊ'},{f:'door',t:'Tür',p:'dɔːr'},
+        {f:'to sleep',t:'schlafen',p:'tə sliːp'},{f:'to eat',t:'essen',p:'tə iːt'},
+        {f:'to drink',t:'trinken',p:'tə drɪŋk'},{f:'to cook',t:'kochen',p:'tə kʊk'},
+        {f:'to wake up',t:'aufwachen',p:'tə weɪk ʌp'},{f:'to go to bed',t:'ins Bett gehen',p:'tə ɡoʊ tə bɛd'},
+      ],
+      grammar:[
+        {title:'Present Simple — habitual actions', text:'Simple Present für gewohnte Aktionen:\n\nI / you / we / they: <b>work</b>\nhe / she / it: <b>works</b> (+s!)\n\nNegation: <b>do not / don\'t</b>\nFrage: <b>Do you...?</b>', examples:['I <b>wake up</b> at 7.','She <b>cooks</b> every day.','He <b>doesn\'t</b> like coffee.']},
+      ],
+      sentences:[
+        {f:'I live in a small flat.',t:'Ich wohne in einer kleinen Wohnung.'},{f:'The bedroom is on the right.',t:'Das Schlafzimmer ist rechts.'},
+        {f:'We eat together at the table.',t:'Wir essen zusammen am Tisch.'},{f:'I get up at 7 o\'clock.',t:'Ich stehe um 7 Uhr auf.'},
+      ]
+    },
+    { id:'en-a1-food', icon:'🍽️', title:'Food & Drink',
+      vocab:[
+        {f:'bread',t:'Brot',p:'brɛd'},{f:'butter',t:'Butter',p:'ˈbʌtər'},{f:'cheese',t:'Käse',p:'tʃiːz'},
+        {f:'meat',t:'Fleisch',p:'miːt'},{f:'fish',t:'Fisch',p:'fɪʃ'},{f:'vegetables',t:'Gemüse',p:'ˈvɛdʒtəbəlz'},
+        {f:'fruit',t:'Obst/Früchte',p:'fruːt'},{f:'milk',t:'Milch',p:'mɪlk'},{f:'water',t:'Wasser',p:'ˈwɔːtər'},
+        {f:'tea',t:'Tee',p:'tiː'},{f:'coffee',t:'Kaffee',p:'ˈkɒfi'},{f:'beer',t:'Bier',p:'bɪər'},
+        {f:'delicious',t:'lecker',p:'dɪˈlɪʃəs'},{f:'hungry',t:'hungrig',p:'ˈhʌŋɡri'},
+        {f:'thirsty',t:'durstig',p:'ˈθɜːrsti'},{f:'breakfast',t:'Frühstück',p:'ˈbrɛkfəst'},
+        {f:'lunch',t:'Mittagessen',p:'lʌntʃ'},{f:'dinner',t:'Abendessen',p:'ˈdɪnər'},
+      ],
+      grammar:[
+        {title:'Countable vs Uncountable', text:'Zählbar (countable) → Plural mit -s:\n<b>an apple</b> → two apple<b>s</b>\n\nUnzählbar (uncountable) → kein Plural!\n<b>water, milk, bread, butter</b>\n→ some water, a glass of milk\n\nKein „a" vor Uncountable!', examples:['I want <b>some</b> water.','Two <b>apples</b>, please.','<b>Some</b> bread and butter.']},
+        {title:'Modal verb: would like', text:'Höfliche Bestellung:\n<b>I would like</b> = Ich möchte\n<b>I\'d like</b> (Kurzform)\n\nWeniger direkt als "I want"', examples:['<b>I\'d like</b> a coffee, please.','<b>Would you like</b> some tea?','We\'<b>d like</b> the menu.']},
+      ],
+      sentences:[
+        {f:'I\'d like a tea, please.',t:'Ich möchte bitte einen Tee.'},{f:'The bread is fresh and delicious.',t:'Das Brot ist frisch und lecker.'},
+        {f:'Are you hungry?',t:'Haben Sie Hunger?'},{f:'How much is lunch?',t:'Was kostet das Mittagessen?'},
+      ]
+    },
+  ]},
+  a2: { label:'A2', topics: [
+    { id:'en-a2-shopping', icon:'🛒', title:'Shopping',
+      vocab:[
+        {f:'shop / store',t:'Laden',p:'ʃɒp'},{f:'supermarket',t:'Supermarkt',p:'ˈsuːpərmɑːrkɪt'},
+        {f:'checkout',t:'Kasse',p:'ˈtʃɛkaʊt'},{f:'price',t:'Preis',p:'praɪs'},
+        {f:'expensive',t:'teuer',p:'ɪkˈspɛnsɪv'},{f:'cheap',t:'billig',p:'tʃiːp'},
+        {f:'to pay',t:'bezahlen',p:'tə peɪ'},{f:'discount',t:'Rabatt',p:'ˈdɪskaʊnt'},
+        {f:'receipt',t:'Kassenbon',p:'rɪˈsiːt'},{f:'bag',t:'Tasche/Beutel',p:'bæɡ'},
+        {f:'Do you have...?',t:'Haben Sie...?',p:'duː juː hæv'},{f:'How much is it?',t:'Was kostet das?',p:'haʊ mʌtʃ ɪz ɪt'},
+        {f:'I\'ll take it.',t:'Ich nehme es.',p:'aɪl teɪk ɪt'},{f:'change',t:'Wechselgeld',p:'tʃeɪndʒ'},
+        {f:'credit card',t:'Kreditkarte',p:'ˈkrɛdɪt kɑːrd'},{f:'cash',t:'Bargeld',p:'kæʃ'},
+      ],
+      grammar:[
+        {title:'Past Simple — regular verbs', text:'Vergangenheit mit <b>-ed</b>:\nwork → work<b>ed</b>\nshop → shopp<b>ed</b>\npay → pa<b>id</b> (unregelmäßig!)\n\nNegation: <b>didn\'t</b> + Infinitiv\nFrage: <b>Did you...?</b>', examples:['I <b>paid</b> by card.','She <b>shopped</b> yesterday.','Did you <b>buy</b> anything?']},
+      ],
+      sentences:[
+        {f:'Where is the checkout, please?',t:'Wo ist die Kasse, bitte?'},{f:'That is too expensive.',t:'Das ist zu teuer.'},
+        {f:'Do you have this in size M?',t:'Haben Sie das in Größe M?'},{f:'I\'ll pay by card.',t:'Ich zahle mit Karte.'},
+      ]
+    },
+    { id:'en-a2-transport', icon:'🚌', title:'Transport & Directions',
+      vocab:[
+        {f:'bus',t:'Bus',p:'bʌs'},{f:'underground / tube',t:'U-Bahn',p:'ˈʌndəɡraʊnd'},
+        {f:'train',t:'Zug',p:'treɪn'},{f:'taxi',t:'Taxi',p:'ˈtæksi'},
+        {f:'street',t:'Straße',p:'striːt'},{f:'stop',t:'Haltestelle',p:'stɒp'},
+        {f:'left',t:'links',p:'lɛft'},{f:'right',t:'rechts',p:'raɪt'},
+        {f:'straight on',t:'geradeaus',p:'streɪt ɒn'},{f:'crossroads',t:'Kreuzung',p:'ˈkrɒsroʊdz'},
+        {f:'far',t:'weit',p:'fɑːr'},{f:'near',t:'nah',p:'nɪər'},
+        {f:'station',t:'Bahnhof',p:'ˈsteɪʃən'},{f:'airport',t:'Flughafen',p:'ˈɛrpɔːrt'},
+        {f:'ticket',t:'Ticket',p:'ˈtɪkɪt'},{f:'platform',t:'Bahnsteig',p:'ˈplætfɔːrm'},
+      ],
+      grammar:[
+        {title:'Prepositions of place: at / in / on', text:'<b>at</b> — bei einem Punkt: at the station\n<b>in</b> — in einem Raum/Ort: in London\n<b>on</b> — auf einer Linie: on the left\n\n<b>How do I get to...?</b>\n= Wie komme ich zu...?', examples:['The bus stop is <b>on</b> the left.','Turn right <b>at</b> the lights.','We are <b>in</b> the city centre.']},
+      ],
+      sentences:[
+        {f:'How do I get to the station?',t:'Wie komme ich zum Bahnhof?'},{f:'The bus leaves in 5 minutes.',t:'Der Bus fährt in 5 Minuten ab.'},
+        {f:'Turn left at the crossroads.',t:'Biegen Sie an der Kreuzung links ab.'},{f:'Is it far from here?',t:'Ist es weit von hier?'},
+      ]
+    },
+    { id:'en-a2-work', icon:'💼', title:'Work & Jobs',
+      vocab:[
+        {f:'doctor',t:'Arzt/Ärztin',p:'ˈdɒktər'},{f:'teacher',t:'Lehrer/in',p:'ˈtiːtʃər'},
+        {f:'engineer',t:'Ingenieur',p:'ˌɛndʒɪˈnɪər'},{f:'chef / cook',t:'Koch/Köchin',p:'ʃɛf'},
+        {f:'to work',t:'arbeiten',p:'tə wɜːrk'},{f:'job',t:'Job/Stelle',p:'dʒɒb'},
+        {f:'office',t:'Büro',p:'ˈɒfɪs'},{f:'colleague',t:'Kollege',p:'ˈkɒliːɡ'},
+        {f:'company',t:'Firma',p:'ˈkʌmpəni'},{f:'salary',t:'Gehalt',p:'ˈsæləri'},
+        {f:'boss',t:'Chef',p:'bɒs'},{f:'to apply for',t:'sich bewerben um',p:'tə əˈplaɪ fɔːr'},
+        {f:'interview',t:'Vorstellungsgespräch',p:'ˈɪntərvjuː'},{f:'CV',t:'Lebenslauf',p:'siː viː'},
+        {f:'full-time',t:'Vollzeit',p:'fʊl taɪm'},{f:'part-time',t:'Teilzeit',p:'pɑːrt taɪm'},
+      ],
+      grammar:[
+        {title:'Present Continuous', text:'Für gerade laufende Aktionen:\n<b>am/is/are + verb-ing</b>\n\nI <b>am working</b> — ich arbeite gerade\nShe <b>is studying</b> — sie lernt gerade\nThey <b>are meeting</b> — sie treffen sich gerade', examples:['I <b>am working</b> from home today.','She <b>is having</b> a meeting.','Are you <b>looking</b> for a job?']},
+      ],
+      sentences:[
+        {f:'What is your job?',t:'Was sind Sie von Beruf?'},{f:'I work as an engineer.',t:'Ich arbeite als Ingenieur.'},
+        {f:'My office is in the city centre.',t:'Mein Büro ist in der Innenstadt.'},{f:'I start at 8 o\'clock.',t:'Ich fange um 8 Uhr an.'},
+      ]
+    },
+    { id:'en-a2-health', icon:'🏥', title:'Health',
+      vocab:[
+        {f:'head',t:'Kopf',p:'hɛd'},{f:'back',t:'Rücken',p:'bæk'},{f:'stomach',t:'Magen/Bauch',p:'ˈstʌmək'},
+        {f:'ill / sick',t:'krank',p:'ɪl'},{f:'to hurt',t:'wehtun',p:'tə hɜːrt'},
+        {f:'doctor',t:'Arzt',p:'ˈdɒktər'},{f:'pharmacy',t:'Apotheke',p:'ˈfɑːrməsi'},
+        {f:'medicine',t:'Medikament',p:'ˈmɛdsɪn'},{f:'fever',t:'Fieber',p:'ˈfiːvər'},
+        {f:'cough',t:'Husten',p:'kɒf'},{f:'cold',t:'Erkältung',p:'koʊld'},
+        {f:'appointment',t:'Termin',p:'əˈpɔɪntmənt'},{f:'insurance',t:'Versicherung',p:'ɪnˈʃʊərəns'},
+        {f:'headache',t:'Kopfschmerzen',p:'ˈhɛdeɪk'},{f:'I feel unwell.',t:'Ich fühle mich nicht wohl.',p:'aɪ fiːl ʌnˈwɛl'},
+      ],
+      grammar:[
+        {title:'Present Perfect: have + past participle', text:'Für Erfahrungen oder kürzlich Passiertes:\n<b>have/has + past participle</b>\n\nI <b>have had</b> a cold.\nShe <b>has seen</b> the doctor.\n\nDeutsch: Perfekt — gleiche Funktion!', examples:['I <b>have taken</b> the medicine.','Have you <b>seen</b> a doctor?','She <b>has recovered</b> now.']},
+      ],
+      sentences:[
+        {f:'I don\'t feel well.',t:'Ich fühle mich nicht wohl.'},{f:'I have a headache.',t:'Ich habe Kopfschmerzen.'},
+        {f:'I need a doctor\'s appointment.',t:'Ich brauche einen Arzttermin.'},{f:'Take this medicine.',t:'Nehmen Sie dieses Medikament.'},
+      ]
+    },
+  ]},
+  b1: { label:'B1', topics: [
+    { id:'en-b1-travel', icon:'✈️', title:'Travel',
+      vocab:[
+        {f:'accommodation',t:'Unterkunft',p:'əˌkɒməˈdeɪʃən'},{f:'to book',t:'buchen',p:'tə bʊk'},
+        {f:'luggage',t:'Gepäck',p:'ˈlʌɡɪdʒ'},{f:'passport',t:'Reisepass',p:'ˈpæspɔːrt'},
+        {f:'visa',t:'Visum',p:'ˈviːzə'},{f:'delayed',t:'verspätet',p:'dɪˈleɪd'},
+        {f:'to check in',t:'einchecken',p:'tə tʃɛk ɪn'},{f:'boarding pass',t:'Bordkarte',p:'ˈbɔːrdɪŋ pæs'},
+        {f:'sightseeing',t:'Sightseeing',p:'ˈsaɪtsiːɪŋ'},{f:'tour guide',t:'Reiseführer',p:'tʊər ɡaɪd'},
+        {f:'currency',t:'Währung',p:'ˈkʌrənsi'},{f:'exchange rate',t:'Wechselkurs',p:'ɪksˈtʃeɪndʒ reɪt'},
+        {f:'single room',t:'Einzelzimmer',p:'ˈsɪŋɡəl ruːm'},{f:'double room',t:'Doppelzimmer',p:'ˈdʌbəl ruːm'},
+        {f:'half board',t:'Halbpension',p:'hɑːf bɔːrd'},{f:'return ticket',t:'Rückfahrticket',p:'rɪˈtɜːrn ˈtɪkɪt'},
+      ],
+      grammar:[
+        {title:'Conditional Type 1: If + present, will', text:'Für reale zukünftige Situationen:\n<b>If + Simple Present → will + Infinitiv</b>\n\nIf it rains, we <b>will</b> stay inside.\nIf you book early, you <b>will</b> save money.\n\nDeutsch: Wenn-Satz mit Futur', examples:['If the flight is delayed, I <b>will</b> call you.','If you visit London, you <b>will</b> love it.']},
+        {title:'Reported Speech', text:'Indirekte Rede: Verb rückt eine Zeit zurück\n\nDirekt: "The flight is delayed."\nIndirekt: He said the flight <b>was</b> delayed.\n\nPresent → Past\nwill → would\ncan → could', examples:['She said she <b>would</b> arrive late.','He told me the hotel <b>was</b> good.']},
+      ],
+      sentences:[
+        {f:'I\'d like to book a single room.',t:'Ich möchte ein Einzelzimmer buchen.'},{f:'Our flight is two hours delayed.',t:'Unser Flug hat zwei Stunden Verspätung.'},
+        {f:'Could you recommend a tour?',t:'Könnten Sie eine Tour empfehlen?'},{f:'I travel because I want to see the world.',t:'Ich reise, weil ich die Welt sehen möchte.'},
+      ]
+    },
+    { id:'en-b1-media', icon:'📱', title:'Media & Communication',
+      vocab:[
+        {f:'news',t:'Nachrichten',p:'njuːz'},{f:'article',t:'Artikel',p:'ˈɑːrtɪkəl'},
+        {f:'to share',t:'teilen',p:'tə ʃɛr'},{f:'to follow',t:'folgen',p:'tə ˈfɒloʊ'},
+        {f:'social media',t:'soziale Medien',p:'ˈsoʊʃəl ˈmiːdiə'},{f:'to stream',t:'streamen',p:'tə striːm'},
+        {f:'to download',t:'herunterladen',p:'tə ˈdaʊnloʊd'},{f:'privacy',t:'Datenschutz',p:'ˈprɪvəsi'},
+        {f:'fake news',t:'Falschmeldung',p:'feɪk njuːz'},{f:'to go viral',t:'viral gehen',p:'tə ɡoʊ ˈvaɪrəl'},
+        {f:'subscriber',t:'Abonnent',p:'səbˈskraɪbər'},{f:'influencer',t:'Influencer',p:'ˈɪnfluənsər'},
+        {f:'podcast',t:'Podcast',p:'ˈpɒdkɑːst'},{f:'broadcast',t:'Sendung',p:'ˈbrɔːdkæst'},
+      ],
+      grammar:[
+        {title:'Passive Voice', text:'Passiv: <b>be + past participle</b>\n\nAktiv: They share the video.\nPassiv: The video <b>is shared</b>.\n\nVergangen: The photo <b>was posted</b>.\nFutur: The news <b>will be reported</b>.', examples:['This article <b>was written</b> by a journalist.','The video <b>has been viewed</b> millions of times.']},
+        {title:'Relative Clauses: who / which / that', text:'Relativsätze für Beschreibungen:\n<b>who</b> — für Personen\n<b>which</b> — für Dinge\n<b>that</b> — für beides (umgangssprachlich)\n\nDeutsch: der/die/das + Relativsatz', examples:['The journalist <b>who</b> wrote the article...','A story <b>that</b> went viral...','News <b>which</b> is hard to believe...']},
+      ],
+      sentences:[
+        {f:'I read news online every day.',t:'Ich lese täglich online Nachrichten.'},{f:'The video was shared millions of times.',t:'Das Video wurde millionenfach geteilt.'},
+        {f:'You should check fake news carefully.',t:'Man sollte Falschmeldungen kritisch prüfen.'},{f:'I have followed this channel for years.',t:'Ich folge diesem Kanal seit Jahren.'},
+      ]
+    },
+    { id:'en-b1-environ', icon:'🌿', title:'Environment',
+      vocab:[
+        {f:'climate change',t:'Klimawandel',p:'ˈklaɪmɪt tʃeɪndʒ'},{f:'sustainable',t:'nachhaltig',p:'səˈsteɪnəbəl'},
+        {f:'to recycle',t:'recyceln',p:'tə ˌriːˈsaɪkəl'},{f:'renewable',t:'erneuerbar',p:'rɪˈnjuːəbəl'},
+        {f:'rubbish / waste',t:'Müll',p:'ˈrʌbɪʃ'},{f:'to protect',t:'schützen',p:'tə prəˈtɛkt'},
+        {f:'greenhouse gases',t:'Treibhausgase',p:'ˈɡriːnhaʊs ˈɡæsɪz'},{f:'carbon footprint',t:'CO₂-Fußabdruck',p:'ˈkɑːrbən ˈfʊtprɪnt'},
+        {f:'eco-friendly',t:'umweltfreundlich',p:'ˌiːkoʊˈfrɛndli'},{f:'public transport',t:'öffentlicher Verkehr',p:'ˈpʌblɪk ˈtrænspɔːrt'},
+        {f:'electric car',t:'Elektroauto',p:'ɪˈlɛktrɪk kɑːr'},{f:'solar energy',t:'Solarenergie',p:'ˈsoʊlər ˈɛnərdʒi'},
+        {f:'deforestation',t:'Abholzung',p:'dɪˌfɒrɪˈsteɪʃən'},{f:'pollution',t:'Verschmutzung',p:'pəˈluːʃən'},
+      ],
+      grammar:[
+        {title:'Infinitive of Purpose: to + verb', text:'Zweck ausdrücken:\n<b>I cycle to work to save money.</b>\n= Ich fahre Rad zur Arbeit, um Geld zu sparen.\n\nDeutsch: um...zu\nEnglisch: to + Infinitiv (einfacher!)', examples:['We recycle <b>to</b> reduce waste.','She uses public transport <b>to</b> help the environment.']},
+      ],
+      sentences:[
+        {f:'Climate change is a global challenge.',t:'Klimawandel ist eine globale Herausforderung.'},{f:'I try to use less plastic.',t:'Ich versuche, weniger Plastik zu verwenden.'},
+        {f:'Renewable energy is the future.',t:'Erneuerbare Energie ist die Zukunft.'},{f:'We can all contribute to protecting the environment.',t:'Wir alle können zum Umweltschutz beitragen.'},
+      ]
+    },
+  ]},
+  b2: { label:'B2', topics: [
+    { id:'en-b2-career', icon:'📊', title:'Career & Work',
+      vocab:[
+        {f:'application',t:'Bewerbung',p:'ˌæplɪˈkeɪʃən'},{f:'job interview',t:'Vorstellungsgespräch',p:'dʒɒb ˈɪntərvjuː'},
+        {f:'CV / résumé',t:'Lebenslauf',p:'siː viː'},{f:'qualification',t:'Qualifikation',p:'ˌkwɒlɪfɪˈkeɪʃən'},
+        {f:'promotion',t:'Beförderung',p:'prəˈmoʊʃən'},{f:'pay rise',t:'Gehaltserhöhung',p:'peɪ raɪz'},
+        {f:'self-employed',t:'selbstständig',p:'sɛlf ɪmˈplɔɪd'},{f:'redundant',t:'entlassen',p:'rɪˈdʌndənt'},
+        {f:'burnout',t:'Burnout',p:'ˈbɜːrnaʊt'},{f:'work-life balance',t:'Work-Life-Balance',p:'wɜːrk laɪf ˈbæləns'},
+        {f:'networking',t:'Networking',p:'ˈnɛtwɜːrkɪŋ'},{f:'agile',t:'agil',p:'ˈædʒaɪl'},
+        {f:'deadline',t:'Frist',p:'ˈdɛdlaɪn'},{f:'remote work',t:'Homeoffice',p:'rɪˈmoʊt wɜːrk'},
+      ],
+      grammar:[
+        {title:'Conditional Type 2: If + past, would', text:'Für hypothetische Situationen:\n<b>If + Simple Past → would + Infinitiv</b>\n\nIf I <b>had</b> more time, I <b>would</b> travel more.\n(Aber ich habe keine Zeit!)\n\nDeutsch: Konjunktiv II', examples:['If I <b>were</b> the boss, I <b>would</b> allow remote work.','If she <b>got</b> the job, she <b>would</b> move to London.']},
+        {title:'Gerund vs Infinitive', text:'Gerund (-ing) oder Infinitiv (to...)?\n\n<b>Gerund</b> nach: enjoy, avoid, consider, finish\n<b>Infinitiv</b> nach: want, need, decide, plan\n\nI enjoy <b>working</b> from home.\nI want <b>to get</b> a promotion.', examples:['I enjoy <b>networking</b> with colleagues.','She decided <b>to apply</b> for the job.','He avoids <b>working</b> overtime.']},
+      ],
+      sentences:[
+        {f:'My job interview yesterday went very well.',t:'Mein Vorstellungsgespräch gestern war sehr gut.'},{f:'Despite the stress, I love my job.',t:'Trotz des Stresses liebe ich meinen Job.'},
+        {f:'I am applying for a project manager position.',t:'Ich bewerbe mich um eine Stelle als Projektmanager.'},{f:'Good work-life balance improves productivity.',t:'Gute Work-Life-Balance verbessert die Produktivität.'},
+      ]
+    },
+  ]},
+  c1: { label:'C1', topics: [
+    { id:'en-c1-rhetoric', icon:'🎤', title:'Rhetoric & Argumentation',
+      vocab:[
+        {f:'to argue',t:'argumentieren',p:'tə ˈɑːrɡjuː'},{f:'to refute',t:'widerlegen',p:'tə rɪˈfjuːt'},
+        {f:'convincing',t:'überzeugend',p:'kənˈvɪnsɪŋ'},{f:'nuanced',t:'nuanciert',p:'ˈnjuːɑːnst'},
+        {f:'premise',t:'Prämisse',p:'ˈprɛmɪs'},{f:'conclusion',t:'Schlussfolgerung',p:'kənˈkluːʒən'},
+        {f:'counterargument',t:'Gegenargument',p:'ˈkaʊntərˌɑːrɡjumənt'},{f:'bias',t:'Voreingenommenheit',p:'ˈbaɪəs'},
+        {f:'to distinguish between',t:'unterscheiden zwischen',p:'tə dɪˈstɪŋɡwɪʃ'},
+        {f:'to elaborate',t:'ausführen/ausarbeiten',p:'tə ɪˈlæbəreɪt'},{f:'implication',t:'Implikation',p:'ˌɪmplɪˈkeɪʃən'},
+        {f:'to undermine',t:'untergraben',p:'tə ˈʌndərmaɪn'},{f:'coherent',t:'kohärent',p:'koʊˈhɪərənt'},
+        {f:'rhetoric',t:'Rhetorik',p:'ˈrɛtərɪk'},
+      ],
+      grammar:[
+        {title:'Inversion for Emphasis', text:'Inversion für Betonung (formell):\n\n<b>Never have I</b> seen this before.\n<b>Not only did</b> he lie, but...\n<b>Rarely do</b> we encounter...\n\nVerb vor Subjekt nach Negationswort!', examples:['<b>Never have I</b> heard such a convincing argument.','<b>Not only</b> is the claim wrong, <b>but</b> it is misleading.']},
+        {title:'Cleft Sentences', text:'Hervorhebung durch Spaltung:\n\n<b>It is...that</b> / <b>What...is</b>\n\nNormal: I like your argument.\nCleft: <b>What I like</b> is your argument.\n\nDeutsch: Es ist...was/dass', examples:['<b>It was</b> the evidence <b>that</b> convinced me.','<b>What</b> I find interesting <b>is</b> the nuance.']},
+      ],
+      sentences:[
+        {f:'Your argument is convincing but lacks evidence.',t:'Ihr Argument ist überzeugend, aber es fehlen Belege.'},{f:'We must distinguish between correlation and causation.',t:'Wir müssen zwischen Korrelation und Kausalität unterscheiden.'},
+        {f:'Not only is the claim wrong, but it is misleading.',t:'Die Aussage ist nicht nur falsch, sondern auch irreführend.'},{f:'What I find most compelling is the nuanced approach.',t:'Was ich am überzeugendsten finde, ist der nuancierte Ansatz.'},
+      ]
+    },
+  ]},
+  c2: { label:'C2', topics: [
+    { id:'en-c2-idioms', icon:'💡', title:'Idioms & Expressions',
+      vocab:[
+        {f:'to bite the bullet',t:'in den sauren Apfel beißen',p:'tə baɪt ðə ˈbʊlɪt'},
+        {f:'to hit the nail on the head',t:'den Nagel auf den Kopf treffen',p:'tə hɪt ðə neɪl'},
+        {f:'to beat around the bush',t:'um den heißen Brei herumreden',p:'tə biːt əˈraʊnd'},
+        {f:'to cost an arm and a leg',t:'ein Vermögen kosten',p:'tə kɒst ən ɑːrm'},
+        {f:'to be on the fence',t:'unentschlossen sein',p:'tə biː ɒn ðə fɛns'},
+        {f:'once in a blue moon',t:'alle Jubeljahre',p:'wʌns ɪn ə bluː muːn'},
+        {f:'to spill the beans',t:'die Katze aus dem Sack lassen',p:'tə spɪl ðə biːnz'},
+        {f:'to break the ice',t:'das Eis brechen',p:'tə breɪk ðə aɪs'},
+        {f:'to cut corners',t:'Abkürzungen nehmen / schludern',p:'tə kʌt ˈkɔːrnərz'},
+        {f:'under the weather',t:'nicht auf der Höhe sein',p:'ˈʌndər ðə ˈwɛðər'},
+        {f:'to get cold feet',t:'kalte Füße kriegen',p:'tə ɡɛt koʊld fiːt'},
+        {f:'to burn bridges',t:'Brücken hinter sich verbrennen',p:'tə bɜːrn ˈbrɪdʒɪz'},
+      ],
+      grammar:[
+        {title:'Subjunctive Mood', text:'Englischer Konjunktiv (formal):\n\n<b>were</b> statt was in Konditionalen:\nIf I <b>were</b> you...\n\n<b>that-Klauseln</b> mit should-Ellipse:\nI suggest <b>that he come</b> (not comes)\n\nSeltener als Deutsch, aber in Akademik/Recht wichtig!', examples:['If I <b>were</b> to argue otherwise...','I recommend <b>that</b> this <b>be</b> reconsidered.','It is vital <b>that</b> she <b>attend</b>.']},
+        {title:'Nominalisation', text:'Verben → Nomen (akademischer Stil):\n\nanalyse → <b>analysis</b>\ndevelop → <b>development</b>\nimply → <b>implication</b>\n\nMacht Texte formeller und kompakter.\nHäufig in Wissenschaft und Recht!', examples:['The <b>development</b> of new methods...','An <b>analysis</b> of the data shows...','The <b>implication</b> of this finding...']},
+      ],
+      sentences:[
+        {f:'He hit the nail on the head — that is exactly what I meant.',t:'Er traf den Nagel auf den Kopf — genau das meinte ich.'},{f:'Stop beating around the bush!',t:'Hör auf, um den heißen Brei herumzureden!'},
+        {f:'If I were you, I would reconsider that decision.',t:'An deiner Stelle würde ich diese Entscheidung überdenken.'},{f:'I recommend that this matter be reviewed immediately.',t:'Ich empfehle, dass diese Angelegenheit sofort überprüft wird.'},
+      ]
+    },
+  ]},
+};
+
+// NIVEAU_DATA_EN in den bestehenden Selector integrieren
+// Die Sektion zeigt DE oder EN je nach gewählter Lernsprache
 // ============================================================
 var niveauWriteState = {
   idx: 0, correct: 0, total: 0,
@@ -12427,8 +12795,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 51;
-var BUILD_VERSION = '4.8'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 52;
+var BUILD_VERSION = '4.9'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -12534,6 +12902,18 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  52: {
+    emoji: '🇬🇧',
+    title: 'Englisch Sprachniveau A1–C2',
+    items: [
+      '🇬🇧 Englisch Sprachniveau A1–C2 komplett eingebaut — Englisch LERNEN',
+      '🔄 Lernsprache wählbar oben in der Sektion: 🇩🇪 Deutsch oder 🇬🇧 Englisch',
+      '📚 6 A1-Themen, 4 A2, 3 B1, 1 B2, C1, C2 mit Vokabeln/Grammatik/Sätzen/Quiz',
+      '🔑 Neuer DeepL Key eingebettet (e5b8f6d1...)',
+      '🔧 DeepL: 4 Proxy-Fallbacks, Authorization-Header, JSON-Body',
+      '→ Weiter-Button im Vokabeltraining ohne Wertung',
+    ]
+  },
   51: {
     emoji: '🇬🇧',
     title: 'Englisch Sprachniveau + Weiter-Button',
@@ -13077,7 +13457,12 @@ function getTalkPrompt() {
 // ============================================================
 var DEEPL_DEFAULT_KEY = 'e5b8f6d1-e5ca-4481-a83f-a1762fe3f6d9:fx';
 var DEEPL_API_URL = 'https://api-free.deepl.com/v2/translate';
-var DEEPL_PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent('https://api-free.deepl.com/v2/translate');
+// Mehrere CORS-Proxies als Fallback
+var DEEPL_PROXIES = [
+  'https://corsproxy.io/?url=',
+  'https://api.allorigins.win/raw?url=',
+  'https://proxy.cors.sh/',
+];
 
 // Cache SOFORT beim Laden aus localStorage befüllen
 var deeplCache = (function() {
@@ -13154,24 +13539,52 @@ async function translateWithDeepl(text, targetLang) {
   if (deeplCache[cacheKey]) return deeplCache[cacheKey];
 
   var key = getDeeplKey();
-  var params = new URLSearchParams();
-  params.append('auth_key', key);
-  params.append('text', text);
-  params.append('target_lang', targetLang);
-  params.append('source_lang', 'DE');
+  var body = JSON.stringify({ text: [text], target_lang: targetLang, source_lang: 'DE' });
+  var headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'DeepL-Auth-Key ' + key,
+  };
 
-  // Versuche direkten Call, dann CORS-Proxy als Fallback
-  var urls = [DEEPL_API_URL, DEEPL_PROXY_URL];
-  var lastErr = null;
-  for (var i = 0; i < urls.length; i++) {
-    try {
-      var response = await fetch(urls[i], {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: params.toString()
+  // Versuche: 1. direkt, 2-4. verschiedene CORS-Proxies
+  var attempts = [
+    // Direkter Aufruf (funktioniert wenn CORS-Header gesetzt oder mit Extension)
+    function() {
+      return fetch(DEEPL_API_URL, { method:'POST', headers:headers, body:body });
+    },
+    // corsproxy.io
+    function() {
+      return fetch('https://corsproxy.io/?url=' + encodeURIComponent(DEEPL_API_URL), {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'x-requested-with':'XMLHttpRequest' },
+        body: JSON.stringify({ text:[text], target_lang:targetLang, source_lang:'DE', auth_key:key }),
       });
-      if (!response.ok) throw new Error('HTTP ' + response.status);
+    },
+    // cors.sh proxy
+    function() {
+      return fetch('https://proxy.cors.sh/' + DEEPL_API_URL, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'x-cors-api-key':'temp_' + key.slice(0,8) },
+        body: body,
+      });
+    },
+    // allorigins — GET-only wrapper, nutze form-encoded
+    function() {
+      var formBody = 'auth_key='+encodeURIComponent(key)+'&text='+encodeURIComponent(text)+'&target_lang='+targetLang+'&source_lang=DE';
+      return fetch('https://corsproxy.io/?url=' + encodeURIComponent(DEEPL_API_URL), {
+        method:'POST',
+        headers:{ 'Content-Type':'application/x-www-form-urlencoded' },
+        body: formBody,
+      });
+    },
+  ];
+
+  var lastErr = null;
+  for (var i = 0; i < attempts.length; i++) {
+    try {
+      var response = await attempts[i]();
+      if (!response.ok) { lastErr = new Error('HTTP ' + response.status); continue; }
       var data = await response.json();
+      if (!data.translations || !data.translations[0]) { lastErr = new Error('Kein Ergebnis'); continue; }
       var result = data.translations[0].text;
       deeplCache[cacheKey] = result;
       try {
