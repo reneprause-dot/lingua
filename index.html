@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" id="meta-description" content="LINGUA v5.6 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" id="meta-description" content="LINGUA v6.0 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v5.6 · by René Prause</title>
+<title>LINGUA v6.0 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -659,7 +659,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v5.6</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v6.0</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -695,6 +695,11 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     <button class="nav-btn" data-section="path"><span class="nav-icon">🗺</span> Lernpfad</button>
     <button class="nav-btn" data-section="deniveau"><span class="nav-icon">🇩🇪</span> DE Niveau</button>
     <button class="nav-btn" data-section="enniveau"><span class="nav-icon">🇬🇧</span> EN Niveau</button>
+    <button class="nav-btn" data-section="gapfill"><span class="nav-icon">🧩</span> Lückentexte</button>
+    <button class="nav-btn" data-section="dialogs"><span class="nav-icon">💬</span> Dialoge</button>
+    <button class="nav-btn" data-section="phrasal"><span class="nav-icon">🔗</span> Phrasal Verbs</button>
+    <button class="nav-btn" data-section="dailytasks"><span class="nav-icon">🎯</span> Tagesaufgaben</button>
+    <button class="nav-btn" data-section="calendar"><span class="nav-icon">📅</span> Kalender</button>
     <button class="nav-btn" data-section="stats"><span class="nav-icon">📊</span> Statistiken</button>
     <button class="nav-btn" data-section="badges"><span class="nav-icon">🏆</span> Abzeichen</button>
     <button class="nav-btn" data-section="generator"><span class="nav-icon">✨</span> KI-Generator</button>
@@ -807,6 +812,26 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
           <div class="home-card" style="--hc-color:#457b9d" onclick="switchSection('enniveau')">
             <div class="hc-icon">🇬🇧</div><div class="hc-title">Englisch Sprachniveau</div>
             <div class="hc-desc">A1–C2 Englisch lernen mit Übersetzung</div>
+          </div>
+          <div class="home-card" style="--hc-color:#8b5cf6" onclick="switchSection('gapfill')">
+            <div class="hc-icon">🧩</div><div class="hc-title">Lückentexte</div>
+            <div class="hc-desc">Vokabeln im Kontext — fehlende Wörter eintippen</div>
+          </div>
+          <div class="home-card" style="--hc-color:#0ea5e9" onclick="switchSection('dialogs')">
+            <div class="hc-icon">💬</div><div class="hc-title">Dialoge lernen</div>
+            <div class="hc-desc">Alltagsgespräche interaktiv üben</div>
+          </div>
+          <div class="home-card" style="--hc-color:#7c3aed" onclick="switchSection('phrasal')">
+            <div class="hc-icon">🔗</div><div class="hc-title">Phrasal Verbs</div>
+            <div class="hc-desc">Phrasal Verbs & trennbare Verben meistern</div>
+          </div>
+          <div class="home-card" style="--hc-color:#f59e0b" onclick="switchSection('dailytasks')">
+            <div class="hc-icon">🎯</div><div class="hc-title">Tagesaufgaben</div>
+            <div class="hc-desc">Tägliche Ziele erfüllen und Bonus-XP sammeln</div>
+          </div>
+          <div class="home-card" style="--hc-color:#10b981" onclick="switchSection('calendar')">
+            <div class="hc-icon">📅</div><div class="hc-title">Lernkalender</div>
+            <div class="hc-desc">Deine Lernaktivität als Heatmap visualisiert</div>
           </div>
         </div>
       </div>
@@ -1573,8 +1598,291 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
   </div>
 
+
+
+  <!-- ============================================================ -->
+  <!-- DIALOGE LERNEN                                                -->
+  <!-- ============================================================ -->
+  <div class="section" id="dialogs">
+    <div class="section-header">
+      <span style="font-size:1.1rem;">💬</span>
+      <span class="section-title">Dialoge lernen</span>
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;">Alltagsgespräche interaktiv üben — Situation auswählen und mitsprechen.</p>
+
+    <!-- Kategorie-Auswahl -->
+    <div style="display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;" id="dialog-cat-tabs">
+      <button class="btn primary" onclick="setDialogCat('alltag')" id="dcat-alltag" style="flex:1;min-width:90px;font-size:.78rem;">🏙️ Alltag</button>
+      <button class="btn" onclick="setDialogCat('reise')" id="dcat-reise" style="flex:1;min-width:90px;font-size:.78rem;">✈️ Reise</button>
+      <button class="btn" onclick="setDialogCat('arbeit')" id="dcat-arbeit" style="flex:1;min-width:90px;font-size:.78rem;">💼 Arbeit</button>
+      <button class="btn" onclick="setDialogCat('sozial')" id="dcat-sozial" style="flex:1;min-width:90px;font-size:.78rem;">🤝 Sozial</button>
+    </div>
+
+    <!-- Dialog-Karten -->
+    <div id="dialog-list"></div>
+
+    <!-- Gesprächs-Player -->
+    <div id="dialog-player" style="display:none;">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
+        <button class="btn" onclick="closeDialogPlayer()" style="font-size:.8rem;">← Zurück</button>
+        <div style="font-weight:700;" id="dialog-title"></div>
+        <div style="font-size:.7rem;color:var(--muted);margin-left:auto;" id="dialog-situation"></div>
+      </div>
+
+      <!-- Verlauf -->
+      <div id="dialog-history" style="margin-bottom:.75rem;max-height:40vh;overflow-y:auto;display:flex;flex-direction:column;gap:.5rem;"></div>
+
+      <!-- Aktuelle Zeile -->
+      <div class="card" id="dialog-current-card" style="margin-bottom:.75rem;">
+        <div style="font-size:.7rem;font-weight:700;color:var(--muted);margin-bottom:.4rem;" id="dialog-speaker"></div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:.4rem;" id="dialog-line-de"></div>
+        <div style="font-size:.82rem;color:var(--muted);" id="dialog-line-trans"></div>
+      </div>
+
+      <!-- Buttons -->
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+        <button class="btn" onclick="dialogSpeak()" style="flex:1;">🔊 Anhören</button>
+        <button class="btn" onclick="dialogShowTrans()" id="dialog-trans-btn" style="flex:1;">👁 Übersetzung</button>
+        <button class="btn primary" onclick="dialogNext()" id="dialog-next-btn" style="flex:2;">Weiter →</button>
+      </div>
+      <div style="margin-top:.5rem;display:flex;align-items:center;gap:.5rem;">
+        <div style="flex:1;background:var(--surface2);border-radius:3px;height:4px;overflow:hidden;">
+          <div id="dialog-progress-bar" style="height:100%;background:var(--accent);border-radius:3px;width:0%;transition:width .4s;"></div>
+        </div>
+        <div id="dialog-progress-text" style="font-size:.68rem;color:var(--muted);white-space:nowrap;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PHRASAL VERBS / TRENNBARE VERBEN                             -->
+  <!-- ============================================================ -->
+  <div class="section" id="phrasal">
+    <div class="section-header">
+      <span style="font-size:1.1rem;">🔗</span>
+      <span class="section-title">Phrasal Verbs & Trennbare Verben</span>
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;">Die häufigsten Phrasal Verbs (EN) und trennbaren Verben (DE) mit Übungen.</p>
+
+    <!-- Sprach-Toggle -->
+    <div style="display:flex;gap:.4rem;margin-bottom:1rem;">
+      <button class="btn primary" id="pv-lang-en" onclick="setPVLang('en')" style="flex:1;">🇬🇧 Phrasal Verbs</button>
+      <button class="btn" id="pv-lang-de" onclick="setPVLang('de')" style="flex:1;">🇩🇪 Trennbare Verben</button>
+    </div>
+
+    <!-- Kategorien -->
+    <div style="display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;" id="pv-cat-row"></div>
+
+    <!-- Modus -->
+    <div style="display:flex;gap:.4rem;margin-bottom:1rem;">
+      <button class="btn primary" id="pv-mode-learn" onclick="setPVMode('learn')" style="flex:1;font-size:.78rem;">📚 Lernen</button>
+      <button class="btn" id="pv-mode-quiz" onclick="setPVMode('quiz')" style="flex:1;font-size:.78rem;">🎯 Quiz</button>
+      <button class="btn" id="pv-mode-write" onclick="setPVMode('write')" style="flex:1;font-size:.78rem;">✍️ Schreiben</button>
+    </div>
+
+    <!-- Lern-Karte -->
+    <div id="pv-learn-area">
+      <div class="vocab-card" id="pv-card" onclick="pvReveal()" style="cursor:pointer;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;">
+        <div class="word-main" id="pv-verb" style="color:var(--accent);"></div>
+        <div style="font-size:.9rem;font-weight:600;" id="pv-example-de"></div>
+        <div class="word-translation" id="pv-translation" style="opacity:0;transition:opacity .3s;font-size:.85rem;"></div>
+        <div class="word-sub" id="pv-example-trans" style="opacity:0;transition:opacity .3s;font-size:.75rem;"></div>
+      </div>
+      <div style="display:none;gap:.4rem;margin-top:.75rem;flex-wrap:wrap;" id="pv-learn-btns">
+        <button class="btn" onclick="pvAnswer(false)" style="flex:1;background:rgba(239,68,68,.15);color:#ef4444;">✗ Nochmal</button>
+        <button class="btn" onclick="pvSpeak()" style="flex:1;">🔊 Hören</button>
+        <button class="btn" onclick="pvAnswer('next')" style="flex:1;">→ Weiter</button>
+        <button class="btn primary" onclick="pvAnswer(true)" style="flex:1;">✓ Gewusst</button>
+      </div>
+      <div style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:.4rem;" id="pv-counter"></div>
+    </div>
+
+    <!-- Quiz-Bereich -->
+    <div id="pv-quiz-area" style="display:none;">
+      <div class="card">
+        <div style="font-size:.78rem;color:var(--muted);margin-bottom:.4rem;" id="pv-quiz-counter"></div>
+        <div style="font-weight:700;margin-bottom:1rem;" id="pv-quiz-q"></div>
+        <div id="pv-quiz-opts" style="display:flex;flex-direction:column;gap:.4rem;"></div>
+        <div id="pv-quiz-feedback" style="margin-top:.6rem;font-weight:600;font-size:.85rem;text-align:center;min-height:1.4em;"></div>
+        <button class="btn primary" onclick="pvNextQuiz()" id="pv-quiz-next" style="width:100%;margin-top:.6rem;display:none;">Weiter →</button>
+      </div>
+    </div>
+
+    <!-- Schreib-Bereich -->
+    <div id="pv-write-area" style="display:none;">
+      <div class="card">
+        <div style="font-size:.72rem;color:var(--muted);margin-bottom:.4rem;" id="pv-write-counter"></div>
+        <div style="background:var(--surface2);border-radius:10px;padding:.75rem;margin-bottom:.75rem;">
+          <div style="font-size:.68rem;color:var(--muted);font-weight:700;margin-bottom:.3rem;">✍️ ÜBERSETZE / ERGÄNZE:</div>
+          <div style="font-size:.95rem;font-weight:700;" id="pv-write-prompt"></div>
+        </div>
+        <input type="text" id="pv-write-input" placeholder="Antwort eingeben..." onkeydown="if(event.key==='Enter')pvCheckWrite()"
+          style="width:100%;background:var(--surface2);border:2px solid var(--border);border-radius:10px;color:var(--text);padding:.6rem .75rem;font-size:.9rem;font-family:Syne,sans-serif;box-sizing:border-box;transition:border-color .2s;">
+        <div id="pv-write-hint" style="font-size:.72rem;color:var(--accent);margin-top:.3rem;min-height:1em;"></div>
+        <div id="pv-write-feedback" style="margin-top:.4rem;font-size:.85rem;font-weight:600;text-align:center;min-height:1.4em;"></div>
+        <div style="display:flex;gap:.4rem;margin-top:.6rem;">
+          <button class="btn" onclick="pvWriteHint()" style="flex:1;font-size:.78rem;">💡 Tipp</button>
+          <button class="btn primary" onclick="pvCheckWrite()" style="flex:2;">✓ Prüfen</button>
+        </div>
+        <button class="btn" onclick="pvNextWrite()" id="pv-write-next" style="width:100%;margin-top:.4rem;display:none;">Weiter →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LÜCKENTEXTE                                                   -->
+  <!-- ============================================================ -->
+  <div class="section" id="gapfill">
+    <div class="section-header">
+      <span style="font-size:1.1rem;">🧩</span>
+      <span class="section-title">Lückentexte</span>
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;">Fülle die fehlenden Wörter ein — trainiere Vokabeln im Kontext.</p>
+
+    <!-- Schwierigkeitsauswahl -->
+    <div style="display:flex;gap:.4rem;margin-bottom:1rem;">
+      <button class="btn primary" id="gf-diff-easy" onclick="setGapDiff('easy')" style="flex:1;font-size:.78rem;">🌱 Leicht</button>
+      <button class="btn" id="gf-diff-medium" onclick="setGapDiff('medium')" style="flex:1;font-size:.78rem;">📗 Mittel</button>
+      <button class="btn" id="gf-diff-hard" onclick="setGapDiff('hard')" style="flex:1;font-size:.78rem;">🔥 Schwer</button>
+    </div>
+
+    <!-- Übungsbereich -->
+    <div id="gf-exercise-area">
+      <div class="card" id="gf-card">
+        <div style="font-size:.7rem;color:var(--muted);margin-bottom:.75rem;" id="gf-progress-text">Aufgabe 1 / 10</div>
+        <!-- Satz mit Lücken -->
+        <div id="gf-sentence" style="font-size:1rem;line-height:2.2;font-weight:500;margin-bottom:1rem;"></div>
+        <!-- Wortoptionen zum Klicken -->
+        <div id="gf-options" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;"></div>
+        <!-- Feedback -->
+        <div id="gf-feedback" style="font-size:.85rem;font-weight:600;min-height:1.4em;margin-bottom:.75rem;text-align:center;"></div>
+        <!-- Buttons -->
+        <div style="display:flex;gap:.4rem;">
+          <button class="btn" onclick="gfHint()" style="flex:1;">💡 Hinweis</button>
+          <button class="btn primary" onclick="gfCheck()" id="gf-check-btn" style="flex:1;">✓ Prüfen</button>
+          <button class="btn" onclick="gfNext()" id="gf-next-btn" style="flex:1;display:none;">Weiter →</button>
+        </div>
+      </div>
+      <!-- Fortschrittsleiste -->
+      <div style="display:flex;align-items:center;gap:.5rem;margin-top:.75rem;">
+        <div style="flex:1;background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;">
+          <div id="gf-progress-bar" style="height:100%;background:var(--accent3);border-radius:4px;width:0%;transition:width .4s;"></div>
+        </div>
+        <div id="gf-score-text" style="font-size:.72rem;color:var(--muted);white-space:nowrap;">0 ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAGESAUFGABEN                                                  -->
+  <!-- ============================================================ -->
+  <div class="section" id="dailytasks">
+    <div class="section-header">
+      <span style="font-size:1.1rem;">🎯</span>
+      <span class="section-title">Tagesaufgaben</span>
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;">Erledige täglich diese Aufgaben und sammle Bonus-XP.</p>
+
+    <!-- Tagesziel Fortschritt -->
+    <div class="card" style="margin-bottom:.75rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+        <div style="font-weight:700;font-size:.9rem;">📅 Heute</div>
+        <div id="dt-date" style="font-size:.72rem;color:var(--muted);"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">
+        <div style="flex:1;background:var(--surface2);border-radius:4px;height:8px;overflow:hidden;">
+          <div id="dt-total-bar" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--accent3));border-radius:4px;width:0%;transition:width .6s;"></div>
+        </div>
+        <div id="dt-total-pct" style="font-size:.78rem;font-weight:700;color:var(--accent3);white-space:nowrap;">0%</div>
+      </div>
+      <div id="dt-xp-today" style="font-size:.72rem;color:var(--muted);text-align:center;"></div>
+    </div>
+
+    <!-- Aufgabenliste -->
+    <div id="dt-task-list"></div>
+
+    <!-- Bonus-Belohnung -->
+    <div id="dt-bonus-area" style="display:none;">
+      <div class="card" style="background:linear-gradient(135deg,rgba(var(--accent-rgb),.15),rgba(var(--accent3-rgb),.15));border:1px solid var(--accent3);text-align:center;padding:1.25rem;">
+        <div style="font-size:2rem;margin-bottom:.4rem;">🏆</div>
+        <div style="font-weight:800;font-size:1rem;margin-bottom:.3rem;">Alle Aufgaben erledigt!</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:.75rem;" id="dt-bonus-text"></div>
+        <button class="btn primary" onclick="claimDailyBonus()" id="dt-claim-btn" style="width:100%;">🎁 Bonus abholen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LERNKALENDER HEATMAP                                          -->
+  <!-- ============================================================ -->
+  <div class="section" id="calendar">
+    <div class="section-header">
+      <span style="font-size:1.1rem;">📅</span>
+      <span class="section-title">Lernkalender</span>
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;">Deine Lernaktivität der letzten 12 Wochen — wie GitHub für Sprachen.</p>
+
+    <!-- Statistik-Übersicht -->
+    <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <div class="card" style="flex:1;min-width:100px;text-align:center;padding:.75rem .5rem;">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--accent3);" id="cal-streak">0</div>
+        <div style="font-size:.65rem;color:var(--muted);">Tage Streak</div>
+      </div>
+      <div class="card" style="flex:1;min-width:100px;text-align:center;padding:.75rem .5rem;">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--accent);" id="cal-total-days">0</div>
+        <div style="font-size:.65rem;color:var(--muted);">Lerntage gesamt</div>
+      </div>
+      <div class="card" style="flex:1;min-width:100px;text-align:center;padding:.75rem .5rem;">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--accent2);" id="cal-best-streak">0</div>
+        <div style="font-size:.65rem;color:var(--muted);">Bester Streak</div>
+      </div>
+    </div>
+
+    <!-- Heatmap Grid -->
+    <div class="card" style="padding:1rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+        <div style="font-size:.72rem;color:var(--muted);">Mo–So / Woche</div>
+        <div style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--muted);">
+          <span>wenig</span>
+          <div style="display:flex;gap:2px;">
+            <div style="width:10px;height:10px;border-radius:2px;background:var(--surface2);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:rgba(34,197,94,.25);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:rgba(34,197,94,.55);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:rgba(34,197,94,.8);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:rgb(34,197,94);"></div>
+          </div>
+          <span>viel</span>
+        </div>
+      </div>
+      <!-- Wochentag-Labels -->
+      <div style="display:flex;gap:2px;margin-bottom:3px;padding-left:30px;">
+        <div id="cal-month-labels" style="display:flex;gap:0;flex:1;font-size:.58rem;color:var(--muted);"></div>
+      </div>
+      <div style="display:flex;gap:4px;">
+        <!-- Wochentag-Labels -->
+        <div style="display:flex;flex-direction:column;gap:2px;justify-content:space-around;padding-top:2px;">
+          <div style="font-size:.58rem;color:var(--muted);height:12px;line-height:12px;">Mo</div>
+          <div style="font-size:.58rem;color:var(--muted);height:12px;line-height:12px;">Mi</div>
+          <div style="font-size:.58rem;color:var(--muted);height:12px;line-height:12px;">Fr</div>
+          <div style="font-size:.58rem;color:var(--muted);height:12px;line-height:12px;">So</div>
+        </div>
+        <!-- Heatmap Zellen -->
+        <div id="cal-heatmap" style="display:flex;gap:2px;flex:1;overflow-x:auto;"></div>
+      </div>
+    </div>
+
+    <!-- Aktivitäts-Details -->
+    <div id="cal-detail" style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:.5rem;"></div>
+
+    <!-- Monatsübersicht -->
+    <div class="card" style="margin-top:.75rem;">
+      <div style="font-weight:700;font-size:.82rem;margin-bottom:.5rem;">📊 Monatliche Aktivität</div>
+      <div id="cal-monthly-bars"></div>
+    </div>
+  </div>
+
   <footer>
-    LINGUA <span id="footer-version">v5.6</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v6.0</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -1743,7 +2051,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v5.6</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v6.0</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -5678,7 +5986,7 @@ function applyUILanguage() {
   uiLang = localStorage.getItem('lingua_ui_lang') || 'de';
   function setText(id, text) { var el = document.getElementById(id); if (el) el.textContent = text; }
   // Nav
-  var navIcons = {home:'⌂',vocab:'📚',quiz:'❓',free:'🗂',generator:'✨',myvocab:'⭐',translate:'⇄',ai:'✦',srs:'🧠',write:'✍',stats:'📊',badges:'🏆',path:'🗺',search:'🔍',conjugate:'🔀',deniveau:'🇩🇪',enniveau:'🇬🇧'};
+  var navIcons = {home:'⌂',vocab:'📚',quiz:'❓',free:'🗂',generator:'✨',myvocab:'⭐',translate:'⇄',ai:'✦',srs:'🧠',write:'✍',stats:'📊',badges:'🏆',path:'🗺',search:'🔍',conjugate:'🔀',deniveau:'🇩🇪',enniveau:'🇬🇧',gapfill:'🧩',dialogs:'💬',phrasal:'🔗',dailytasks:'🎯',calendar:'📅'};
   var navKeys  = {home:'nav_home',vocab:'nav_vocab',quiz:'nav_quiz',free:'nav_free',generator:'nav_gen',myvocab:'nav_myvocab',translate:'nav_translate',ai:'nav_ai',srs:'nav_srs',write:'nav_write',stats:'nav_stats',badges:'nav_badges',path:'nav_path',search:'nav_search',conjugate:'nav_conjugate'};
   document.querySelectorAll('.nav-btn[data-section]').forEach(function(b) {
     var sec = b.dataset.section;
@@ -10924,6 +11232,9 @@ function incrementDailyLearned() {
   updateGoalRing();
   checkGoalCompletion();
   checkBadges();
+  // Tagesaufgaben + Kalender tracken
+  incrementDailyTask('vocab', 1);
+  recordLearningDay();
 }
 
 function checkGoalCompletion() {
@@ -11786,6 +12097,61 @@ var NIVEAU_DATA = {
           {de:'Das Praktikum hat mir viel gebracht.',ru:'Практика дала мне многое.',tr:'Staj bana çok şey kattı.',en:'The internship gave me a lot.'},{de:'Ich bewerbe mich um ein Stipendium.',ru:'Я подаю заявку на стипендию.',tr:'Burs için başvuruyorum.',en:'I am applying for a scholarship.'},
         ]
       },
+      { id:'b1-gesundheit', icon:'🏥', title:'Gesundheitssystem & Vorsorge',
+        vocab:[
+          {de:'die Krankenversicherung',ru:'медицинская страховка',tr:'sağlık sigortası',en:'health insurance',ph:'krankenferzikherung'},
+          {de:'der Hausarzt',ru:'терапевт',tr:'aile hekimi',en:'GP/family doctor',ph:'hausartst'},
+          {de:'die Überweisung',ru:'направление к врачу',tr:'sevk',en:'referral',ph:'ybervayzung'},
+          {de:'die Vorsorgeuntersuchung',ru:'профилактический осмотр',tr:'önleyici muayene',en:'check-up',ph:'forzorgeunterzokhung'},
+          {de:'die Notaufnahme',ru:'скорая помощь/приёмный покой',tr:'acil servis',en:'emergency room',ph:'notaufnaame'},
+          {de:'der Facharzt',ru:'врач-специалист',tr:'uzman doktor',en:'specialist',ph:'fakhartst'},
+          {de:'das Rezept',ru:'рецепт',tr:'reçete',en:'prescription',ph:'retsept'},
+          {de:'die Diagnose',ru:'диагноз',tr:'tanı',en:'diagnosis',ph:'diagnooze'},
+          {de:'die Behandlung',ru:'лечение',tr:'tedavi',en:'treatment',ph:'behandlung'},
+          {de:'die Operation',ru:'операция',tr:'ameliyat',en:'operation',ph:'operatsion'},
+          {de:'impfen',ru:'прививать',tr:'aşılamak',en:'to vaccinate',ph:'impfn'},
+          {de:'die Allergie',ru:'аллергия',tr:'alerji',en:'allergy',ph:'alergii'},
+          {de:'chronisch',ru:'хронический',tr:'kronik',en:'chronic',ph:'khronish'},
+          {de:'der Krankenschein',ru:'больничный лист',tr:'hastalık belgesi',en:'sick note',ph:'kranknshayn'},
+        ],
+        grammar:[
+          {title:'Konjunktiv II — Ratschläge & Empfehlungen', text:'Für Ratschläge und Empfehlungen:\n\n<b>sollte</b> — sollte (Empfehlung)\n<b>würde</b> — würde (Hypothese)\n<b>könnte</b> — könnte (Möglichkeit)\n\nSie <b>sollten</b> regelmäßig zur Vorsorge.\nEs <b>wäre</b> besser, früh zu erkennen.', examples:['Sie <b>sollten</b> einen Facharzt aufsuchen.','Es <b>wäre</b> ratsam, eine Impfung zu machen.','<b>Könnten</b> Sie mir ein Rezept ausstellen?']},
+          {title:'Infinitivkonstruktionen mit um…zu', text:'Zweck und Ziel ausdrücken:\n\n<b>um…zu</b> + Infinitiv = damit, um das zu tun\n\nIch gehe zum Arzt, <b>um mich</b> untersuchen <b>zu lassen</b>.\n\nRussisch: «чтобы» + Infinitiv', examples:['Ich nehme Vitamintabletten, <b>um</b> gesund <b>zu bleiben</b>.','Sie machen Vorsorge, <b>um</b> Krankheiten früh <b>zu erkennen</b>.','Er geht joggen, <b>um</b> abzunehmen.']},
+        ],
+        sentences:[
+          {de:'In Deutschland ist eine Krankenversicherung Pflicht.',ru:'В Германии медицинская страховка обязательна.',tr:'Almanyada sağlık sigortası zorunludur.',en:'Health insurance is mandatory in Germany.'},
+          {de:'Ich brauche eine Überweisung zum Facharzt.',ru:'Мне нужно направление к специалисту.',tr:'Uzmana sevk lazım.',en:'I need a referral to a specialist.'},
+          {de:'Die Vorsorgeuntersuchung sollte man nicht vernachlässigen.',ru:'Профилактический осмотр нельзя игнорировать.',tr:'Önleyici muayeneyi ihmal etmemeli.',en:'One should not neglect regular check-ups.'},
+          {de:'Das Rezept können Sie in jeder Apotheke einlösen.',ru:'Рецепт можно отоварить в любой аптеке.',tr:'Reçeteyi her eczanede kullanabilirsiniz.',en:'You can fill the prescription at any pharmacy.'},
+        ]
+      },
+      { id:'b1-politik', icon:'🗳️', title:'Politik & Gesellschaft',
+        vocab:[
+          {de:'die Demokratie',ru:'демократия',tr:'demokrasi',en:'democracy',ph:'demokratii'},
+          {de:'die Wahl',ru:'выборы',tr:'seçim',en:'election',ph:'vaal'},
+          {de:'das Parlament',ru:'парламент',tr:'parlamento',en:'parliament',ph:'parlament'},
+          {de:'die Regierung',ru:'правительство',tr:'hükümet',en:'government',ph:'regirung'},
+          {de:'das Grundgesetz',ru:'Основной закон (конституция)',tr:'anayasa',en:'Basic Law/constitution',ph:'gruntgezets'},
+          {de:'der Bürger',ru:'гражданин',tr:'vatandaş',en:'citizen',ph:'byrgr'},
+          {de:'abstimmen',ru:'голосовать',tr:'oy vermek',en:'to vote',ph:'apshtimn'},
+          {de:'die Partei',ru:'партия',tr:'parti',en:'party',ph:'partay'},
+          {de:'der Bundestag',ru:'Бундестаг',tr:'Bundestag',en:'Bundestag',ph:'bundestag'},
+          {de:'die Opposition',ru:'оппозиция',tr:'muhalefet',en:'opposition',ph:'opozitsion'},
+          {de:'die Meinungsfreiheit',ru:'свобода слова',tr:'ifade özgürlüğü',en:'freedom of speech',ph:'maynungsfrayhayt'},
+          {de:'das Referendum',ru:'референдум',tr:'referandum',en:'referendum',ph:'referendum'},
+          {de:'der Kompromiss',ru:'компромисс',tr:'uzlaşma',en:'compromise',ph:'kompromis'},
+          {de:'die Bürgerrechte',ru:'гражданские права',tr:'vatandaş hakları',en:'civil rights',ph:'byrgerrekhte'},
+        ],
+        grammar:[
+          {title:'Zweiteilige Konnektoren', text:'Zweiteilige Verbindungen für Kontrast und Ergänzung:\n\n<b>sowohl…als auch</b> — как…так и\n<b>weder…noch</b> — ни…ни\n<b>entweder…oder</b> — или…или\n<b>zwar…aber</b> — хотя…но', examples:['<b>Sowohl</b> die Regierung <b>als auch</b> die Opposition stimmten zu.','<b>Weder</b> die Wirtschaft <b>noch</b> die Bevölkerung profitiert davon.','<b>Entweder</b> wir handeln jetzt, <b>oder</b> es wird zu spät.']},
+        ],
+        sentences:[
+          {de:'In Deutschland finden alle vier Jahre Bundestagswahlen statt.',ru:'В Германии каждые четыре года проходят выборы в Бундестаг.',tr:'Almanyada dört yılda bir Bundestag seçimleri yapılır.',en:'Federal elections take place every four years in Germany.'},
+          {de:'Das Grundgesetz schützt die Grundrechte aller Bürger.',ru:'Основной закон защищает основные права всех граждан.',tr:'Anayasa tüm vatandaşların temel haklarını korur.',en:'The Basic Law protects the fundamental rights of all citizens.'},
+          {de:'Demokratie lebt von der aktiven Beteiligung der Bürger.',ru:'Демократия живёт активным участием граждан.',tr:'Demokrasi vatandaşların aktif katılımıyla yaşar.',en:'Democracy thrives on the active participation of citizens.'},
+          {de:'Sowohl die Meinungsfreiheit als auch die Pressefreiheit sind im Grundgesetz verankert.',ru:'И свобода слова, и свобода прессы закреплены в Основном законе.',tr:'İfade özgürlüğü de basın özgürlüğü de anayasada güvence altındadır.',en:'Both freedom of speech and freedom of the press are enshrined in the Basic Law.'},
+        ]
+      },
     ]
   },
 
@@ -11847,6 +12213,61 @@ var NIVEAU_DATA = {
           {de:'Das Unternehmen plant, in neue Märkte zu investieren.',ru:'Компания планирует инвестировать в новые рынки.'},{de:'Der Haushalt muss ausgeglichen sein.',ru:'Бюджет должен быть сбалансированным.'},
         ]
       },
+      { id:'b2-technik', icon:'💻', title:'Technik & Digitalisierung',
+        vocab:[
+          {de:'die Künstliche Intelligenz',ru:'искусственный интеллект',tr:'yapay zeka',en:'artificial intelligence',ph:'kynstlikhe inteligents'},
+          {de:'der Algorithmus',ru:'алгоритм',tr:'algoritma',en:'algorithm',ph:'algoritmus'},
+          {de:'die Digitalisierung',ru:'цифровизация',tr:'dijitalleşme',en:'digitalisation',ph:'digitalizirung'},
+          {de:'der Datenschutz',ru:'защита данных',tr:'veri koruma',en:'data protection',ph:'daatnshhuts'},
+          {de:'die Automatisierung',ru:'автоматизация',tr:'otomasyon',en:'automation',ph:'automatizirung'},
+          {de:'das maschinelle Lernen',ru:'машинное обучение',tr:'makine öğrenmesi',en:'machine learning',ph:'mashinele lernen'},
+          {de:'die Verschlüsselung',ru:'шифрование',tr:'şifreleme',en:'encryption',ph:'fershlysellung'},
+          {de:'die Blockchain',ru:'блокчейн',tr:'blok zinciri',en:'blockchain',ph:'blokchayn'},
+          {de:'die Cloud',ru:'облако/облачное хранилище',tr:'bulut',en:'cloud',ph:'klaud'},
+          {de:'der Cyberangriff',ru:'кибератака',tr:'siber saldırı',en:'cyberattack',ph:'tsyberangrif'},
+          {de:'die Schnittstelle',ru:'интерфейс',tr:'arayüz',en:'interface',ph:'shnitstele'},
+          {de:'programmieren',ru:'программировать',tr:'programlamak',en:'to program',ph:'programirn'},
+          {de:'das Start-up',ru:'стартап',tr:'girişim',en:'start-up',ph:'start-ap'},
+          {de:'disruptiv',ru:'разрушительный/революционный',tr:'yıkıcı',en:'disruptive',ph:'disrubtiv'},
+        ],
+        grammar:[
+          {title:'Erweiterte Nominalphrasen', text:'Komplexe Nominalgruppen — typisch in Fachtexten:\n\n<b>das von der EU regulierte KI-System</b>\n→ das KI-System, das von der EU reguliert wird\n\nStruktur: Artikel + (Partizip II-Konstruktion) + Nomen\n\nSpart Relativsätze, klingt formeller!', examples:['Das <b>rasch wachsende</b> Tech-Unternehmen...',  'Die <b>von Experten entwickelte</b> Software...','Ein <b>KI-gestützter</b> Algorithmus entscheidet...']},
+          {title:'Futur II — Vollendete Zukunft', text:'Futur II: <b>werden + Infinitiv Perfekt</b>\n\nDrückt aus, was in der Zukunft abgeschlossen sein wird:\n\nBis 2030 <b>wird</b> KI die Hälfte aller Jobs <b>übernommen haben</b>.\n\nRussisch: будущее совершённое', examples:['In 10 Jahren <b>wird</b> die KI viele Berufe <b>verändert haben</b>.','Bis dann <b>wird</b> er das System <b>programmiert haben</b>.']},
+        ],
+        sentences:[
+          {de:'Künstliche Intelligenz verändert unsere Arbeitswelt grundlegend.',ru:'Искусственный интеллект коренным образом меняет нашу рабочую среду.',tr:'Yapay zeka çalışma dünyamızı temelden değiştiriyor.',en:'Artificial intelligence is fundamentally changing our working world.'},
+          {de:'Der Datenschutz muss bei der Digitalisierung mitgedacht werden.',ru:'При цифровизации необходимо учитывать защиту данных.',tr:'Dijitalleşmede veri koruma göz önünde bulundurulmalıdır.',en:'Data protection must be considered in the process of digitalisation.'},
+          {de:'Das maschinelle Lernen ermöglicht Prognosen auf Basis großer Datenmengen.',ru:'Машинное обучение позволяет делать прогнозы на основе больших массивов данных.',tr:'Makine öğrenmesi büyük veri setlerine dayalı tahminler yapılmasını sağlar.',en:'Machine learning enables predictions based on large amounts of data.'},
+          {de:'Bis 2030 wird KI viele Routineaufgaben übernommen haben.',ru:'К 2030 году ИИ возьмёт на себя многие рутинные задачи.',tr:'2030 yılına kadar YZ pek çok rutin görevi üstlenmiş olacak.',en:'By 2030, AI will have taken over many routine tasks.'},
+        ]
+      },
+      { id:'b2-psychologie', icon:'🧠', title:'Psychologie & Verhalten',
+        vocab:[
+          {de:'die Motivation',ru:'мотивация',tr:'motivasyon',en:'motivation',ph:'motivatsion'},
+          {de:'das Selbstbewusstsein',ru:'самоуверенность',tr:'öz güven',en:'self-confidence',ph:'zelpstbevustzayn'},
+          {de:'die Empathie',ru:'эмпатия',tr:'empati',en:'empathy',ph:'empati'},
+          {de:'der Konflikt',ru:'конфликт',tr:'çatışma',en:'conflict',ph:'konflikt'},
+          {de:'die Wahrnehmung',ru:'восприятие',tr:'algı',en:'perception',ph:'vaarnemung'},
+          {de:'das Verhalten',ru:'поведение',tr:'davranış',en:'behaviour',ph:'ferhalten'},
+          {de:'die Resilienz',ru:'стрессоустойчивость',tr:'dayanıklılık',en:'resilience',ph:'resilients'},
+          {de:'unbewusst',ru:'бессознательный',tr:'bilinçdışı',en:'unconscious',ph:'unbevusst'},
+          {de:'die kognitive Verzerrung',ru:'когнитивное искажение',tr:'bilişsel çarpıtma',en:'cognitive bias',ph:'kognitive fertsirung'},
+          {de:'das Vorurteil',ru:'предрассудок',tr:'önyargı',en:'prejudice',ph:'forurtayl'},
+          {de:'die soziale Norm',ru:'социальная норма',tr:'sosyal norm',en:'social norm',ph:'zotsiale norm'},
+          {de:'das Wohlbefinden',ru:'самочувствие/благополучие',tr:'iyilik hali',en:'well-being',ph:'voolbefindn'},
+          {de:'die Achtsamkeit',ru:'осознанность',tr:'farkındalık',en:'mindfulness',ph:'akhtsamkayt'},
+          {de:'manipulieren',ru:'манипулировать',tr:'manipüle etmek',en:'to manipulate',ph:'manipulirn'},
+        ],
+        grammar:[
+          {title:'Konzessivsätze — Einräumungen', text:'Obwohl etwas gilt, passiert etwas anderes:\n\n<b>obwohl / obgleich / wenngleich</b>\nVerb → ans Ende!\n\n<b>trotzdem / dennoch / gleichwohl</b>\nHauptsatz — Verb an Stelle 2\n\nRussisch: «хотя», «тем не менее»', examples:['<b>Obwohl</b> er motiviert <b>war</b>, scheiterte das Projekt.','Der Plan war riskant; <b>dennoch</b> führten wir ihn durch.','<b>Wenngleich</b> die Forschung noch jung <b>ist</b>, ist sie vielversprechend.']},
+        ],
+        sentences:[
+          {de:'Empathie ist eine Schlüsselkompetenz in der Führung.',ru:'Эмпатия — ключевая компетенция в управлении.',tr:'Empati, liderlikte temel bir yetkinliktir.',en:'Empathy is a key competence in leadership.'},
+          {de:'Kognitive Verzerrungen beeinflussen unsere Entscheidungen unbewusst.',ru:'Когнитивные искажения неосознанно влияют на наши решения.',tr:'Bilişsel çarpıtmalar kararlarımızı farkında olmadan etkiler.',en:'Cognitive biases unconsciously influence our decisions.'},
+          {de:'Resilienz lässt sich durch gezielte Übungen stärken.',ru:'Стрессоустойчивость можно укрепить целенаправленными упражнениями.',tr:'Dayanıklılık hedefli egzersizlerle güçlendirilebilir.',en:'Resilience can be strengthened through targeted exercises.'},
+          {de:'Achtsamkeit hilft, im Alltag präsenter und ausgeglichener zu sein.',ru:'Осознанность помогает быть более присутствующим и уравновешенным в повседневной жизни.',tr:'Farkındalık günlük hayatta daha mevcut ve dengeli olmaya yardımcı olur.',en:'Mindfulness helps to be more present and balanced in everyday life.'},
+        ]
+      },
     ]
   },
 
@@ -11888,6 +12309,47 @@ var NIVEAU_DATA = {
         sentences:[
           {de:'Die Studie weist methodische Schwächen auf.',ru:'Исследование имеет методологические слабости.'},{de:'Die Ergebnisse sind statistisch signifikant, aber praktisch wenig relevant.',ru:'Результаты статистически значимы, но малопрактичны.'},
           {de:'Weitere Forschung ist nötig, um die Kausalität zu belegen.',ru:'Необходимы дополнительные исследования для подтверждения причинности.'},{de:'Das Experiment wurde unter kontrollierten Bedingungen durchgeführt.',ru:'Эксперимент был проведён в контролируемых условиях.'},
+        ]
+      },
+      { id:'c1-ethik', icon:'⚖️', title:'Ethik & Philosophie',
+        vocab:[
+          {de:'die Moral',ru:'мораль',tr:'ahlak',en:'morality',ph:'moraal'},{de:'die Ethik',ru:'этика',tr:'etik',en:'ethics',ph:'etik'},
+          {de:'das Dilemma',ru:'дилемма',tr:'ikilem',en:'dilemma',ph:'dilemma'},{de:'die Gerechtigkeit',ru:'справедливость',tr:'adalet',en:'justice',ph:'gerekhtigkayt'},
+          {de:'die Verantwortung',ru:'ответственность',tr:'sorumluluk',en:'responsibility',ph:'ferantvortung'},{de:'die Autonomie',ru:'автономия',tr:'özerklik',en:'autonomy',ph:'autonomii'},
+          {de:'das Gewissen',ru:'совесть',tr:'vicdan',en:'conscience',ph:'gevissn'},{de:'legitim',ru:'законный/правомерный',tr:'meşru',en:'legitimate',ph:'legitimm'},
+          {de:'die Würde',ru:'достоинство',tr:'onur',en:'dignity',ph:'vyrde'},{de:'hinterfragen',ru:'ставить под сомнение',tr:'sorgulamak',en:'to question',ph:'hinterfraagn'},
+          {de:'der Konsens',ru:'консенсус',tr:'uzlaşı',en:'consensus',ph:'konzens'},{de:'die Pflicht',ru:'долг/обязанность',tr:'görev',en:'duty',ph:'pflicht'},
+          {de:'relativieren',ru:'релятивизировать',tr:'göreceleştirmek',en:'to relativise',ph:'relativirn'},{de:'der Utilitarismus',ru:'утилитаризм',tr:'faydacılık',en:'utilitarianism',ph:'utilitarismus'},
+        ],
+        grammar:[
+          {title:'Modalpartikeln — doch, ja, eigentlich, halt', text:'Deutsche Modalpartikeln — schwer übersetzbar!\n\n<b>doch</b> — ведь, же (Erwartung/Bestätigung)\n<b>ja</b> — ведь (als bekannt darstellen)\n<b>eigentlich</b> — вообще-то, собственно\n<b>halt/eben</b> — просто, вот так (Unvermeidliches)\n\nSie haben keine direkte Übersetzung im Russischen!', examples:['Das ist <b>doch</b> keine akzeptable Lösung!','Das weißt du <b>ja</b> selbst.','<b>Eigentlich</b> wäre eine andere Entscheidung sinnvoller.','Das ist <b>halt</b> die Realität.']},
+          {title:'als ob + Konjunktiv II', text:'Irreale Vergleiche ausdrücken:\n\n<b>als ob / als wenn + Konjunktiv II</b>\n\nEr tut so, <b>als ob</b> er alles <b>wüsste</b>.\n(In Wirklichkeit weiß er es nicht!)\n\nRussisch: «как будто», «словно» + прошедшее время', examples:['Er diskutiert, <b>als ob</b> er Philosoph <b>wäre</b>.','Es klingt, <b>als hätte</b> er die Antwort bereits.','Sie handeln, <b>als ob</b> Moral keine Rolle <b>spielte</b>.']},
+        ],
+        sentences:[
+          {de:'Das ethische Dilemma lässt keine einfache Antwort zu.',ru:'Этическая дилемма не допускает простого ответа.',tr:'Etik ikilem basit bir cevaba izin vermiyor.',en:'The ethical dilemma does not allow for a simple answer.'},
+          {de:'Gerechtigkeit und Effizienz stehen oft im Widerspruch.',ru:'Справедливость и эффективность часто противоречат друг другу.',tr:'Adalet ve verimlilik çoğu zaman çelişir.',en:'Justice and efficiency are often in conflict.'},
+          {de:'Die Würde des Menschen ist unantastbar.',ru:'Достоинство человека неприкосновенно.',tr:'İnsan onuru dokunulmazdır.',en:'Human dignity is inviolable.'},
+          {de:'Er tut so, als ob er alle Antworten hätte — dabei stellt er nur Fragen.',ru:'Он ведёт себя так, будто знает все ответы — а сам лишь задаёт вопросы.',tr:'Sanki tüm cevaplara sahipmiş gibi davranıyor — oysa sadece soru soruyor.',en:'He acts as if he had all the answers — yet he only asks questions.'},
+        ]
+      },
+      { id:'c1-sprache', icon:'🗣️', title:'Sprache & Kommunikation',
+        vocab:[
+          {de:'die Pragmatik',ru:'прагматика',tr:'pragmatik',en:'pragmatics',ph:'pragmatik'},{de:'die Semantik',ru:'семантика',tr:'anlambilim',en:'semantics',ph:'zemantik'},
+          {de:'der Diskurs',ru:'дискурс',tr:'söylem',en:'discourse',ph:'diskurs'},{de:'implizieren',ru:'подразумевать',tr:'ima etmek',en:'to imply',ph:'implitsirn'},
+          {de:'das Missverständnis',ru:'недоразумение',tr:'yanlış anlama',en:'misunderstanding',ph:'misverstendnis'},{de:'der Subtext',ru:'подтекст',tr:'alt metin',en:'subtext',ph:'zuptekst'},
+          {de:'nonverbal',ru:'невербальный',tr:'sözsüz',en:'non-verbal',ph:'nonferbal'},{de:'die Intonation',ru:'интонация',tr:'tonlama',en:'intonation',ph:'intonatsion'},
+          {de:'zweideutig',ru:'двусмысленный',tr:'muğlak',en:'ambiguous',ph:'tsvaydoytig'},{de:'das Register',ru:'регистр',tr:'dil kaydı',en:'register',ph:'register'},
+          {de:'die Umgangssprache',ru:'разговорный язык',tr:'günlük dil',en:'colloquial language',ph:'umgangshprakhe'},{de:'die Konnotation',ru:'коннотация',tr:'çağrışım',en:'connotation',ph:'konotatsion'},
+          {de:'die Sprechhandlung',ru:'речевой акт',tr:'söz edimi',en:'speech act',ph:'shprekhhanllung'},{de:'interkulturelle Kommunikation',ru:'межкультурная коммуникация',tr:'kültürlerarası iletişim',en:'intercultural communication',ph:'interkulturele komunikatsion'},
+        ],
+        grammar:[
+          {title:'Genitivattribute & Genitivketten', text:'Genitiv für Zugehörigkeit:\n\n<b>das Ergebnis des Experiments</b>\n<b>die Folgen der Kommunikationsstörung</b>\n\nGenitivketten (nur schriftlich!):\n<b>die Analyse der Ursachen des Missverständnisses</b>\n\nRussisch: родительный падеж — ähnliche Funktion', examples:['Die Bedeutung <b>des Kontexts</b> ist entscheidend.','Die Komplexität <b>der menschlichen Kommunikation</b>...','Das Scheitern <b>des Gesprächs</b> lag am Subtext.']},
+        ],
+        sentences:[
+          {de:'Sprache formt unser Denken ebenso wie unser Denken die Sprache formt.',ru:'Язык формирует наше мышление так же, как наше мышление формирует язык.',tr:'Dil düşüncemizi biçimlendirirken düşüncemiz de dili biçimlendirir.',en:'Language shapes our thinking just as our thinking shapes language.'},
+          {de:'Nonverbale Kommunikation macht über 70 % unserer Aussage aus.',ru:'Невербальная коммуникация составляет более 70% нашего высказывания.',tr:'Sözsüz iletişim mesajımızın yüzde 70inden fazlasını oluşturur.',en:'Non-verbal communication accounts for over 70% of our message.'},
+          {de:'Ein Wort kann je nach Kontext völlig unterschiedliche Konnotationen haben.',ru:'Одно слово в зависимости от контекста может иметь совершенно разные коннотации.',tr:'Bir kelime bağlama göre tamamen farklı çağrışımlara sahip olabilir.',en:'A word can have completely different connotations depending on the context.'},
+          {de:'Interkulturelle Kommunikation erfordert Sensibilität für implizite Bedeutungen.',ru:'Межкультурная коммуникация требует чуткости к имплицитным значениям.',tr:'Kültürlerarası iletişim örtük anlamlara duyarlılık gerektirir.',en:'Intercultural communication requires sensitivity to implicit meanings.'},
         ]
       },
     ]
@@ -11936,6 +12398,34 @@ var NIVEAU_DATA = {
         sentences:[
           {de:'Er hat den Nagel auf den Kopf getroffen — genau das meine ich.',ru:'Он попал в точку — именно это я и имею в виду.'},{de:'Hör auf, um den heißen Brei herumzureden!',ru:'Хватит ходить вокруг да около!'},
           {de:'Wenngleich ich seine Meinung nicht teile, respektiere ich sie.',ru:'Хотя я не разделяю его мнения, я его уважаю.'},{de:'Ungeachtet der Kritik blieb sie bei ihrer Entscheidung.',ru:'Невзирая на критику, она осталась при своём решении.'},
+        ]
+      },
+      { id:'c2-sprachkritik', icon:'🔍', title:'Sprachkritik & Manipulation',
+        vocab:[
+          {de:'die Propaganda',ru:'пропаганда',tr:'propaganda',en:'propaganda',ph:'propaganda'},
+          {de:'der Euphemismus',ru:'эвфемизм',tr:'örtmece',en:'euphemism',ph:'öyfemismus'},
+          {de:'die Framing-Strategie',ru:'стратегия фреймирования',tr:'çerçeveleme stratejisi',en:'framing strategy',ph:'freming-shtrategie'},
+          {de:'manipulativ',ru:'манипулятивный',tr:'manipülatif',en:'manipulative',ph:'manipulatif'},
+          {de:'der Weasel-Begriff',ru:'размытое понятие',tr:'muğlak kavram',en:'weasel word',ph:'viizl-begrif'},
+          {de:'die Doublespeak',ru:'двойной язык',tr:'çifte anlam dili',en:'doublespeak',ph:'dablshpik'},
+          {de:'die Desinformation',ru:'дезинформация',tr:'dezenformasyon',en:'disinformation',ph:'dezinformatsion'},
+          {de:'verschleiern',ru:'маскировать/скрывать',tr:'gizlemek',en:'to obscure/conceal',ph:'fershlayrn'},
+          {de:'die Sprache des Machens',ru:'язык власти',tr:'iktidar dili',en:'language of power',ph:'shprakhe des makhns'},
+          {de:'entlarven',ru:'разоблачать',tr:'ifşa etmek',en:'to expose/unmask',ph:'entlarfn'},
+          {de:'die Implikatur',ru:'импликатура',tr:'implicature',en:'implicature',ph:'implikatur'},
+          {de:'der Spin',ru:'пропагандистский приём',tr:'spin',en:'spin',ph:'shpin'},
+          {de:'die Rhetorik der Angst',ru:'риторика страха',tr:'korku retoriği',en:'rhetoric of fear',ph:'retorik der angst'},
+          {de:'sprachliche Gewalt',ru:'языковое насилие',tr:'dilsel şiddet',en:'verbal violence',ph:'shprakhlibe gevalt'},
+        ],
+        grammar:[
+          {title:'Passivische Konstruktionen zur Verschleierung', text:'Passiv kann Verantwortung verschleiern:\n\n<b>Aktiv:</b> Die Regierung hat Fehler gemacht.\n<b>Passiv:</b> Fehler wurden gemacht. (Wer? unklar!)\n\n<b>Agenslos:</b> Es kam zu Gewalt.\n<b>Nominalisierung:</b> Die Gewaltanwendung...\n\nKritische Sprachanalyse erkennt diese Muster!', examples:['"Maßnahmen <b>wurden ergriffen</b>." (Von wem?)','Statt: "Wir haben gelogen." → "Es <b>kam zu</b> Fehlinformationen."','Die <b>Maßnahmenergreifung</b> war notwendig. (Nominalisierung)']},
+          {title:'Präsuppostionen — versteckte Annahmen', text:'Präsuppositionen sind implizite Annahmen in Aussagen:\n\n"Wann hören Sie auf zu lügen?" (Setzt voraus: Sie lügen!)\n"Selbst er weiß das." (Setzt voraus: Er ist dumm)\n\nFragen können Annahmen transportieren ohne sie zu behaupten.\nKritisches Lesen erkennt Präsuppositionen!', examples:['"<b>Noch immer</b> hat die Regierung nicht reagiert." (Vorwurf impliziert)','"<b>Sogar</b> der Minister stimmte zu." (Überraschung signalisiert)','Wann hört die <b>Korruption</b> in dieser Partei auf? (Setzt Korruption voraus)']},
+        ],
+        sentences:[
+          {de:'Euphemismen verschleiern häufig unangenehme Wahrheiten.',ru:'Эвфемизмы часто маскируют неприятные истины.',tr:'Örtmeceler sıkça hoş olmayan gerçekleri gizler.',en:'Euphemisms frequently conceal unpleasant truths.'},
+          {de:'Framing beeinflusst, wie wir Informationen wahrnehmen und bewerten.',ru:'Фреймирование влияет на то, как мы воспринимаем и оцениваем информацию.',tr:'Çerçeveleme bilgiyi nasıl algıladığımızı ve değerlendirdiğimizi etkiler.',en:'Framing influences how we perceive and evaluate information.'},
+          {de:'Desinformation nutzt oft die Form seriöser Berichterstattung.',ru:'Дезинформация часто использует форму серьёзной журналистики.',tr:'Dezenformasyon çoğu zaman ciddi habercilik biçimini kullanır.',en:'Disinformation often exploits the form of serious journalism.'},
+          {de:'Kritisches Sprachbewusstsein schützt vor Manipulation.',ru:'Критическое языковое сознание защищает от манипуляций.',tr:'Eleştirel dil bilinci manipülasyona karşı korur.',en:'Critical language awareness protects against manipulation.'},
         ]
       },
     ]
@@ -12811,7 +13301,388 @@ function updateNiveauWriteProgress() {
 }
 
 // ============================================================
-// ENGLISCH SPRACHNIVEAU — JS-Logik (eigene Sektion)
+// 🧩 LÜCKENTEXTE — Gap Fill Training
+// ============================================================
+var gapFillData = [
+  // Leicht
+  { level:'easy', sentence:'___ heißt du?', answer:'Wie', options:['Wie','Was','Wo','Wer'], translation:'Wie heißt du? — Wie ist dein Name?' },
+  { level:'easy', sentence:'Ich ___ aus Deutschland.', answer:'komme', options:['komme','gehe','bin','habe'], translation:'Ich komme aus Deutschland.' },
+  { level:'easy', sentence:'Das Wetter ist heute sehr ___.', answer:'schön', options:['schön','groß','alt','schnell'], translation:'Das Wetter ist heute sehr schön.' },
+  { level:'easy', sentence:'Ich ___ Hunger.', answer:'habe', options:['habe','bin','mache','gehe'], translation:'Ich habe Hunger.' },
+  { level:'easy', sentence:'___ ist die Kasse?', answer:'Wo', options:['Wo','Wie','Was','Wer'], translation:'Wo ist die Kasse?' },
+  { level:'easy', sentence:'Das kostet fünf ___.', answer:'Euro', options:['Euro','Liter','Meter','Kilo'], translation:'Das kostet fünf Euro.' },
+  { level:'easy', sentence:'Ich stehe um sieben Uhr ___.', answer:'auf', options:['auf','an','ab','zu'], translation:'Ich stehe um sieben Uhr auf. (aufstehen)' },
+  { level:'easy', sentence:'Meine Mutter heißt ___.', answer:'Maria', options:['Maria','Bruder','Schule','Haus'], translation:'Meine Mutter heißt Maria.' },
+  { level:'easy', sentence:'Ich ___ gern Tee.', answer:'trinke', options:['trinke','esse','lese','schlafe'], translation:'Ich trinke gern Tee.' },
+  { level:'easy', sentence:'Das Auto ist ___.', answer:'rot', options:['rot','links','oben','schnell'], translation:'Das Auto ist rot.' },
+  // Mittel
+  { level:'medium', sentence:'Obwohl es regnete, ___ wir spazieren.', answer:'gingen', options:['gingen','bleiben','hatten','wurden'], translation:'Obwohl es regnete, gingen wir spazieren.' },
+  { level:'medium', sentence:'Der Zug ___ in fünf Minuten ab.', answer:'fährt', options:['fährt','kommt','geht','bleibt'], translation:'Der Zug fährt in fünf Minuten ab.' },
+  { level:'medium', sentence:'Ich habe mich um die Stelle ___.', answer:'beworben', options:['beworben','gearbeitet','gefahren','getrunken'], translation:'Ich habe mich um die Stelle beworben.' },
+  { level:'medium', sentence:'Das Medikament wird dreimal täglich ___.', answer:'eingenommen', options:['eingenommen','gegeben','gelesen','geschrieben'], translation:'Das Medikament wird dreimal täglich eingenommen.' },
+  { level:'medium', sentence:'Wegen des Stresses ___ er krank.', answer:'wurde', options:['wurde','hat','ist','war'], translation:'Wegen des Stresses wurde er krank.' },
+  { level:'medium', sentence:'Die Inflation hat die Kaufkraft ___.', answer:'geschwächt', options:['geschwächt','gestärkt','gesteigert','verdoppelt'], translation:'Die Inflation hat die Kaufkraft geschwächt.' },
+  { level:'medium', sentence:'Er arbeitet, ___ er müde ist.', answer:'obwohl', options:['obwohl','weil','wenn','dass'], translation:'Er arbeitet, obwohl er müde ist.' },
+  { level:'medium', sentence:'Ich würde gern ein Zimmer ___.', answer:'buchen', options:['buchen','kaufen','mieten','leihen'], translation:'Ich würde gern ein Zimmer buchen.' },
+  { level:'medium', sentence:'Die Ergebnisse wurden ___ geprüft.', answer:'sorgfältig', options:['sorgfältig','schnell','selten','kaum'], translation:'Die Ergebnisse wurden sorgfältig geprüft.' },
+  { level:'medium', sentence:'Er behauptet, er ___ nichts gewusst.', answer:'habe', options:['habe','hat','hatte','haben'], translation:'Er behauptet, er habe nichts gewusst. (Konjunktiv I)' },
+  // Schwer
+  { level:'hard', sentence:'Wenngleich die Beweise fehlen, ___ die Theorie plausibel.', answer:'bleibt', options:['bleibt','ist','scheint','wirkt'], translation:'Wenngleich die Beweise fehlen, bleibt die Theorie plausibel.' },
+  { level:'hard', sentence:'Das ___ von allen kritisierte Gesetz trat in Kraft.', answer:'heftig', options:['heftig','lange','kaum','noch'], translation:'Das heftig von allen kritisierte Gesetz trat in Kraft.' },
+  { level:'hard', sentence:'Ungeachtet aller Widerstände ___ er sein Ziel.', answer:'verfolgte', options:['verfolgte','aufgab','vermied','schätzte'], translation:'Ungeachtet aller Widerstände verfolgte er sein Ziel.' },
+  { level:'hard', sentence:'Die Schlussfolgerung ___ sich aus den Daten.', answer:'ergibt', options:['ergibt','zeigt','macht','bringt'], translation:'Die Schlussfolgerung ergibt sich aus den Daten.' },
+  { level:'hard', sentence:'Man muss zwischen Korrelation und ___ unterscheiden.', answer:'Kausalität', options:['Kausalität','Qualität','Quantität','Kapazität'], translation:'Man muss zwischen Korrelation und Kausalität unterscheiden.' },
+  { level:'hard', sentence:'Die Autorin ___ sich der Ironie, um Kritik zu üben.', answer:'bedient', options:['bedient','benutzt','verwendet','nutzt'], translation:'Die Autorin bedient sich der Ironie, um Kritik zu üben.' },
+  { level:'hard', sentence:'Der Subtext ___ mehr als der explizite Text.', answer:'verrät', options:['verrät','zeigt','sagt','enthält'], translation:'Der Subtext verrät mehr als der explizite Text.' },
+  { level:'hard', sentence:'Hätte er rechtzeitig gewarnt, ___ das Unglück verhindert worden.', answer:'wäre', options:['wäre','würde','hätte','könnte'], translation:'Hätte er rechtzeitig gewarnt, wäre das Unglück verhindert worden.' },
+];
+
+var gapState = {
+  diff: 'easy', idx: 0, score: 0,
+  queue: [], answered: false, hintUsed: false
+};
+
+function setGapDiff(diff) {
+  gapState.diff = diff;
+  ['easy','medium','hard'].forEach(function(d) {
+    document.getElementById('gf-diff-'+d).className = 'btn'+(d===diff?' primary':'');
+  });
+  initGapFill();
+}
+
+function initGapFill() {
+  var pool = gapFillData.filter(function(g){ return g.level === gapState.diff; });
+  gapState.queue = pool.slice().sort(function(){ return Math.random()-.5; });
+  gapState.idx = 0; gapState.score = 0;
+  renderGapFill();
+}
+
+function renderGapFill() {
+  var q = gapState.queue;
+  if (gapState.idx >= q.length) {
+    // Fertig
+    document.getElementById('gf-sentence').innerHTML =
+      '<div style="text-align:center;padding:1rem;"><div style="font-size:2rem;margin-bottom:.5rem;">🎉</div>' +
+      '<div style="font-weight:700;">Abgeschlossen!</div>' +
+      '<div style="font-size:.82rem;color:var(--muted);margin-top:.3rem;">'+gapState.score+' / '+q.length+' richtig</div>' +
+      '<button class="btn primary" onclick="initGapFill()" style="margin-top:1rem;width:100%;">🔄 Nochmal</button></div>';
+    document.getElementById('gf-options').innerHTML = '';
+    document.getElementById('gf-feedback').textContent = '';
+    document.getElementById('gf-check-btn').style.display = 'none';
+    if (gapState.score === q.length) addXP(5);
+    updateGapProgress();
+    return;
+  }
+  var item = q[gapState.idx];
+  gapState.answered = false; gapState.hintUsed = false;
+  gapState.selected = null;
+
+  // Satz mit Lücke als Eingabefeld
+  var sentHTML = item.sentence.replace('___',
+    '<input id="gf-input" type="text" placeholder="?" ' +
+    'style="width:80px;background:var(--surface2);border:2px solid var(--accent);border-radius:6px;color:var(--text);' +
+    'padding:.2rem .4rem;font-size:.9rem;font-family:Syne,sans-serif;text-align:center;" ' +
+    'onkeydown="if(event.key===\'Enter\')gfCheck()">');
+  document.getElementById('gf-sentence').innerHTML = sentHTML;
+  document.getElementById('gf-feedback').textContent = '';
+  document.getElementById('gf-feedback').style.color = '';
+  document.getElementById('gf-check-btn').style.display = '';
+  document.getElementById('gf-next-btn').style.display = 'none';
+  document.getElementById('gf-progress-text').textContent = 'Aufgabe '+(gapState.idx+1)+' / '+q.length;
+
+  // Klick-Optionen als Chips
+  document.getElementById('gf-options').innerHTML = item.options.map(function(opt) {
+    return '<button class="btn" onclick="gfSelectOption(\''+opt+'\')" style="font-size:.82rem;padding:.35rem .65rem;" data-opt="'+opt+'">'+opt+'</button>';
+  }).join('');
+
+  updateGapProgress();
+  setTimeout(function(){ var inp=document.getElementById('gf-input'); if(inp) inp.focus(); },100);
+}
+
+function gfSelectOption(opt) {
+  if (gapState.answered) return;
+  gapState.selected = opt;
+  var inp = document.getElementById('gf-input');
+  if (inp) inp.value = opt;
+  // Aktiven Button markieren
+  document.querySelectorAll('[data-opt]').forEach(function(btn){
+    btn.className = 'btn'+(btn.dataset.opt===opt?' primary':'');
+  });
+}
+
+function gfHint() {
+  if (gapState.answered) return;
+  var item = gapState.queue[gapState.idx];
+  gapState.hintUsed = true;
+  var inp = document.getElementById('gf-input');
+  if (inp) { inp.value = item.answer.slice(0,2)+'...'; inp.focus(); }
+  document.getElementById('gf-feedback').textContent = '💡 ' + item.translation;
+  document.getElementById('gf-feedback').style.color = 'var(--muted)';
+}
+
+function gfCheck() {
+  if (gapState.answered) return;
+  var item = gapState.queue[gapState.idx];
+  var inp = document.getElementById('gf-input');
+  var input = inp ? inp.value.trim() : (gapState.selected || '');
+  var isOk = input.toLowerCase() === item.answer.toLowerCase();
+  gapState.answered = true;
+
+  if (isOk) {
+    document.getElementById('gf-feedback').textContent = '✓ Richtig! ' + item.translation;
+    document.getElementById('gf-feedback').style.color = 'var(--accent3)';
+    if (!gapState.hintUsed) { gapState.score++; addXP(1); }
+    setTimeout(gfNext, 1200);
+  } else {
+    document.getElementById('gf-feedback').textContent = '✗ Richtig: ' + item.answer + ' — ' + item.translation;
+    document.getElementById('gf-feedback').style.color = '#ef4444';
+    document.getElementById('gf-next-btn').style.display = '';
+  }
+  document.getElementById('gf-check-btn').style.display = 'none';
+  updateGapProgress();
+}
+
+function gfNext() {
+  gapState.idx++;
+  renderGapFill();
+}
+
+function updateGapProgress() {
+  var pct = gapState.queue.length > 0 ? Math.round((gapState.idx / gapState.queue.length)*100) : 0;
+  document.getElementById('gf-progress-bar').style.width = pct+'%';
+  document.getElementById('gf-score-text').textContent = gapState.score+' ✓';
+}
+
+// ============================================================
+// 🎯 TAGESAUFGABEN — Daily Tasks System
+// ============================================================
+var DAILY_TASKS_DEF = [
+  { id:'vocab10',   icon:'📚', title:'10 Vokabeln lernen',     desc:'Vokabeltraining durchführen',   type:'vocab',   target:10,  xp:20  },
+  { id:'quiz5',     icon:'❓', title:'5 Quiz-Fragen beantworten', desc:'Quiz absolvieren',            type:'quiz',    target:5,   xp:15  },
+  { id:'srs5',      icon:'🧠', title:'5 SRS-Karten wiederholen',  desc:'SRS-Training machen',         type:'srs',     target:5,   xp:15  },
+  { id:'write3',    icon:'✍️', title:'3 Wörter schreiben',      desc:'Schreibübung absolvieren',      type:'write',   target:3,   xp:10  },
+  { id:'gapfill3',  icon:'🧩', title:'3 Lückentexte lösen',    desc:'Lückentexte-Modus nutzen',      type:'gapfill', target:3,   xp:15  },
+  { id:'streak',    icon:'🔥', title:'Streak halten',           desc:'Heute mindestens 1 Wort lernen',type:'streak',  target:1,   xp:10  },
+];
+
+function getDailyTasksState() {
+  var today = new Date().toISOString().slice(0,10);
+  var raw = localStorage.getItem('lingua_daily_tasks');
+  var saved = raw ? JSON.parse(raw) : {};
+  if (saved.date !== today) {
+    // Neuer Tag — Reset
+    saved = { date: today, tasks: {}, bonusClaimed: false };
+    DAILY_TASKS_DEF.forEach(function(t){ saved.tasks[t.id] = 0; });
+    localStorage.setItem('lingua_daily_tasks', JSON.stringify(saved));
+  }
+  return saved;
+}
+
+function saveDailyTasksState(state) {
+  localStorage.setItem('lingua_daily_tasks', JSON.stringify(state));
+}
+
+function incrementDailyTask(type, amount) {
+  amount = amount || 1;
+  var state = getDailyTasksState();
+  DAILY_TASKS_DEF.forEach(function(task) {
+    if (task.type === type && state.tasks[task.id] < task.target) {
+      state.tasks[task.id] = Math.min(task.target, (state.tasks[task.id]||0) + amount);
+    }
+  });
+  saveDailyTasksState(state);
+  checkAllTasksDone();
+}
+
+function checkAllTasksDone() {
+  var state = getDailyTasksState();
+  var allDone = DAILY_TASKS_DEF.every(function(t){
+    return (state.tasks[t.id]||0) >= t.target;
+  });
+  if (allDone && !state.bonusClaimed) {
+    var bonusEl = document.getElementById('dt-bonus-area');
+    if (bonusEl) bonusEl.style.display = 'block';
+  }
+}
+
+function claimDailyBonus() {
+  var state = getDailyTasksState();
+  if (state.bonusClaimed) return;
+  state.bonusClaimed = true;
+  saveDailyTasksState(state);
+  addXP(50);
+  showToast('🎉 +50 XP Bonus! Alle Tagesaufgaben erledigt!');
+  document.getElementById('dt-claim-btn').disabled = true;
+  document.getElementById('dt-claim-btn').textContent = '✅ Bereits abgeholt';
+}
+
+function renderDailyTasks() {
+  var state = getDailyTasksState();
+  var today = new Date();
+  document.getElementById('dt-date').textContent =
+    today.toLocaleDateString('de-DE', {weekday:'long', day:'numeric', month:'long'});
+
+  var totalProgress = 0;
+  var totalTarget = DAILY_TASKS_DEF.length;
+  var taskHTML = '';
+
+  DAILY_TASKS_DEF.forEach(function(task) {
+    var progress = state.tasks[task.id] || 0;
+    var done = progress >= task.target;
+    if (done) totalProgress++;
+    var pct = Math.round((progress / task.target)*100);
+
+    taskHTML += '<div class="card" style="margin-bottom:.5rem;opacity:'+(done?'.7':'1')+';border-left:3px solid '+(done?'var(--accent3)':'var(--border)')+';">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;">' +
+      '<div style="display:flex;align-items:center;gap:.5rem;">' +
+      '<span style="font-size:1.1rem;">'+task.icon+'</span>' +
+      '<div><div style="font-size:.82rem;font-weight:700;">'+(done?'<s>':'')+task.title+(done?'</s>':'')+'</div>' +
+      '<div style="font-size:.68rem;color:var(--muted);">'+task.desc+'</div></div></div>' +
+      '<div style="font-size:.72rem;color:'+(done?'var(--accent3)':'var(--muted)')+';font-weight:700;white-space:nowrap;">' +
+      (done?'✓ ':'')+progress+' / '+task.target+' · +'+task.xp+' XP</div></div>' +
+      '<div style="background:var(--surface2);border-radius:3px;height:4px;overflow:hidden;">' +
+      '<div style="height:100%;background:'+(done?'var(--accent3)':'var(--accent)')+';border-radius:3px;width:'+pct+'%;transition:width .4s;"></div>' +
+      '</div></div>';
+  });
+
+  document.getElementById('dt-task-list').innerHTML = taskHTML;
+
+  var totalPct = Math.round((totalProgress/totalTarget)*100);
+  document.getElementById('dt-total-bar').style.width = totalPct+'%';
+  document.getElementById('dt-total-pct').textContent = totalPct+'%';
+
+  var xpToday = parseInt(localStorage.getItem('lingua_xp_today')||'0');
+  document.getElementById('dt-xp-today').textContent = '⚡ Heute verdient: '+xpToday+' XP';
+
+  // Bonus-Bereich
+  var allDone = totalProgress === totalTarget;
+  document.getElementById('dt-bonus-area').style.display = allDone ? 'block' : 'none';
+  if (allDone) {
+    var totalXp = DAILY_TASKS_DEF.reduce(function(sum,t){ return sum+t.xp; },0);
+    document.getElementById('dt-bonus-text').textContent = 'Bonus: +50 XP für das Abschließen aller '+totalTarget+' Aufgaben!';
+    if (state.bonusClaimed) {
+      document.getElementById('dt-claim-btn').disabled = true;
+      document.getElementById('dt-claim-btn').textContent = '✅ Bereits abgeholt';
+    }
+  }
+}
+
+// ============================================================
+// 📅 LERNKALENDER HEATMAP
+// ============================================================
+function recordLearningDay() {
+  var today = new Date().toISOString().slice(0,10);
+  var raw = localStorage.getItem('lingua_activity') || '{}';
+  var activity = JSON.parse(raw);
+  activity[today] = (activity[today]||0) + 1;
+  localStorage.setItem('lingua_activity', JSON.stringify(activity));
+}
+
+function renderCalendar() {
+  var raw = localStorage.getItem('lingua_activity') || '{}';
+  var activity = JSON.parse(raw);
+
+  // Stats berechnen
+  var dates = Object.keys(activity).sort();
+  var totalDays = dates.length;
+
+  // Streak berechnen
+  var streak = 0, bestStreak = 0, cur = 0;
+  var today = new Date();
+  for (var i = 0; i <= 365; i++) {
+    var d = new Date(today);
+    d.setDate(today.getDate() - i);
+    var key = d.toISOString().slice(0,10);
+    if (activity[key]) {
+      cur++;
+      if (i === 0 || streak > 0) streak = cur;
+      bestStreak = Math.max(bestStreak, cur);
+    } else {
+      if (i === 0) { streak = 0; }
+      else { bestStreak = Math.max(bestStreak, cur); cur = 0; }
+    }
+  }
+
+  document.getElementById('cal-streak').textContent = state.streak || streak;
+  document.getElementById('cal-total-days').textContent = totalDays;
+  document.getElementById('cal-best-streak').textContent = bestStreak;
+
+  // Heatmap — 12 Wochen (84 Tage), Montag=Start
+  var heatmapEl = document.getElementById('cal-heatmap');
+  heatmapEl.innerHTML = '';
+  var monthLabels = {};
+  var weeks = 16;
+  var startDate = new Date(today);
+  // Gehe zurück zu letztem Montag
+  var dow = today.getDay(); // 0=So
+  var daysBack = (dow === 0 ? 6 : dow - 1) + (weeks * 7);
+  startDate.setDate(today.getDate() - daysBack);
+
+  for (var w = 0; w < weeks; w++) {
+    var col = document.createElement('div');
+    col.style.cssText = 'display:flex;flex-direction:column;gap:2px;';
+    for (var d = 0; d < 7; d++) {
+      var cell = new Date(startDate);
+      cell.setDate(startDate.getDate() + w*7 + d);
+      var cellKey = cell.toISOString().slice(0,10);
+      var count = activity[cellKey] || 0;
+      var isFuture = cell > today;
+
+      var intensity = 0;
+      if (!isFuture && count > 0) {
+        intensity = count >= 20 ? 4 : count >= 10 ? 3 : count >= 5 ? 2 : 1;
+      }
+      var colors = ['var(--surface2)','rgba(34,197,94,.25)','rgba(34,197,94,.5)','rgba(34,197,94,.75)','rgba(34,197,94,1)'];
+      var box = document.createElement('div');
+      box.style.cssText = 'width:12px;height:12px;border-radius:2px;background:'+colors[intensity]+';cursor:'+(count>0?'pointer':'default')+';flex-shrink:0;';
+      if (count > 0) {
+        box.title = cell.toLocaleDateString('de-DE')+': '+count+' Aktionen';
+        box.onclick = (function(k, c){ return function(){
+          document.getElementById('cal-detail').textContent = new Date(k).toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})+' — '+c+' Lernaktionen';
+        }; })(cellKey, count);
+      }
+      if (isFuture) box.style.opacity = '0.2';
+      col.appendChild(box);
+
+      // Monatsbezeichnung
+      if (d === 0 && cell.getDate() <= 7) {
+        monthLabels[w] = cell.toLocaleDateString('de-DE',{month:'short'});
+      }
+    }
+    heatmapEl.appendChild(col);
+  }
+
+  // Monatsbeschriftungen
+  var mlEl = document.getElementById('cal-month-labels');
+  mlEl.innerHTML = '';
+  for (var wi = 0; wi < weeks; wi++) {
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'width:14px;text-align:center;overflow:hidden;flex-shrink:0;';
+    lbl.textContent = monthLabels[wi] || '';
+    mlEl.appendChild(lbl);
+  }
+
+  // Monatliche Balken
+  var monthly = {};
+  Object.keys(activity).forEach(function(key) {
+    var month = key.slice(0,7);
+    monthly[month] = (monthly[month]||0) + activity[key];
+  });
+  var monthKeys = Object.keys(monthly).sort().slice(-6);
+  var maxVal = Math.max.apply(null, monthKeys.map(function(k){ return monthly[k]; }));
+  document.getElementById('cal-monthly-bars').innerHTML = monthKeys.map(function(k) {
+    var pct = maxVal > 0 ? Math.round((monthly[k]/maxVal)*100) : 0;
+    var label = new Date(k+'-01').toLocaleDateString('de-DE',{month:'short', year:'2-digit'});
+    return '<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;">' +
+      '<div style="font-size:.65rem;color:var(--muted);width:30px;flex-shrink:0;">'+label+'</div>' +
+      '<div style="flex:1;background:var(--surface2);border-radius:3px;height:12px;overflow:hidden;">' +
+      '<div style="height:100%;background:var(--accent);border-radius:3px;width:'+pct+'%;transition:width .6s;"></div></div>' +
+      '<div style="font-size:.65rem;color:var(--muted);width:25px;text-align:right;">'+monthly[k]+'</div></div>';
+  }).join('');
+}
+
+// Tagesaktivität aufzeichnen wenn Vokabeln gelernt werden
+// (wird in incrementDailyLearned aufgerufen — bereits vorhanden)
 // f = Englisch (lernen), t = Deutsch, ru/tr = Weitere
 // ============================================================
 var enNiveauState = {
@@ -13146,6 +14017,11 @@ switchSection = function(id) {
   if (id === 'conjugate') { initConjugation(); renderQuickVerbs(); }
   if (id === 'deniveau')  { setNiveauLearnLang('de'); showNiveau('a1a2'); renderNiveauTopics(); }
   if (id === 'enniveau')  { initEnNiveau(); }
+  if (id === 'gapfill')   { initGapFill(); }
+  if (id === 'dialogs')   { initDialogs(); }
+  if (id === 'phrasal')   { initPhrasal(); }
+  if (id === 'dailytasks'){ renderDailyTasks(); }
+  if (id === 'calendar')  { renderCalendar(); }
 };
 
 // ============================================================
@@ -13398,8 +14274,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 59;
-var BUILD_VERSION = '5.6'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 63;
+var BUILD_VERSION = '6.0'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -13505,6 +14381,48 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  63: {
+    emoji: '🧪',
+    title: 'Test-Fix: VOCAB_RU_DE Zählung korrigiert',
+    items: [
+      '🔧 Test "VOCAB_RU_DE hat 5000+ Einträge" war falsch — EXT-Blöcke fehlten',
+      '✅ Neuer Test: VOCAB_RU_DE Basis ≥4500 + VOCAB[de] nach buildVocabDe ≥5000',
+      '📊 VOCAB_RU_DE Basis: ~4654 Einträge, mit EXT1/2/3: 5000+ — korrekt!',
+    ]
+  },
+  62: {
+    emoji: '🇩🇪',
+    title: 'Deutsch Niveau stark erweitert',
+    items: [
+      '📈 B1: +2 Themen (Gesundheitssystem & Vorsorge, Politik & Gesellschaft)',
+      '💼 B2: +2 Themen (Technik & Digitalisierung, Psychologie & Verhalten)',
+      '⚖️ C1: +2 Themen (Ethik & Philosophie, Sprache & Kommunikation)',
+      '🔍 C2: +1 Thema (Sprachkritik & Manipulation)',
+      '📊 DE Niveau jetzt: A1×6, A2×6, B1×6, B2×5, C1×4, C2×3 = 30 Themen',
+      '🧪 Tests für DE Niveau Vollständigkeit automatisch hinzugefügt',
+    ]
+  },
+  61: {
+    emoji: '📋',
+    title: 'Changelog erscheint immer beim ersten Start',
+    items: [
+      '📋 Changelog wird jetzt bei JEDEM neuen Build angezeigt',
+      '🆕 Auch beim allerersten Start erscheint der Changelog (nach 2.5s)',
+      '⏱ Beim Update: Changelog nach 1.2s — beim Erststart nach 2.5s (nach Onboarding)',
+    ]
+  },
+  60: {
+    emoji: '🧩',
+    title: 'Lückentexte, Tagesaufgaben & Kalender',
+    items: [
+      '🧩 Lückentexte: 27 Aufgaben (Leicht/Mittel/Schwer) mit Klick-Optionen + Tipp',
+      '🎯 Tagesaufgaben: 6 tägliche Ziele mit XP-Belohnung und +50 XP Bonus',
+      '📅 Lernkalender: Heatmap der letzten 16 Wochen + Monatsbalken',
+      '📊 Streak, Lerntage, Bester Streak in Kalender-Ansicht',
+      '🔗 Tagesaufgaben + Kalender werden automatisch beim Lernen aktualisiert',
+      '🧪 Tests für alle 3 neuen Features automatisch hinzugefügt',
+    ]
+  },
   59: {
     emoji: '📚',
     title: 'EN Niveau vollständig ausgebaut',
@@ -13754,13 +14672,13 @@ function showChangelog(versionOrBuild) {
 
 function checkAndShowChangelog() {
   var storedBuild = parseInt(localStorage.getItem('lingua_build') || '0', 10);
-  if (storedBuild === 0) {
-    localStorage.setItem('lingua_build', String(BUILD));
-    return; // Erststart — kein Changelog
-  }
+
   if (storedBuild < BUILD) {
+    // Neuer Build (oder Erststart) → Changelog immer zeigen
     localStorage.setItem('lingua_build', String(BUILD));
-    setTimeout(function() { showChangelog(BUILD); }, 1200);
+    // Beim Erststart etwas länger warten (nach Onboarding)
+    var delay = storedBuild === 0 ? 2500 : 1200;
+    setTimeout(function() { showChangelog(BUILD); }, delay);
   }
 }
 
@@ -14184,7 +15102,8 @@ window.linguaTests = {
     t.assert('VOCAB[ru] vorhanden', VOCAB['ru'] && Object.keys(VOCAB['ru']).length > 5);
     t.assert('VOCAB[pl] vorhanden', !!VOCAB['pl']);
     t.assert('VOCAB[de] lädt via buildVocabDe', (function(){ buildVocabDe(); return VOCAB['de'] && Object.keys(VOCAB['de']).length > 100; })());
-    t.assert('VOCAB_RU_DE hat 5000+ Einträge', (function(){ var all=[]; Object.values(VOCAB_RU_DE).forEach(function(v){all=all.concat(v);}); return all.length >= 5000; })());
+    t.assert('VOCAB_RU_DE hat 4500+ Basis-Einträge', (function(){ var all=[]; Object.values(VOCAB_RU_DE).forEach(function(v){all=all.concat(v);}); return all.length >= 4500; })(), 'Basis ohne EXT-Erweiterungen');
+    t.assert('VOCAB[de] hat nach buildVocabDe 5000+ Einträge', (function(){ buildVocabDe(); if(!VOCAB['de']) return false; var all=[]; Object.values(VOCAB['de']).forEach(function(v){all=all.concat(v);}); return all.length >= 5000; })(), 'Inklusive EXT1/EXT2/EXT3-Erweiterungen');
     t.assert('NIVEAU_DATA.a1 vorhanden', NIVEAU_DATA && NIVEAU_DATA.a1 && NIVEAU_DATA.a1.topics.length > 0);
     t.assert('NIVEAU_DATA alle Level', ['a1','a2','b1','b2','c1','c2'].every(function(l){ return !!NIVEAU_DATA[l]; }));
     t.assert('NIVEAU_DATA_EN.a1 vorhanden', NIVEAU_DATA_EN && NIVEAU_DATA_EN.a1 && NIVEAU_DATA_EN.a1.topics.length > 0);
@@ -14205,6 +15124,27 @@ window.linguaTests = {
     t.assert('EN B2 hat 4 Themen', NIVEAU_DATA_EN.b2 && NIVEAU_DATA_EN.b2.topics.length >= 4);
     t.assert('EN C1 hat 3 Themen', NIVEAU_DATA_EN.c1 && NIVEAU_DATA_EN.c1.topics.length >= 3);
     t.assert('EN C2 hat 2 Themen', NIVEAU_DATA_EN.c2 && NIVEAU_DATA_EN.c2.topics.length >= 2);
+
+
+    // DE Niveau Vollständigkeitsprüfung
+    t.assert('DE B1 hat 6 Themen', NIVEAU_DATA.b1 && NIVEAU_DATA.b1.topics.length >= 6);
+    t.assert('DE B2 hat 5 Themen', NIVEAU_DATA.b2 && NIVEAU_DATA.b2.topics.length >= 5);
+    t.assert('DE C1 hat 4 Themen', NIVEAU_DATA.c1 && NIVEAU_DATA.c1.topics.length >= 4);
+    t.assert('DE C2 hat 3 Themen', NIVEAU_DATA.c2 && NIVEAU_DATA.c2.topics.length >= 3);
+    t.assert('DE Niveau gesamt 30 Themen', (function(){
+      var tot=0; ['a1','a2','b1','b2','c1','c2'].forEach(function(l){ if(NIVEAU_DATA[l]) tot+=NIVEAU_DATA[l].topics.length; }); return tot>=30;
+    })());
+    // Neue Features
+    t.assert('id=gapfill existiert', !!document.getElementById('gapfill'));
+    t.assert('id=dailytasks existiert', !!document.getElementById('dailytasks'));
+    t.assert('id=calendar existiert', !!document.getElementById('calendar'));
+    t.assert('gapFillData hat 27 Aufgaben', gapFillData && gapFillData.length >= 27);
+    t.assert('DAILY_TASKS_DEF hat 6 Aufgaben', DAILY_TASKS_DEF && DAILY_TASKS_DEF.length === 6);
+    t.assert('initGapFill() existiert', typeof initGapFill === 'function');
+    t.assert('renderDailyTasks() existiert', typeof renderDailyTasks === 'function');
+    t.assert('renderCalendar() existiert', typeof renderCalendar === 'function');
+    t.assert('recordLearningDay() existiert', typeof recordLearningDay === 'function');
+    t.assert('incrementDailyTask() existiert', typeof incrementDailyTask === 'function');
     t.assert('EN Niveau gesamt 16+ Themen', (function(){
       var total=0; ['a1','a2','b1','b2','c1','c2'].forEach(function(l){ if(NIVEAU_DATA_EN[l]) total+=NIVEAU_DATA_EN[l].topics.length; }); return total>=16;
     })());
