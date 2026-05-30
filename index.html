@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" id="meta-description" content="LINGUA v5.1 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" id="meta-description" content="LINGUA v5.6 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v5.1 · by René Prause</title>
+<title>LINGUA v5.6 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -659,7 +659,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v5.1</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v5.6</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -1200,6 +1200,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <button class="btn" onclick="copyTranslation()" style="flex:1;min-width:100px;" id="ui-btn-copy">⧉ Kopieren</button>
       </div>
       <div id="trans-loading" style="display:none;margin-top:1rem;text-align:center;"><span class="spinner"></span> Übersetze...</div>
+      <div id="trans-status" style="font-size:.7rem;color:var(--muted);text-align:center;margin-top:.4rem;min-height:1rem;"></div>
     </div>
 
     <!-- KI ASSISTENT -->
@@ -1247,6 +1248,10 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
       <button class="btn primary" id="nlang-ru" onclick="setNiveauLang('ru')" style="flex:1;">🇷🇺 Russisch</button>
       <button class="btn" id="nlang-tr" onclick="setNiveauLang('tr')" style="flex:1;">🇹🇷 Türkisch</button>
     </div>
+
+    <!-- Niveau-Suche -->
+    <input type="text" id="niveau-search" placeholder="🔍 Thema suchen..." oninput="filterNiveauTopics(this.value)"
+      style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:.5rem .75rem;font-size:.78rem;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:.75rem;">
 
     <!-- Level Tabs -->
     <div style="display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;" id="niveau-tabs">
@@ -1419,6 +1424,10 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
       <button class="btn" id="en-nlang-tr" onclick="setEnNiveauLang('tr')" style="flex:1;">🇹🇷 Türkisch</button>
     </div>
 
+    <!-- EN Niveau-Suche -->
+    <input type="text" id="en-niveau-search" placeholder="🔍 Topic search..." oninput="filterEnNiveauTopics(this.value)"
+      style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:.5rem .75rem;font-size:.78rem;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:.75rem;">
+
     <!-- Level Tabs -->
     <div style="display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;">
       <button class="btn primary" onclick="showEnNiveau('a1a2')" id="en-tab-a1a2" style="flex:1;min-width:80px;">🌱 A1–A2</button>
@@ -1565,7 +1574,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v5.1</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v5.6</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -1726,6 +1735,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <button class="btn" onclick="showChangelog(CURRENT_VERSION)" style="flex:1;">
           🎉 Was ist neu?
         </button>
+        <button class="btn" onclick="runLinguaTests()" style="width:100%;margin-bottom:.5rem;font-size:.78rem;">🧪 Tests ausführen</button>
         <button class="btn primary" onclick="checkForUpdate()" id="set-update-btn" style="width:100%;">
           🔄 Update prüfen
         </button>
@@ -1733,7 +1743,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v5.1</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v5.6</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -10369,27 +10379,46 @@ async function doTranslate() {
   document.getElementById('trans-loading').style.display = 'block';
   document.getElementById('trans-output').value = '';
 
-  // DeepL nutzen wenn beide Sprachen unterstützt werden
+  // Status-Anzeige
+  var statusEl = document.getElementById('trans-status');
+  if (statusEl) statusEl.textContent = '';
+
   var deeplFrom = DEEPL_LANG_MAP[from];
   var deeplTo   = DEEPL_LANG_MAP[to];
+  var translated = false;
 
-  try {
-    if (deeplFrom && deeplTo) {
-      // translateWithDeepl nutzen (robuste Version mit mehreren Fallbacks)
+  // Versuch 1: DeepL (wenn beide Sprachen unterstützt)
+  if (deeplFrom && deeplTo) {
+    try {
+      if (statusEl) statusEl.textContent = '🔄 Übersetze mit DeepL...';
       var result = await translateWithDeepl(text, deeplTo, deeplFrom);
       document.getElementById('trans-output').value = result;
-    } else {
-      // Fallback: Claude für nicht-DeepL-Sprachen (sq, th)
+      if (statusEl) statusEl.textContent = '✓ DeepL';
+      translated = true;
+    } catch(e) {
+      if (statusEl) statusEl.textContent = '⚠ DeepL nicht erreichbar — versuche KI...';
+    }
+  }
+
+  // Versuch 2: Claude als Fallback (sq, th oder wenn DeepL fehlschlägt)
+  if (!translated) {
+    try {
+      if (statusEl) statusEl.textContent = '🤖 Übersetze mit KI...';
       const result = await callClaude({
-        model:'claude-sonnet-4-6', max_tokens:1000,
-        system:'Du bist ein praeziser Uebersetzer. Uebersetze den gegebenen Text von ' + fromName + ' nach ' + toName + '. Gib NUR die Uebersetzung aus, ohne Erklaerungen.',
+        model:'claude-sonnet-4-6', max_tokens:500,
+        system:'You are a precise translator. Translate from '+fromName+' to '+toName+'. Output ONLY the translation, no explanations.',
         messages:[{role:'user',content:text}]
       });
       document.getElementById('trans-output').value = result;
+      if (statusEl) statusEl.textContent = '✓ KI-Übersetzung';
+      translated = true;
+    } catch(e2) {
+      document.getElementById('trans-output').value = '';
+      if (statusEl) statusEl.textContent = '❌ Übersetzung fehlgeschlagen';
+      showToast('⚠ Übersetzung nicht möglich. Bitte API-Key prüfen.');
     }
-  } catch(e) {
-    document.getElementById('trans-output').value = '⚠ ' + (e.message || 'Fehler');
   }
+
   document.getElementById('trans-loading').style.display = 'none';
 }
 
@@ -11919,9 +11948,13 @@ var niveauState = {
   mode: 'vocab', vocabIdx: 0, revealed: false,
   grammarIdx: 0, sentenceIdx: 0,
   quizIdx: 0, quizScore: 0, quizAnswered: false,
-  lang: 'ru', // Übersetzungssprache: 'ru' oder 'tr'
-  progress: {} // topicId → {vocab: n, done: bool}
+  lang: 'ru',
+  progress: JSON.parse(localStorage.getItem('lingua_niveau_progress') || '{}')
 };
+
+function saveNiveauProgress() {
+  try { localStorage.setItem('lingua_niveau_progress', JSON.stringify(niveauState.progress)); } catch(e) {}
+}
 
 // niveauLearnLang: 'de' = Deutsch lernen, 'en' = Englisch lernen
 var niveauLearnLang = 'de';
@@ -12066,13 +12099,14 @@ function niveauVocabAnswer(knew) {
     if (!niveauState.progress[t.id]) niveauState.progress[t.id] = {vocab:0};
     niveauState.progress[t.id].vocab = Math.min(t.vocab.length, (niveauState.progress[t.id].vocab||0)+1);
     addXP(1);
+    saveNiveauProgress();
   }
   // 'next' = weiter ohne Wertung
   niveauState.vocabIdx++;
   if (niveauState.vocabIdx >= t.vocab.length) {
     niveauState.vocabIdx = 0;
     showToast('🎉 Alle Vokabeln dieser Einheit geübt!');
-    if (niveauState.progress[t.id]) niveauState.progress[t.id].done = true;
+    if (niveauState.progress[t.id]) { niveauState.progress[t.id].done = true; saveNiveauProgress(); }
   }
   renderNiveauVocab();
 }
@@ -12448,6 +12482,66 @@ var NIVEAU_DATA_EN = {
         {f:'I am applying for a project manager position.',t:'Ich bewerbe mich um eine Stelle als Projektmanager.'},{f:'Good work-life balance improves productivity.',t:'Gute Work-Life-Balance verbessert die Produktivität.'},
       ]
     },
+    { id:'en-b2-culture', icon:'🎭', title:'Culture & Society',
+      vocab:[
+        {f:'diversity',t:'Vielfalt',p:'daɪˈvɜːrsɪti'},{f:'integration',t:'Integration',p:'ˌɪntɪˈɡreɪʃən'},
+        {f:'prejudice',t:'Vorurteil',p:'ˈprɛdʒʊdɪs'},{f:'discrimination',t:'Diskriminierung',p:'dɪˌskrɪmɪˈneɪʃən'},
+        {f:'tolerance',t:'Toleranz',p:'ˈtɒlərəns'},{f:'stereotype',t:'Stereotyp',p:'ˈstɛrɪəʊtaɪp'},
+        {f:'heritage',t:'Kulturerbe',p:'ˈhɛrɪtɪdʒ'},{f:'tradition',t:'Tradition',p:'trəˈdɪʃən'},
+        {f:'globalisation',t:'Globalisierung',p:'ˌɡloʊbəlaɪˈzeɪʃən'},{f:'multiculturalism',t:'Multikulturalismus',p:'ˌmʌltɪˈkʌltʃərəlɪzəm'},
+        {f:'identity',t:'Identität',p:'aɪˈdɛntɪti'},{f:'mainstream',t:'Mainstream',p:'ˈmeɪnstriːm'},
+        {f:'social inequality',t:'soziale Ungleichheit',p:'ˈsoʊʃəl ɪnɪˈkwɒlɪti'},{f:'subculture',t:'Subkultur',p:'ˈsʌbkʌltʃər'},
+        {f:'media literacy',t:'Medienkompetenz',p:'ˈmiːdiə ˈlɪtərəsi'},{f:'assimilation',t:'Assimilation',p:'əˌsɪmɪˈleɪʃən'},
+      ],
+      grammar:[
+        {title:'Participle Clauses', text:'Partizipialkonstruktionen kürzen Relativsätze:\n\n<b>Growing up</b> in London, she speaks English fluently.\n= Because she grew up in London...\n\n<b>Influenced by</b> many cultures, the city is unique.\n= Because it is influenced by many cultures...\n\nDeutsch: Partizipialsatz', examples:['<b>Having lived</b> abroad, she is open-minded.','<b>Shaped by history</b>, traditions are hard to change.','<b>Influenced by</b> media, young people adopt new values.']},
+        {title:'Hedging Language', text:'Vorsichtige Aussagen (akademisch):\n\n<b>It tends to...</b> — Es neigt dazu...\n<b>This may suggest...</b> — Dies könnte darauf hinweisen...\n<b>It is generally believed...</b> — Es wird allgemein angenommen...\n\nVermeidet zu starke Behauptungen.', examples:['Discrimination <b>tends to</b> stem from ignorance.','<b>It is widely believed</b> that diversity benefits society.','This <b>may suggest</b> deeper structural problems.']},
+      ],
+      sentences:[
+        {f:'Cultural diversity enriches our society.',t:'Kulturelle Vielfalt bereichert unsere Gesellschaft.'},{f:'Prejudice often arises from a lack of knowledge.',t:'Vorurteile entstehen oft aus Unwissenheit.'},
+        {f:'Integration requires dialogue and mutual respect.',t:'Integration erfordert Dialog und gegenseitigen Respekt.'},{f:'We must challenge stereotypes in the media.',t:'Wir müssen Stereotypen in den Medien hinterfragen.'},
+      ]
+    },
+    { id:'en-b2-economy', icon:'📈', title:'Economy & Finance',
+      vocab:[
+        {f:'inflation',t:'Inflation',p:'ɪnˈfleɪʃən'},{f:'recession',t:'Rezession',p:'rɪˈsɛʃən'},
+        {f:'GDP',t:'BIP/Bruttoinlandsprodukt',p:'dʒiː diː piː'},{f:'to invest',t:'investieren',p:'tə ɪnˈvɛst'},
+        {f:'shares / stocks',t:'Aktien',p:'ʃɛrz'},{f:'interest rate',t:'Zinssatz',p:'ˈɪntrɪst reɪt'},
+        {f:'budget',t:'Budget/Haushalt',p:'ˈbʌdʒɪt'},{f:'debt',t:'Schulden',p:'dɛt'},
+        {f:'tax',t:'Steuer',p:'tæks'},{f:'pension',t:'Rente',p:'ˈpɛnʃən'},
+        {f:'loan',t:'Kredit/Darlehen',p:'loʊn'},{f:'stock market',t:'Börse',p:'stɒk ˈmɑːrkɪt'},
+        {f:'supply chain',t:'Lieferkette',p:'səˈplaɪ tʃeɪn'},{f:'trade deficit',t:'Handelsdefizit',p:'treɪd ˈdɛfɪsɪt'},
+        {f:'austerity',t:'Sparmaßnahmen',p:'ɒˈstɛrɪti'},{f:'bailout',t:'Rettungspaket',p:'ˈbeɪlaʊt'},
+      ],
+      grammar:[
+        {title:'Modals for Deduction: must/can\'t/might', text:'Schlussfolgerungen ausdrücken:\n\n<b>must</b> = fast sicher (positiv)\n<b>can\'t</b> = fast sicher (negativ)\n<b>might/could</b> = möglicherweise\n\nDeutsch: muss / kann nicht / könnte sein', examples:['The economy <b>must be</b> recovering — unemployment fell.','This policy <b>can\'t be</b> sustainable long-term.','Interest rates <b>might rise</b> next quarter.']},
+        {title:'Passive with Modal Verbs', text:'Passiv + Modalverb:\n<b>modal + be + past participle</b>\n\nTaxes <b>must be paid</b>.\nThe budget <b>should be</b> balanced.\nThese costs <b>cannot be</b> ignored.\n\nDeutsch: muss bezahlt werden usw.', examples:['The deficit <b>must be reduced</b> urgently.','New policies <b>should be implemented</b> carefully.','Economic inequality <b>cannot be ignored</b>.']},
+      ],
+      sentences:[
+        {f:'Inflation has weakened purchasing power.',t:'Die Inflation hat die Kaufkraft geschwächt.'},{f:'One should start saving for retirement early.',t:'Man sollte früh für die Rente sparen.'},
+        {f:'The company plans to invest in new markets.',t:'Das Unternehmen plant, in neue Märkte zu investieren.'},{f:'Interest rates might rise in the coming months.',t:'Die Zinssätze könnten in den kommenden Monaten steigen.'},
+      ]
+    },
+    { id:'en-b2-science', icon:'🔬', title:'Science & Technology',
+      vocab:[
+        {f:'research',t:'Forschung',p:'rɪˈsɜːrtʃ'},{f:'experiment',t:'Experiment',p:'ɪkˈspɛrɪmənt'},
+        {f:'hypothesis',t:'Hypothese',p:'haɪˈpɒθɪsɪs'},{f:'evidence',t:'Beweis/Belege',p:'ˈɛvɪdəns'},
+        {f:'peer review',t:'Fachbegutachtung',p:'pɪər rɪˈvjuː'},{f:'breakthrough',t:'Durchbruch',p:'ˈbreɪkθruː'},
+        {f:'artificial intelligence',t:'Künstliche Intelligenz',p:'ˌɑːrtɪˈfɪʃəl ɪnˈtɛlɪdʒəns'},
+        {f:'data privacy',t:'Datenschutz',p:'ˈdeɪtə ˈprɪvəsi'},{f:'algorithm',t:'Algorithmus',p:'ˈælɡərɪðəm'},
+        {f:'renewable energy',t:'erneuerbare Energie',p:'rɪˈnjuːəbəl ˈɛnərdʒi'},
+        {f:'innovation',t:'Innovation',p:'ˌɪnəˈveɪʃən'},{f:'automation',t:'Automatisierung',p:'ˌɔːtəˈmeɪʃən'},
+        {f:'biotechnology',t:'Biotechnologie',p:'ˌbaɪoʊtɛkˈnɒlədʒi'},{f:'space exploration',t:'Weltraumforschung',p:'speɪs ˌɛkspləˈreɪʃən'},
+        {f:'quantum computing',t:'Quantencomputing',p:'ˈkwɒntəm kəmˈpjuːtɪŋ'},{f:'nanotechnology',t:'Nanotechnologie',p:'ˌnænəʊtɛkˈnɒlədʒi'},
+      ],
+      grammar:[
+        {title:'Reporting Verbs (Academic)', text:'Präzise berichten ohne eigene Meinung:\n\n<b>claim</b> — behaupten\n<b>suggest</b> — nahelegen\n<b>argue</b> — argumentieren\n<b>conclude</b> — schlussfolgern\n<b>demonstrate</b> — demonstrieren\n\nJedes Verb impliziert eine andere Haltung!', examples:['Scientists <b>claim</b> the findings are conclusive.','The data <b>suggests</b> a link between X and Y.','Researchers <b>concluded</b> that further trials are needed.']},
+      ],
+      sentences:[
+        {f:'Artificial intelligence is transforming the job market.',t:'Künstliche Intelligenz verändert den Arbeitsmarkt.'},{f:'The study suggests a link between diet and mental health.',t:'Die Studie deutet auf einen Zusammenhang zwischen Ernährung und psychischer Gesundheit hin.'},
+        {f:'Renewable energy is key to tackling climate change.',t:'Erneuerbare Energie ist entscheidend im Kampf gegen den Klimawandel.'},{f:'Further research is needed to confirm these findings.',t:'Weitere Forschung ist erforderlich, um diese Ergebnisse zu bestätigen.'},
+      ]
+    },
   ]},
   c1: { label:'C1', topics: [
     { id:'en-c1-rhetoric', icon:'🎤', title:'Rhetoric & Argumentation',
@@ -12468,6 +12562,43 @@ var NIVEAU_DATA_EN = {
       sentences:[
         {f:'Your argument is convincing but lacks evidence.',t:'Ihr Argument ist überzeugend, aber es fehlen Belege.'},{f:'We must distinguish between correlation and causation.',t:'Wir müssen zwischen Korrelation und Kausalität unterscheiden.'},
         {f:'Not only is the claim wrong, but it is misleading.',t:'Die Aussage ist nicht nur falsch, sondern auch irreführend.'},{f:'What I find most compelling is the nuanced approach.',t:'Was ich am überzeugendsten finde, ist der nuancierte Ansatz.'},
+      ]
+    },
+    { id:'en-c1-academic', icon:'📖', title:'Academic Writing',
+      vocab:[
+        {f:'methodology',t:'Methodik',p:'ˌmɛθəˈdɒlədʒi'},{f:'hypothesis',t:'Hypothese',p:'haɪˈpɒθɪsɪs'},
+        {f:'to substantiate',t:'belegen/untermauern',p:'tə səbˈstænʃieɪt'},{f:'discourse',t:'Diskurs',p:'ˈdɪskɔːrs'},
+        {f:'to exemplify',t:'veranschaulichen',p:'tə ɪɡˈzɛmplɪfaɪ'},{f:'paradigm',t:'Paradigma',p:'ˈpærədaɪm'},
+        {f:'critique',t:'Kritik/Analyse',p:'krɪˈtiːk'},{f:'to synthesise',t:'zusammenfassen/synthetisieren',p:'tə ˈsɪnθɪsaɪz'},
+        {f:'coherent',t:'kohärent/schlüssig',p:'koʊˈhɪərənt'},{f:'empirical',t:'empirisch',p:'ɪmˈpɪrɪkəl'},
+        {f:'to elaborate on',t:'ausführen/vertiefen',p:'tə ɪˈlæbəreɪt ɒn'},{f:'caveat',t:'Einschränkung/Vorbehalt',p:'ˈkæviæt'},
+        {f:'to corroborate',t:'bestätigen/bekräftigen',p:'tə kəˈrɒbəreɪt'},{f:'seminal',t:'grundlegend/wegweisend',p:'ˈsɛmɪnəl'},
+      ],
+      grammar:[
+        {title:'Complex Noun Phrases', text:'Lange Nominalphrasen im akademischen Stil:\n\n<b>The rapid development of AI-driven solutions</b>\n\nStruktur: Adjektiv + Partizip + Nomen + Präposition + Objekt\n\nKomprimiert viel Information in ein Nomen!\nDeutsch: nominaler Stil', examples:['<b>The widespread adoption of renewable energy</b> is crucial.','<b>A thorough analysis of existing research</b> reveals gaps.','<b>The growing body of evidence</b> supports this view.']},
+        {title:'Concession & Contrast', text:'Einräumen und kontrastieren:\n\n<b>While / Although</b> — obwohl\n<b>Nevertheless</b> — nichtsdestotrotz\n<b>Even so</b> — trotzdem\n<b>Granted</b> — zugegeben\n\nBauen Argumentation auf!', examples:['<b>While</b> the evidence is compelling, limitations exist.','<b>Granted</b>, the sample size is small; <b>nevertheless</b>, the results are significant.']},
+      ],
+      sentences:[
+        {f:'The study fails to account for confounding variables.',t:'Die Studie berücksichtigt keine Störvariablen.'},{f:'While the evidence is compelling, further research is needed.',t:'Obwohl die Beweise überzeugend sind, ist weitere Forschung nötig.'},
+        {f:'This paper aims to synthesise existing theories.',t:'Dieses Paper zielt darauf ab, bestehende Theorien zu synthetisieren.'},{f:'The findings substantiate the original hypothesis.',t:'Die Ergebnisse bestätigen die ursprüngliche Hypothese.'},
+      ]
+    },
+    { id:'en-c1-literature', icon:'📚', title:'Literature & Language',
+      vocab:[
+        {f:'metaphor',t:'Metapher',p:'ˈmɛtəfər'},{f:'irony',t:'Ironie',p:'ˈaɪərəni'},
+        {f:'allegory',t:'Allegorie',p:'ˈæləɡɔːri'},{f:'connotation',t:'Konnotation',p:'ˌkɒnəˈteɪʃən'},
+        {f:'narrative',t:'Erzählung/Narrativ',p:'ˈnærətɪv'},{f:'ambiguity',t:'Mehrdeutigkeit',p:'ˌæmbɪˈɡjuːɪti'},
+        {f:'protagonist',t:'Protagonist',p:'prəˈtæɡənɪst'},{f:'subtext',t:'Subtext/Untertext',p:'ˈsʌbtɛkst'},
+        {f:'to allude to',t:'anspielen auf',p:'tə əˈluːd tə'},{f:'figurative language',t:'bildliche Sprache',p:'ˈfɪɡərətɪv ˈlæŋɡwɪdʒ'},
+        {f:'prose',t:'Prosa',p:'proʊz'},{f:'verse',t:'Vers/Lyrik',p:'vɜːrs'},
+        {f:'to portray',t:'darstellen/schildern',p:'tə pɔːrˈtreɪ'},{f:'imagery',t:'Bildsprache',p:'ˈɪmɪdʒri'},
+      ],
+      grammar:[
+        {title:'Fronting for Emphasis', text:'Satzelement an den Anfang stellen:\n\nNormal: I have never seen such writing.\nFronted: <b>Never have I seen</b> such writing.\n\nNormal: She is a brilliant author.\nFronted: <b>A brilliant author she is.</b>\n\nErzeugt starken literarischen Effekt!', examples:['<b>Rarely does</b> a novel capture the human condition so vividly.','<b>Such beauty</b> had he never encountered in any poem.','<b>Only then</b> did the reader understand the allegory.']},
+      ],
+      sentences:[
+        {f:'The metaphor enriches the meaning of the text.',t:'Die Metapher bereichert die Bedeutung des Textes.'},{f:'The author uses irony to critique social norms.',t:'Der Autor nutzt Ironie, um soziale Normen zu kritisieren.'},
+        {f:'Rarely does a novel capture the human experience so vividly.',t:'Selten fängt ein Roman die menschliche Erfahrung so lebendig ein.'},{f:'The subtext reveals more than the explicit narrative.',t:'Der Subtext offenbart mehr als die explizite Erzählung.'},
       ]
     },
   ]},
@@ -12494,6 +12625,25 @@ var NIVEAU_DATA_EN = {
       sentences:[
         {f:'He hit the nail on the head — that is exactly what I meant.',t:'Er traf den Nagel auf den Kopf — genau das meinte ich.'},{f:'Stop beating around the bush!',t:'Hör auf, um den heißen Brei herumzureden!'},
         {f:'If I were you, I would reconsider that decision.',t:'An deiner Stelle würde ich diese Entscheidung überdenken.'},{f:'I recommend that this matter be reviewed immediately.',t:'Ich empfehle, dass diese Angelegenheit sofort überprüft wird.'},
+      ]
+    },
+    { id:'en-c2-style', icon:'✍️', title:'Stylistics & Register',
+      vocab:[
+        {f:'register',t:'Sprachregister',p:'ˈrɛdʒɪstər'},{f:'colloquial',t:'umgangssprachlich',p:'kəˈloʊkwiəl'},
+        {f:'archaic',t:'veraltet/archaisch',p:'ɑːrˈkeɪɪk'},{f:'euphemism',t:'Euphemismus',p:'ˈjuːfəmɪzəm'},
+        {f:'to understate',t:'untertreiben',p:'tə ˌʌndəˈsteɪt'},{f:'litotes',t:'Litotes/Untertreibung',p:'ˈlaɪtətiːz'},
+        {f:'rhetoric',t:'Rhetorik',p:'ˈrɛtərɪk'},{f:'solecism',t:'Sprachfehler',p:'ˈsɒlɪsɪzəm'},
+        {f:'vernacular',t:'Volkssprache/Dialekt',p:'vəˈnækjʊlər'},{f:'to paraphrase',t:'umformulieren',p:'tə ˈpærəfreɪz'},
+        {f:'didactic',t:'didaktisch/belehrend',p:'daɪˈdæktɪk'},{f:'polemical',t:'polemisch',p:'pəˈlɛmɪkəl'},
+        {f:'to juxtapose',t:'gegenüberstellen',p:'tə ˌdʒʌkstəˈpoʊz'},{f:'tautology',t:'Tautologie',p:'tɔːˈtɒlədʒi'},
+      ],
+      grammar:[
+        {title:'Absolute Constructions & Ellipsis', text:'Hochsprachliche Verdichtung:\n\n<b>Ellipsis</b>: Weglassen selbstverständlicher Teile\n"Are you coming?" — "Eventually." (statt "I am coming eventually.")\n\n<b>Absolute construction</b>:\n"<b>All things considered</b>, it was a success."\n"<b>Weather permitting</b>, we will proceed."\n\nDeutsch: absolute Partizipialkonstruktion', examples:['<b>All things considered</b>, the outcome was satisfactory.','<b>Given the circumstances</b>, her response was appropriate.','Time <b>allowing</b>, we shall discuss this further.']},
+        {title:'Archaisms & Elevated Diction', text:'Gehobener / archaischer Wortschatz:\n\n<b>Formal:</b> commence, endeavour, procure\n<b>Neutral:</b> start, try, get\n<b>Archaic:</b> hath, doth, wherefore\n\nWird für Stilwirkung eingesetzt — Literatur, Recht, Ironie', examples:['She <b>endeavoured</b> to remain composed. (formal)','<b>Wherefore</b> art thou Romeo? (archaic)','I shall <b>commence</b> proceedings immediately. (legal)']},
+      ],
+      sentences:[
+        {f:'The choice of register profoundly affects the reader.',t:'Die Wahl des Sprachregisters beeinflusst den Leser tiefgreifend.'},{f:'His use of understatement creates a powerful comic effect.',t:'Sein Einsatz der Untertreibung erzeugt einen starken komischen Effekt.'},
+        {f:'All things considered, the novel is a masterpiece of irony.',t:'Alles in allem ist der Roman ein Meisterwerk der Ironie.'},{f:'She juxtaposed formal and colloquial language to great effect.',t:'Sie stellte gehobene und umgangssprachliche Sprache wirkungsvoll gegenüber.'},
       ]
     },
   ]},
@@ -12538,10 +12688,10 @@ function renderNiveauWrite() {
   ws.hintCount = 0;
   ws.checked = false;
 
-  // Zeige Übersetzung als Aufgabe, Nutzer soll Deutsch tippen
+  // Zeige Übersetzung in der gewählten Sprache — Nutzer tippt Deutsch
   var lang = niveauState.lang;
-  var translation = lang === 'tr' ? (w.tr || w.ru) : w.ru;
-  var flag = lang === 'tr' ? '🇹🇷' : '🇷🇺';
+  var translation = lang === 'tr' ? (w.tr || w.ru) : lang === 'en' ? (w.en || w.ru) : w.ru;
+  var flag = lang === 'tr' ? '🇹🇷' : lang === 'en' ? '🇬🇧' : '🇷🇺';
 
   document.getElementById('nex-write-prompt').textContent = translation;
   document.getElementById('nex-write-prompt-lang').textContent = flag + ' Tippe das deutsche Wort';
@@ -12668,8 +12818,13 @@ var enNiveauState = {
   level:null, topicId:null, topic:null, lang:'de',
   mode:'vocab', vocabIdx:0, revealed:false,
   grammarIdx:0, sentenceIdx:0,
-  quizIdx:0, quizScore:0, quizAnswered:false, progress:{}
+  quizIdx:0, quizScore:0, quizAnswered:false,
+  progress: JSON.parse(localStorage.getItem('lingua_en_niveau_progress') || '{}')
 };
+
+function saveEnNiveauProgress() {
+  try { localStorage.setItem('lingua_en_niveau_progress', JSON.stringify(enNiveauState.progress)); } catch(e) {}
+}
 
 function setEnNiveauLang(lang) {
   enNiveauState.lang = lang;
@@ -12775,7 +12930,6 @@ function enNiveauSpeakWord() {
 }
 
 function enNiveauVocabAnswer(knew) {
-  // Buttons für nächste Karte ausblenden
   var btns = document.getElementById('en-nex-vocab-btns');
   if (btns) btns.style.display = 'none';
 
@@ -12784,12 +12938,16 @@ function enNiveauVocabAnswer(knew) {
     if (!enNiveauState.progress[t.id]) enNiveauState.progress[t.id] = {vocab:0};
     enNiveauState.progress[t.id].vocab = Math.min(t.vocab.length, (enNiveauState.progress[t.id].vocab||0)+1);
     addXP(1); incrementDailyLearned();
+    saveEnNiveauProgress();
   }
   enNiveauState.vocabIdx++;
   if (enNiveauState.vocabIdx >= t.vocab.length) {
     enNiveauState.vocabIdx = 0;
     showToast('🎉 All words of this unit done!');
-    if (knew !== false && enNiveauState.progress[t.id]) enNiveauState.progress[t.id].done = true;
+    if (knew !== false && enNiveauState.progress[t.id]) {
+      enNiveauState.progress[t.id].done = true;
+      saveEnNiveauProgress();
+    }
   }
   enRenderVocab();
 }
@@ -12972,16 +13130,22 @@ function enUpdateWriteProgress() {
 // ============================================================
 // OVERRIDE switchSection to handle new sections
 // ============================================================
+// ============================================================
+// SINGLE switchSection OVERRIDE — alle Handler an einem Ort
+// ============================================================
 var _origSwitchSection = switchSection;
 switchSection = function(id) {
   _origSwitchSection(id);
-  if (id === 'srs') initSRS();
-  if (id === 'write') initWrite();
-  if (id === 'stats') { updateAllStats(); renderGoalOptions(); }
-  if (id === 'badges') renderBadges();
-  if (id === 'path') renderLearningPath();
-  if (id === 'deniveau') { setNiveauLearnLang('de'); showNiveau('a1a2'); renderNiveauTopics(); }
-  if (id === 'enniveau') { initEnNiveau(); }
+  // Navigation-spezifische Initialisierungen
+  if (id === 'srs')       initSRS();
+  if (id === 'write')     initWrite();
+  if (id === 'stats')     { updateAllStats(); renderGoalOptions(); }
+  if (id === 'badges')    renderBadges();
+  if (id === 'path')      renderLearningPath();
+  if (id === 'search')    { initSearchLangFilter(); }
+  if (id === 'conjugate') { initConjugation(); renderQuickVerbs(); }
+  if (id === 'deniveau')  { setNiveauLearnLang('de'); showNiveau('a1a2'); renderNiveauTopics(); }
+  if (id === 'enniveau')  { initEnNiveau(); }
 };
 
 // ============================================================
@@ -13118,8 +13282,13 @@ var ONBOARDING_STEPS = [
 var onboardingStep = 0;
 
 function showOnboarding() {
-  // Immer anzeigen bei jedem Seitenstart — außer Nutzer hat "Nicht mehr zeigen" gewählt
+  // Nur zeigen wenn: noch nie gesehen ODER neue Version
   if (localStorage.getItem('lingua_onboarding_disabled') === '1') return;
+  var seenVersion = localStorage.getItem('lingua_onboarded_version') || '0.0';
+  var currentVersion = window.CURRENT_VERSION || BUILD_VERSION;
+  var alreadySeen = localStorage.getItem('lingua_onboarded') === '1';
+  // Zeige Tutorial wenn: erstmals ODER Version hat sich geändert
+  if (alreadySeen && seenVersion === currentVersion) return;
   onboardingStep = 0;
   renderOnboardingStep();
   document.getElementById('onboarding-overlay').classList.remove('hidden');
@@ -13229,8 +13398,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 56;
-var BUILD_VERSION = '5.3'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 59;
+var BUILD_VERSION = '5.6'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -13336,6 +13505,40 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  59: {
+    emoji: '📚',
+    title: 'EN Niveau vollständig ausgebaut',
+    items: [
+      '📈 EN B2: +3 Themen (Culture & Society, Economy, Science & Tech)',
+      '🎓 EN C1: +2 Themen (Academic Writing, Literature & Language)',
+      '👑 EN C2: +1 Thema (Stylistics & Register)',
+      '🧪 Tests automatisch auf neue Inhalte erweitert (EN Niveau Vollständigkeit)',
+      '📊 EN Niveau jetzt: A1×6, A2×4, B1×3, B2×4, C1×3, C2×2 = 22 Themen',
+    ]
+  },
+  58: {
+    emoji: '🧪',
+    title: 'Fixes 3,6,8,10 + erweiterte Tests',
+    items: [
+      'Fix 3: Tutorial erscheint nur bei neuer Programmversion, nicht jedem Start',
+      'Fix 6: DeepL-Fehler im Übersetzer sichtbar + automatischer Fallback auf KI',
+      'Fix 8: Suchfeld in DE- und EN-Niveau — Themen live filtern',
+      'Fix 10: Schreib-Modus nutzt gewählte Übersetzungssprache (RU/TR/EN)',
+      '🧪 Test-Suite erweitert: 60+ Tests, 5 Suiten, selbst-erweiterbar via register()',
+      '🧪 Test-Bericht gruppiert nach Suiten mit Farbcodierung',
+    ]
+  },
+  57: {
+    emoji: '🧪',
+    title: 'Tests + Fixes: switchSection & Fortschritt',
+    items: [
+      '🔧 switchSection doppeltes Override zusammengeführt — kein Fehlerrisiko mehr',
+      '💾 Niveau-Fortschritt wird in localStorage gespeichert — bleibt nach Reload erhalten',
+      '💾 EN Niveau-Fortschritt ebenfalls persistent gespeichert',
+      '🧪 Automatische Test-Suite eingebaut (Einstellungen → Tests ausführen)',
+      '🧪 50 Tests: Daten, State, DOM, localStorage, Funktionen',
+    ]
+  },
   56: {
     emoji: '→',
     title: 'Weiter-Button in allen Vokabeltrainings',
@@ -13906,12 +14109,237 @@ function restartConjQuiz() {
 }
 
 // Override switchSection to init new sections
-var _prevSwitch = switchSection;
-switchSection = function(id) {
-  _prevSwitch(id);
-  if (id === 'search') { initSearchLangFilter(); }
-  if (id === 'conjugate') { initConjugation(); renderQuickVerbs(); }
+// ============================================================
+// NIVEAU SUCHFILTER
+// ============================================================
+function filterNiveauTopics(query) {
+  var q = query.trim().toLowerCase();
+  ['a1','a2','b1','b2','c1','c2'].forEach(function(lvl) {
+    var el = document.getElementById('topics-'+lvl);
+    if (!el) return;
+    var data = getNiveauData()[lvl];
+    if (!data) return;
+    var btns = el.querySelectorAll('.niveau-topic-btn');
+    var anyVisible = false;
+    data.topics.forEach(function(t, i) {
+      var btn = btns[i];
+      if (!btn) return;
+      var match = !q || t.title.toLowerCase().includes(q) || t.icon.includes(q);
+      btn.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    // Level-Card ausblenden wenn keine Treffer
+    var card = el.closest('.card');
+    if (card) card.style.display = anyVisible || !q ? '' : 'none';
+  });
+}
+
+function filterEnNiveauTopics(query) {
+  var q = query.trim().toLowerCase();
+  ['a1','a2','b1','b2','c1','c2'].forEach(function(lvl) {
+    var el = document.getElementById('en-topics-'+lvl);
+    if (!el || !NIVEAU_DATA_EN[lvl]) return;
+    var btns = el.querySelectorAll('.niveau-topic-btn');
+    var anyVisible = false;
+    NIVEAU_DATA_EN[lvl].topics.forEach(function(t, i) {
+      var btn = btns[i];
+      if (!btn) return;
+      var match = !q || t.title.toLowerCase().includes(q) || t.icon.includes(q);
+      btn.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    var card = el.closest('.card');
+    if (card) card.style.display = anyVisible || !q ? '' : 'none';
+  });
+}
+
+// ============================================================
+// LINGUA TEST SUITE — Automatisierte Selbsttests
+// Wird automatisch mit jedem neuen Feature erweitert
+// Aufruf: runLinguaTests() oder Einstellungen → 🧪 Tests
+// ============================================================
+window.linguaTests = {
+
+  results: [],
+  _suites: [], // Registrierte Test-Suites (auto-erweiterbar)
+
+  // Neue Test-Suite registrieren (von außen aufrufbar)
+  register: function(name, fn) {
+    this._suites.push({ name: name, fn: fn });
+  },
+
+  assert: function(name, condition, detail) {
+    var ok = !!condition;
+    this.results.push({ name: name, ok: ok, detail: detail || '', suite: this._currentSuite || 'Core' });
+    return ok;
+  },
+
+  run: function() {
+    this.results = [];
+    var t = this;
+
+    // === SUITE: DATEN ===
+    t._currentSuite = 'Daten';
+    t.assert('VOCAB hat ≥5 Sprachen', Object.keys(VOCAB).length >= 5);
+    t.assert('VOCAB[ru] vorhanden', VOCAB['ru'] && Object.keys(VOCAB['ru']).length > 5);
+    t.assert('VOCAB[pl] vorhanden', !!VOCAB['pl']);
+    t.assert('VOCAB[de] lädt via buildVocabDe', (function(){ buildVocabDe(); return VOCAB['de'] && Object.keys(VOCAB['de']).length > 100; })());
+    t.assert('VOCAB_RU_DE hat 5000+ Einträge', (function(){ var all=[]; Object.values(VOCAB_RU_DE).forEach(function(v){all=all.concat(v);}); return all.length >= 5000; })());
+    t.assert('NIVEAU_DATA.a1 vorhanden', NIVEAU_DATA && NIVEAU_DATA.a1 && NIVEAU_DATA.a1.topics.length > 0);
+    t.assert('NIVEAU_DATA alle Level', ['a1','a2','b1','b2','c1','c2'].every(function(l){ return !!NIVEAU_DATA[l]; }));
+    t.assert('NIVEAU_DATA_EN.a1 vorhanden', NIVEAU_DATA_EN && NIVEAU_DATA_EN.a1 && NIVEAU_DATA_EN.a1.topics.length > 0);
+    t.assert('NIVEAU_DATA_EN alle Level', ['a1','a2','b1','b2','c1','c2'].every(function(l){ return !!NIVEAU_DATA_EN[l]; }));
+    t.assert('NIVEAU_DATA Vokabeln haben de/ru/ph', (function(){ var w=NIVEAU_DATA.a1.topics[0].vocab[0]; return w.de&&w.ru&&w.ph; })());
+    t.assert('NIVEAU_DATA_EN Vokabeln haben f/t/p', (function(){ var w=NIVEAU_DATA_EN.a1.topics[0].vocab[0]; return w.f&&w.t&&w.p; })());
+    t.assert('NIVEAU_DATA Grammatik vorhanden', NIVEAU_DATA.a1.topics[0].grammar && NIVEAU_DATA.a1.topics[0].grammar.length > 0);
+    t.assert('NIVEAU_DATA Sätze vorhanden', NIVEAU_DATA.a1.topics[0].sentences && NIVEAU_DATA.a1.topics[0].sentences.length > 0);
+    t.assert('CHANGELOG hat aktuellen BUILD', !!CHANGELOG[BUILD]);
+    t.assert('LANG_NAMES hat 13 Sprachen', Object.keys(LANG_NAMES).length === 13);
+    t.assert('LANG_NAMES enthält pl', !!LANG_NAMES['pl']);
+    t.assert('LANG_EMOJI konsistent mit LANG_NAMES', Object.keys(LANG_EMOJI).length === Object.keys(LANG_NAMES).length);
+    t.assert('UI_STRINGS hat de/ru/pl/tr/en', ['de','ru','pl','tr','en'].every(function(l){ return !!UI_STRINGS[l]; }));
+    t.assert('DEEPL_DEFAULT_KEY gesetzt', DEEPL_DEFAULT_KEY && DEEPL_DEFAULT_KEY.length > 10);
+    t.assert('DEEPL_PROXY_URL definiert', typeof DEEPL_PROXY_URL !== 'undefined');
+    t.assert('DEEPL_LANG_MAP hat pl', DEEPL_LANG_MAP && DEEPL_LANG_MAP['pl'] === 'PL');
+    // EN Niveau Vollständigkeitsprüfung (auto-erweitert)
+    t.assert('EN B2 hat 4 Themen', NIVEAU_DATA_EN.b2 && NIVEAU_DATA_EN.b2.topics.length >= 4);
+    t.assert('EN C1 hat 3 Themen', NIVEAU_DATA_EN.c1 && NIVEAU_DATA_EN.c1.topics.length >= 3);
+    t.assert('EN C2 hat 2 Themen', NIVEAU_DATA_EN.c2 && NIVEAU_DATA_EN.c2.topics.length >= 2);
+    t.assert('EN Niveau gesamt 16+ Themen', (function(){
+      var total=0; ['a1','a2','b1','b2','c1','c2'].forEach(function(l){ if(NIVEAU_DATA_EN[l]) total+=NIVEAU_DATA_EN[l].topics.length; }); return total>=16;
+    })());
+
+    // === SUITE: STATE ===
+    t._currentSuite = 'State';
+    t.assert('state.lang ist gültig', !!LANG_NAMES[state.lang]);
+    t.assert('niveauState.progress ist Objekt', typeof niveauState.progress === 'object' && niveauState.progress !== null);
+    t.assert('enNiveauState.progress ist Objekt', typeof enNiveauState.progress === 'object' && enNiveauState.progress !== null);
+    t.assert('niveauState.lang gültig', ['ru','tr','en'].includes(niveauState.lang));
+    t.assert('enNiveauState.lang gültig', ['de','ru','tr'].includes(enNiveauState.lang));
+    t.assert('niveauLearnLang gültig', ['de','en'].includes(niveauLearnLang));
+    t.assert('BUILD ist Zahl > 0', typeof BUILD === 'number' && BUILD > 0);
+    t.assert('BUILD_VERSION Format korrekt', /^\d+\.\d+$/.test(BUILD_VERSION));
+
+    // === SUITE: FUNKTIONEN ===
+    t._currentSuite = 'Funktionen';
+    t.assert('getAllWords(ru) gibt Array', Array.isArray(getAllWords('ru')));
+    t.assert('getAllWords(ru) nicht leer', getAllWords('ru').length > 100);
+    t.assert('getAllWords(de) nicht leer', getAllWords('de').length > 100);
+    t.assert('getNiveauData() konsistent', getNiveauData() === NIVEAU_DATA || getNiveauData() === NIVEAU_DATA_EN);
+    t.assert('getChangelogEntry(BUILD) vorhanden', !!getChangelogEntry(BUILD));
+    t.assert('getChangelogEntry(0) gibt Fallback', !!getChangelogEntry(0) && !!getChangelogEntry(0).title);
+    t.assert('saveNiveauProgress() existiert', typeof saveNiveauProgress === 'function');
+    t.assert('saveEnNiveauProgress() existiert', typeof saveEnNiveauProgress === 'function');
+    t.assert('filterNiveauTopics() existiert', typeof filterNiveauTopics === 'function');
+    t.assert('filterEnNiveauTopics() existiert', typeof filterEnNiveauTopics === 'function');
+    t.assert('translateWithDeepl() existiert', typeof translateWithDeepl === 'function');
+    t.assert('_deeplFetch() existiert', typeof _deeplFetch === 'function');
+    t.assert('switchSection() ist Funktion', typeof switchSection === 'function');
+    t.assert('switchSection enthält alle Handler', (function(){
+      var s = switchSection.toString();
+      return s.includes('deniveau') && s.includes('conjugate') && s.includes('enniveau');
+    })());
+    t.assert('showOnboarding() version-aware', (function(){
+      var s = showOnboarding.toString();
+      return s.includes('onboarded_version') || s.includes('seenVersion');
+    })());
+    t.assert('runLinguaTests() existiert', typeof runLinguaTests === 'function');
+
+    // === SUITE: DOM ===
+    t._currentSuite = 'DOM';
+    ['home','vocab','quiz','free','srs','write','stats','badges','path','search','conjugate',
+     'translate','ai','deniveau','enniveau'].forEach(function(id) {
+      t.assert('Sektion id='+id, !!document.getElementById(id));
+    });
+    ['logo-version','footer-version','settings-version','meta-description'].forEach(function(id) {
+      t.assert('Version-Element id='+id, !!document.getElementById(id));
+    });
+    t.assert('Vocab Controls vorhanden', !!document.getElementById('ui-vocab-controls'));
+    t.assert('Vocab Controls initial hidden', (function(){
+      var el = document.getElementById('ui-vocab-controls');
+      return el && (el.style.display === 'none' || el.style.display === '');
+    })());
+    t.assert('Weiter-Button vorhanden', !!document.getElementById('ui-btn-next'));
+    t.assert('Gewusst-Button vorhanden', !!document.getElementById('ui-btn-knew'));
+    t.assert('DE Niveau Btns vorhanden', !!document.getElementById('nex-vocab-btns'));
+    t.assert('EN Niveau Btns vorhanden', !!document.getElementById('en-nex-vocab-btns'));
+    t.assert('Niveau-Suche DE vorhanden', !!document.getElementById('niveau-search'));
+    t.assert('Niveau-Suche EN vorhanden', !!document.getElementById('en-niveau-search'));
+    t.assert('Trans-Status vorhanden', !!document.getElementById('trans-status'));
+    t.assert('Onboarding-Overlay vorhanden', !!document.getElementById('onboarding-overlay'));
+    t.assert('Test-Button in Settings', document.querySelector('[onclick="runLinguaTests()"]') !== null);
+
+    // === SUITE: LOCALSTORAGE ===
+    t._currentSuite = 'localStorage';
+    t.assert('localStorage schreibbar', (function(){
+      try { localStorage.setItem('_t','1'); localStorage.removeItem('_t'); return true; } catch(e){ return false; }
+    })());
+    t.assert('lingua_version gespeichert', !!localStorage.getItem('lingua_version'));
+    t.assert('lingua_build_num gespeichert', !!localStorage.getItem('lingua_build_num'));
+    t.assert('niveau_progress abrufbar', (function(){
+      var v = localStorage.getItem('lingua_niveau_progress');
+      return v === null || typeof JSON.parse(v||'{}') === 'object';
+    })());
+    t.assert('en_niveau_progress abrufbar', (function(){
+      var v = localStorage.getItem('lingua_en_niveau_progress');
+      return v === null || typeof JSON.parse(v||'{}') === 'object';
+    })());
+
+    // === DYNAMISCHE SUITES (von Features registriert) ===
+    t._suites.forEach(function(suite) {
+      t._currentSuite = suite.name;
+      try { suite.fn(t); } catch(e) { t.assert(suite.name+' (Fehler)', false, e.message); }
+    });
+
+    t._currentSuite = null;
+
+    // Zusammenfassung
+    var passed = 0, failed = 0;
+    t.results.forEach(function(r){ if(r.ok) passed++; else failed++; });
+    return { passed:passed, failed:failed, total:passed+failed, results:t.results };
+  },
+
+  showReport: function() {
+    var r = this.run();
+    // Gruppiere nach Suite
+    var suites = {};
+    r.results.forEach(function(res){
+      if (!suites[res.suite]) suites[res.suite] = [];
+      suites[res.suite].push(res);
+    });
+    var suitesHTML = Object.keys(suites).map(function(suiteName) {
+      var tests = suites[suiteName];
+      var sp = tests.filter(function(t){return t.ok;}).length;
+      var sf = tests.length - sp;
+      return '<div style="margin-bottom:.75rem;">' +
+        '<div style="font-size:.78rem;font-weight:700;color:'+(sf>0?'#f87171':'#4ade80')+';margin-bottom:.3rem;border-bottom:1px solid #444;padding-bottom:.2rem;">' +
+        (sf>0?'❌':'✅') + ' ' + suiteName + ' (' + sp + '/' + tests.length + ')</div>' +
+        tests.map(function(t){
+          return '<div style="padding:.2rem 0;color:'+(t.ok?'#4ade80':'#f87171')+';font-size:.7rem;">' +
+            (t.ok?'✓ ':'✗ ') + t.name + (t.detail?' <span style="color:#888">('+t.detail+')</span>':'') + '</div>';
+        }).join('') + '</div>';
+    }).join('');
+
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:99999;overflow-y:auto;padding:1.5rem;';
+    overlay.innerHTML =
+      '<div style="max-width:520px;margin:0 auto;font-family:monospace;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">' +
+      '<div style="font-size:1.1rem;font-weight:700;color:#fff;">🧪 LINGUA Test Suite v'+BUILD_VERSION+'</div>' +
+      '<button onclick="this.closest(\'[style*=fixed]\').remove()" style="background:#333;color:#fff;border:none;border-radius:6px;padding:.3rem .7rem;cursor:pointer;">✕</button>' +
+      '</div>' +
+      '<div style="padding:.75rem;background:'+(r.failed===0?'#0d2b0d':'#2b0d0d')+';border-radius:8px;color:'+(r.failed===0?'#4ade80':'#f87171')+';font-size:.85rem;margin-bottom:1rem;text-align:center;">' +
+      (r.failed===0?'🎉 Alle Tests bestanden!':'⚠ '+r.failed+' Test(s) fehlgeschlagen') +
+      '<br><span style="font-size:.7rem;opacity:.8;">'+r.passed+' / '+r.total+' bestanden</span></div>' +
+      suitesHTML +
+      '</div>';
+    overlay.onclick = function(e){ if(e.target===overlay) overlay.remove(); };
+    document.body.appendChild(overlay);
+    return r;
+  }
 };
+
+function runLinguaTests() { return window.linguaTests.showReport(); }
 
 // Dynamic quickPrompt helpers — use UI language as explanation language
 function getGrammarPrompt() {
