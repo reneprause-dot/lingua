@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" id="meta-description" content="LINGUA v6.0 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" id="meta-description" content="LINGUA v6.1 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v6.0 · by René Prause</title>
+<title>LINGUA v6.1 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -659,7 +659,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v6.0</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v6.1</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -1882,7 +1882,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v6.0</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v6.1</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -2051,7 +2051,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v6.0</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v6.1</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -13301,6 +13301,560 @@ function updateNiveauWriteProgress() {
 }
 
 // ============================================================
+// 💬 DIALOGE LERNEN
+// ============================================================
+var DIALOG_DATA = {
+  alltag: [
+    { id:'d-supermarkt', title:'Im Supermarkt', situation:'Du kaufst ein und fragst nach Preisen.',
+      lines:[
+        {speaker:'Kunde',    de:'Entschuldigung, wo finde ich die Milch?',               ru:'Извините, где я найду молоко?',          tr:'Affedersiniz, sütü nerede bulabilirim?'},
+        {speaker:'Verkäufer',de:'Die Milch steht im Kühlregal, Gang drei.',               ru:'Молоко в холодильнике, третий ряд.',     tr:'Süt soğutucuda, üçüncü koridor.'},
+        {speaker:'Kunde',    de:'Danke. Und haben Sie auch laktosefreie Milch?',          ru:'Спасибо. А есть ли у вас безлактозное молоко?', tr:'Teşekkürler. Laktozsuz sütünüz de var mı?'},
+        {speaker:'Verkäufer',de:'Ja, direkt daneben. Die ist mit dem grünen Deckel.',     ru:'Да, прямо рядом. Та с зелёной крышкой.',tr:'Evet, hemen yanında. Yeşil kapaklı olan.'},
+        {speaker:'Kunde',    de:'Prima, ich nehme die. Was kostet das Brot hier?',        ru:'Отлично, возьму её. Сколько стоит этот хлеб?', tr:'Harika, onu alıyorum. Buradaki ekmek kaç para?'},
+        {speaker:'Verkäufer',de:'Das Vollkornbrot kostet 2,49 Euro.',                     ru:'Цельнозерновой хлеб стоит 2,49 евро.',   tr:'Tam tahıllı ekmek 2,49 Euro.'},
+        {speaker:'Kunde',    de:'Gut, dann nehme ich beides. Wo ist die Kasse?',          ru:'Хорошо, возьму оба. Где касса?',         tr:'Tamam, ikisini de alıyorum. Kasa nerede?'},
+        {speaker:'Verkäufer',de:'Die Kasse ist vorne rechts. Einen schönen Tag noch!',   ru:'Касса спереди справа. Хорошего дня!',    tr:'Kasa önde sağda. İyi günler!'},
+      ]
+    },
+    { id:'d-arzt', title:'Beim Arzt', situation:'Du hast Kopfschmerzen und machst einen Termin.',
+      lines:[
+        {speaker:'Patient',  de:'Guten Morgen, ich habe einen Termin. Müller, mein Name.',ru:'Доброе утро, у меня есть запись. Меня зовут Мюллер.', tr:'Günaydın, randevum var. Müller, adım.'},
+        {speaker:'Ärztin',   de:'Guten Morgen, Herr Müller. Was führt Sie zu mir?',      ru:'Доброе утро, господин Мюллер. Что вас привело?', tr:'Günaydın Bay Müller. Sizi ne getirir buraya?'},
+        {speaker:'Patient',  de:'Ich habe seit drei Tagen starke Kopfschmerzen.',         ru:'У меня уже три дня сильные головные боли.',tr:'Üç gündür şiddetli baş ağrım var.'},
+        {speaker:'Ärztin',   de:'Haben Sie auch Fieber oder Schwindel?',                  ru:'Есть ли у вас температура или головокружение?', tr:'Ateşiniz veya baş dönmeniz var mı?'},
+        {speaker:'Patient',  de:'Kein Fieber, aber manchmal ist mir schwindelig.',        ru:'Температуры нет, но иногда кружится голова.', tr:'Ateş yok ama bazen başım dönüyor.'},
+        {speaker:'Ärztin',   de:'Ich untersuche Sie kurz. Bitte legen Sie sich hin.',    ru:'Я вас осмотрю. Пожалуйста, лягте.',      tr:'Sizi kısa bir muayene edeceğim. Lütfen uzanın.'},
+        {speaker:'Ärztin',   de:'Ich schreibe Ihnen ein Mittel gegen den Schmerz auf.',  ru:'Я выпишу вам средство от боли.',         tr:'Size ağrıya karşı bir ilaç yazacağım.'},
+        {speaker:'Patient',  de:'Muss ich auch krankgeschrieben werden?',                 ru:'Нужно ли мне больничное?',               tr:'Hastalanma raporu da almam gerekiyor mu?'},
+        {speaker:'Ärztin',   de:'Ich schreibe Sie für zwei Tage krank. Erholen Sie sich!',ru:'Выписываю вас на два дня. Поправляйтесь!',tr:'Sizi iki günlüğüne raporluyorum. Geçmiş olsun!'},
+      ]
+    },
+    { id:'d-restaurant', title:'Im Restaurant', situation:'Du bestellst Essen und bezahlst.',
+      lines:[
+        {speaker:'Kellner',  de:'Guten Abend! Haben Sie reserviert?',                    ru:'Добрый вечер! Вы бронировали?',          tr:'İyi akşamlar! Rezervasyonunuz var mı?'},
+        {speaker:'Gast',     de:'Nein, leider nicht. Haben Sie noch einen Tisch frei?',  ru:'Нет, к сожалению. Есть ли свободный столик?', tr:'Hayır, maalesef. Boş masanız var mı?'},
+        {speaker:'Kellner',  de:'Ja, für wie viele Personen?',                            ru:'Да, на сколько человек?',                tr:'Evet, kaç kişi için?'},
+        {speaker:'Gast',     de:'Für zwei Personen, bitte.',                              ru:'Для двух человек, пожалуйста.',          tr:'İki kişilik, lütfen.'},
+        {speaker:'Kellner',  de:'Bitte folgen Sie mir. Hier ist Ihre Speisekarte.',       ru:'Следуйте за мной. Вот ваше меню.',       tr:'Lütfen beni takip edin. İşte menünüz.'},
+        {speaker:'Gast',     de:'Danke. Ich hätte gern das Schnitzel mit Pommes.',       ru:'Спасибо. Я бы хотел шницель с картофелем фри.', tr:'Teşekkürler. Patates kızartması ile şnitzeli istiyorum.'},
+        {speaker:'Kellner',  de:'Und was möchten Sie trinken?',                           ru:'А что вы будете пить?',                  tr:'Ne içersiniz?'},
+        {speaker:'Gast',     de:'Ein Wasser und ein Bier, bitte. Und können wir danach zahlen?', ru:'Воду и пиво, пожалуйста. И можем ли мы потом расплатиться?', tr:'Bir su ve bir bira. Sonra ödeyebilir miyiz?'},
+        {speaker:'Kellner',  de:'Natürlich. Zusammen oder getrennt?',                    ru:'Конечно. Вместе или раздельно?',         tr:'Tabii ki. Birlikte mi ayrı ayrı mı?'},
+        {speaker:'Gast',     de:'Getrennt, bitte. Ich zahle mit Karte.',                  ru:'Раздельно, пожалуйста. Я плачу картой.',tr:'Ayrı, lütfen. Kartla ödeyeceğim.'},
+      ]
+    },
+  ],
+  reise: [
+    { id:'d-bahnhof', title:'Am Bahnhof', situation:'Du kaufst eine Fahrkarte und fragst nach dem Zug.',
+      lines:[
+        {speaker:'Du',       de:'Eine Fahrkarte nach München, bitte.',                    ru:'Один билет до Мюнхена, пожалуйста.',     tr:'Münih\'e bir bilet lütfen.'},
+        {speaker:'Schalter', de:'Einfach oder hin und zurück?',                           ru:'В одну сторону или туда и обратно?',     tr:'Tek yön mü gidiş-dönüş mü?'},
+        {speaker:'Du',       de:'Hin und zurück. Wann fährt der nächste Zug?',            ru:'Туда и обратно. Когда следующий поезд?', tr:'Gidiş-dönüş. Bir sonraki tren ne zaman?'},
+        {speaker:'Schalter', de:'Um 14:23 Uhr, Gleis 7. Sie haben noch 12 Minuten.',     ru:'В 14:23, платформа 7. У вас ещё 12 минут.',tr:'14:23\'te, 7. peron. Hâlâ 12 dakikanız var.'},
+        {speaker:'Du',       de:'Muss ich umsteigen?',                                    ru:'Нужно ли делать пересадку?',             tr:'Aktarma yapmam gerekiyor mu?'},
+        {speaker:'Schalter', de:'Ja, in Augsburg. Umsteigezeit 8 Minuten.',              ru:'Да, в Аугсбурге. Пересадка 8 минут.',   tr:'Evet, Augsburg\'da. Aktarma süresi 8 dakika.'},
+        {speaker:'Du',       de:'Das macht wie viel?',                                    ru:'Сколько это стоит?',                    tr:'Bu kaça gelir?'},
+        {speaker:'Schalter', de:'46 Euro. Mit BahnCard 25 wären es 34,50 Euro.',         ru:'46 евро. С BahnCard 25 было бы 34,50.',  tr:'46 Euro. BahnCard 25 ile 34,50 Euro olurdu.'},
+      ]
+    },
+    { id:'d-hotel', title:'Im Hotel', situation:'Du checkst ein und hast ein Problem mit dem Zimmer.',
+      lines:[
+        {speaker:'Gast',     de:'Guten Tag, ich habe eine Reservierung. Schmidt.',       ru:'Добрый день, у меня есть бронь. Шмидт.',tr:'Merhaba, rezervasyonum var. Schmidt.'},
+        {speaker:'Rezeption',de:'Willkommen! Ein Moment bitte... Ja, Zimmer 412, Einzelzimmer.',ru:'Добро пожаловать! Минутку... Да, номер 412, одноместный.',tr:'Hoş geldiniz! Bir dakika... Evet, 412 numaralı oda, tek kişilik.'},
+        {speaker:'Gast',     de:'Danke. Ist Frühstück inklusive?',                       ru:'Спасибо. Завтрак включён?',              tr:'Teşekkürler. Kahvaltı dahil mi?'},
+        {speaker:'Rezeption',de:'Ja, Frühstück von 7 bis 10 Uhr im Erdgeschoss.',        ru:'Да, завтрак с 7 до 10 на первом этаже.',tr:'Evet, kahvaltı 7\'den 10\'a kadar zemin katta.'},
+        {speaker:'Gast',     de:'Ich habe ein Problem: die Klimaanlage funktioniert nicht.',ru:'У меня проблема: кондиционер не работает.',tr:'Bir sorunum var: klima çalışmıyor.'},
+        {speaker:'Rezeption',de:'Es tut mir leid! Ich schicke sofort jemanden.',         ru:'Извините! Я сразу кого-нибудь пришлю.',  tr:'Özür dilerim! Hemen birini göndereceğim.'},
+        {speaker:'Gast',     de:'Danke. Und wo ist der WLAN-Code?',                      ru:'Спасибо. А где код Wi-Fi?',              tr:'Teşekkürler. Wi-Fi şifresi nerede?'},
+        {speaker:'Rezeption',de:'Der Code steht auf dieser Karte. Gute Nacht!',          ru:'Код на этой карточке. Спокойной ночи!',  tr:'Şifre bu kartta yazıyor. İyi geceler!'},
+      ]
+    },
+    { id:'d-weg', title:'Nach dem Weg fragen', situation:'Du bist in einer fremden Stadt und fragst nach dem Weg.',
+      lines:[
+        {speaker:'Du',       de:'Entschuldigung, können Sie mir helfen? Ich suche den Hauptbahnhof.',ru:'Извините, вы не могли бы помочь? Я ищу главный вокзал.',tr:'Affedersiniz, yardım edebilir misiniz? Ana tren istasyonunu arıyorum.'},
+        {speaker:'Passant',  de:'Ja, natürlich. Gehen Sie hier geradeaus bis zur Ampel.', ru:'Да, конечно. Идите прямо до светофора.',  tr:'Evet, tabii. Buradan trafik ışığına kadar düz gidin.'},
+        {speaker:'Du',       de:'Und dann?',                                              ru:'А потом?',                               tr:'Sonra?'},
+        {speaker:'Passant',  de:'Dann biegen Sie links ab und nach 200 Metern sehen Sie den Bahnhof.',ru:'Затем поверните налево, и через 200 метров увидите вокзал.',tr:'Sonra sola dönün ve 200 metre sonra istasyonu göreceksiniz.'},
+        {speaker:'Du',       de:'Ist es weit zu Fuß?',                                   ru:'Это далеко пешком?',                     tr:'Yürüyerek uzak mı?'},
+        {speaker:'Passant',  de:'Nein, etwa 10 Minuten. Sie können aber auch Bus 12 nehmen.',ru:'Нет, около 10 минут. Но можно и на автобусе 12.',tr:'Hayır, yaklaşık 10 dakika. Ama 12 numaralı otobüse de binebilirsiniz.'},
+        {speaker:'Du',       de:'Vielen Dank, Sie haben mir sehr geholfen!',              ru:'Большое спасибо, вы мне очень помогли!', tr:'Çok teşekkürler, çok yardımcı oldunuz!'},
+        {speaker:'Passant',  de:'Gern geschehen! Gute Reise!',                            ru:'Пожалуйста! Счастливого пути!',          tr:'Rica ederim! İyi yolculuklar!'},
+      ]
+    },
+  ],
+  arbeit: [
+    { id:'d-bewerbung', title:'Vorstellungsgespräch', situation:'Du bewirbst dich um eine Stelle als Entwickler.',
+      lines:[
+        {speaker:'HR',       de:'Guten Morgen, Herr/Frau... Bitte nehmen Sie Platz.',    ru:'Доброе утро. Присаживайтесь, пожалуйста.', tr:'Günaydın. Lütfen oturun.'},
+        {speaker:'Bewerber', de:'Danke! Ich freue mich sehr über die Einladung.',        ru:'Спасибо! Я очень рад этому приглашению.', tr:'Teşekkürler! Bu davet için çok mutluyum.'},
+        {speaker:'HR',       de:'Erzählen Sie mir bitte kurz von sich.',                 ru:'Расскажите мне о себе вкратце.',          tr:'Kısaca kendinizden bahseder misiniz?'},
+        {speaker:'Bewerber', de:'Ich bin seit fünf Jahren als Softwareentwickler tätig.',ru:'Я работаю разработчиком ПО уже пять лет.',tr:'Beş yıldır yazılım geliştirici olarak çalışıyorum.'},
+        {speaker:'HR',       de:'Welche Programmiersprachen beherrschen Sie?',           ru:'Какими языками программирования вы владеете?',tr:'Hangi programlama dillerini biliyorsunuz?'},
+        {speaker:'Bewerber', de:'Python, JavaScript und etwas Java. Ich lerne gerade Rust.',ru:'Python, JavaScript и немного Java. Сейчас изучаю Rust.',tr:'Python, JavaScript ve biraz Java. Şu anda Rust öğreniyorum.'},
+        {speaker:'HR',       de:'Sehr gut. Warum möchten Sie zu uns wechseln?',          ru:'Очень хорошо. Почему вы хотите перейти к нам?',tr:'Çok güzel. Neden bize geçmek istiyorsunuz?'},
+        {speaker:'Bewerber', de:'Ich schätze Ihre innovativen Projekte und das internationale Team.',ru:'Я ценю ваши инновационные проекты и международную команду.',tr:'Yenilikçi projelerinizi ve uluslararası ekibinizi takdir ediyorum.'},
+        {speaker:'HR',       de:'Haben Sie noch Fragen an uns?',                         ru:'Есть ли у вас вопросы к нам?',            tr:'Bize sormak istediğiniz sorular var mı?'},
+        {speaker:'Bewerber', de:'Ja, wie sieht das Onboarding für neue Mitarbeiter aus?',ru:'Да, как выглядит онбординг для новых сотрудников?',tr:'Evet, yeni çalışanlar için onboarding süreci nasıl işliyor?'},
+      ]
+    },
+    { id:'d-meeting', title:'Im Meeting', situation:'Du präsentierst Ergebnisse und diskutierst Lösungen.',
+      lines:[
+        {speaker:'Du',       de:'Ich möchte kurz die Ergebnisse der letzten Woche vorstellen.',ru:'Хочу кратко представить результаты прошлой недели.',tr:'Geçen haftanın sonuçlarını kısaca sunmak istiyorum.'},
+        {speaker:'Kollegin', de:'Bitte. Wir haben noch 20 Minuten.',                     ru:'Пожалуйста. У нас ещё 20 минут.',         tr:'Buyurun. Daha 20 dakikamız var.'},
+        {speaker:'Du',       de:'Wir haben das Projektziel zu 80 % erreicht. Hier sind die Kennzahlen.',ru:'Мы выполнили цель проекта на 80%. Вот показатели.',tr:'Proje hedefine %80 ulaştık. İşte metrikler.'},
+        {speaker:'Chef',     de:'Gut. Warum haben wir die 100 % nicht geschafft?',       ru:'Хорошо. Почему мы не достигли 100%?',    tr:'İyi. Neden %100 ulaşamadık?'},
+        {speaker:'Du',       de:'Es gab technische Verzögerungen beim Datenbankupgrade.',ru:'Были технические задержки с обновлением базы данных.',tr:'Veritabanı yükseltmesinde teknik gecikmeler oldu.'},
+        {speaker:'Kollegin', de:'Was sind die nächsten Schritte?',                       ru:'Каковы следующие шаги?',                 tr:'Sonraki adımlar neler?'},
+        {speaker:'Du',       de:'Wir priorisieren das Upgrade für diese Woche. Ich brauche zwei weitere Entwickler.',ru:'Мы приоритизируем апгрейд на этой неделе. Мне нужны ещё два разработчика.',tr:'Bu hafta yükseltmeyi önceliklendiriyoruz. İki geliştirici daha lazım.'},
+        {speaker:'Chef',     de:'Abgemacht. Ich informiere die anderen Teams. Danke!',    ru:'Договорились. Я сообщу другим командам. Спасибо!',tr:'Anlaştık. Diğer ekipleri bilgilendireceğim. Teşekkürler!'},
+      ]
+    },
+  ],
+  sozial: [
+    { id:'d-kennenlernen', title:'Jemanden kennenlernen', situation:'Du lernst jemanden auf einer Party kennen.',
+      lines:[
+        {speaker:'Du',       de:'Hallo! Ich bin neu hier. Ich heiße Alex.',              ru:'Привет! Я здесь новый. Меня зовут Алекс.',tr:'Merhaba! Burada yeniyim. Adım Alex.'},
+        {speaker:'Person',   de:'Hallo Alex! Ich bin Jana. Woher kennst du den Gastgeber?',ru:'Привет, Алекс! Я Яна. Откуда ты знаешь хозяина?',tr:'Merhaba Alex! Ben Jana. Ev sahibini nereden tanıyorsun?'},
+        {speaker:'Du',       de:'Wir arbeiten zusammen. Und du?',                        ru:'Мы вместе работаем. А ты?',              tr:'Birlikte çalışıyoruz. Siz?'},
+        {speaker:'Person',   de:'Wir sind alte Schulfreunde. Was machst du beruflich?',  ru:'Мы старые школьные друзья. Чем ты занимаешься?',tr:'Biz eski okul arkadaşlarıyız. Ne iş yapıyorsun?'},
+        {speaker:'Du',       de:'Ich bin Grafikdesigner. Und du bist Lehrerin, wenn ich mich nicht irre?',ru:'Я графический дизайнер. А ты учительница, если не ошибаюсь?',tr:'Ben grafik tasarımcıyım. Yanılmıyorsam sen öğretmensin?'},
+        {speaker:'Person',   de:'Ja, genau! Du hast gut zugehört. Magst du Musik?',      ru:'Да, именно! Ты внимательно слушал. Ты любишь музыку?',tr:'Evet, aynen! İyi dinledin. Müzik sever misin?'},
+        {speaker:'Du',       de:'Sehr! Ich spiele selbst Gitarre. Du?',                  ru:'Очень! Я сам играю на гитаре. А ты?',   tr:'Çok! Ben de gitar çalıyorum. Sen?'},
+        {speaker:'Person',   de:'Ich singe im Chor. Wir sollten uns mal zum Musizieren treffen!',ru:'Я пою в хоре. Нам стоит как-нибудь встретиться и поиграть!',tr:'Ben koroda şarkı söylüyorum. Bir gün müzik yapmak için buluşmalıyız!'},
+      ]
+    },
+    { id:'d-konflikt', title:'Konflikt lösen', situation:'Du sprichst ein Problem mit einem Mitbewohner an.',
+      lines:[
+        {speaker:'Du',       de:'Darf ich kurz mit dir reden? Es geht um etwas Wichtiges.',ru:'Могу я с тобой поговорить? Это кое-что важное.',tr:'Seninle kısaca konuşabilir miyim? Önemli bir şey var.'},
+        {speaker:'Mitbewohner',de:'Klar, was ist los?',                                  ru:'Конечно, что случилось?',               tr:'Tabii ki, ne oldu?'},
+        {speaker:'Du',       de:'Es geht um die Küche. Sie ist oft nicht sauber, wenn ich nach Hause komme.',ru:'Речь о кухне. Когда я прихожу домой, она часто грязная.',tr:'Mutfakla ilgili. Eve geldiğimde çoğu zaman temiz değil.'},
+        {speaker:'Mitbewohner',de:'Oh, das tut mir leid. Ich habe das nicht so wahrgenommen.',ru:'О, извини. Я не замечал этого.',        tr:'Oh, özür dilerim. Bunu fark etmemiştim.'},
+        {speaker:'Du',       de:'Ich schlage vor, dass wir einen Putzplan erstellen.',    ru:'Предлагаю составить график уборки.',    tr:'Bir temizlik takvimi oluşturmayı öneriyorum.'},
+        {speaker:'Mitbewohner',de:'Das ist eine gute Idee. Wie soll das aussehen?',       ru:'Это хорошая идея. Как это должно выглядеть?',tr:'Bu iyi bir fikir. Nasıl bir şey olmalı?'},
+        {speaker:'Du',       de:'Du putzt montags, ich freitags. Den Rest machen wir zusammen.',ru:'Ты убираешься в понедельник, я в пятницу. Остальное делаем вместе.',tr:'Sen pazartesi temizlersin, ben cuma. Gerisini birlikte yaparız.'},
+        {speaker:'Mitbewohner',de:'Einverstanden. Danke, dass du das angesprochen hast.',  ru:'Согласен. Спасибо, что поднял эту тему.',tr:'Kabul. Bunu gündeme getirdiğin için teşekkürler.'},
+      ]
+    },
+  ],
+};
+
+var dialogState = {
+  cat: 'alltag', dialogId: null, dialog: null,
+  lineIdx: 0, showTrans: false
+};
+
+function setDialogCat(cat) {
+  dialogState.cat = cat;
+  ['alltag','reise','arbeit','sozial'].forEach(function(c) {
+    document.getElementById('dcat-'+c).className = 'btn'+(c===cat?' primary':'');
+  });
+  renderDialogList();
+}
+
+function initDialogs() {
+  dialogState.lineIdx = 0;
+  document.getElementById('dialog-player').style.display = 'none';
+  document.getElementById('dialog-list').style.display = '';
+  document.getElementById('dialog-cat-tabs').style.display = '';
+  renderDialogList();
+}
+
+function renderDialogList() {
+  var dialogs = DIALOG_DATA[dialogState.cat] || [];
+  document.getElementById('dialog-list').innerHTML = dialogs.map(function(d) {
+    return '<div class="card" style="margin-bottom:.6rem;cursor:pointer;" onclick="openDialog(\''+dialogState.cat+'\',\''+d.id+'\')">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;">'+
+      '<div><div style="font-weight:700;font-size:.9rem;">💬 '+d.title+'</div>'+
+      '<div style="font-size:.72rem;color:var(--muted);margin-top:.2rem;">'+d.situation+'</div></div>'+
+      '<div style="font-size:.72rem;color:var(--muted);">'+d.lines.length+' Zeilen →</div></div></div>';
+  }).join('');
+}
+
+function openDialog(cat, id) {
+  var dialog = (DIALOG_DATA[cat]||[]).find(function(d){return d.id===id;});
+  if (!dialog) return;
+  dialogState.dialog = dialog; dialogState.dialogId = id;
+  dialogState.lineIdx = 0; dialogState.showTrans = false;
+  document.getElementById('dialog-list').style.display = 'none';
+  document.getElementById('dialog-cat-tabs').style.display = 'none';
+  document.getElementById('dialog-player').style.display = 'block';
+  document.getElementById('dialog-title').textContent = dialog.title;
+  document.getElementById('dialog-situation').textContent = dialog.situation;
+  document.getElementById('dialog-history').innerHTML = '';
+  renderDialogLine();
+}
+
+function closeDialogPlayer() {
+  document.getElementById('dialog-player').style.display = 'none';
+  document.getElementById('dialog-list').style.display = '';
+  document.getElementById('dialog-cat-tabs').style.display = '';
+}
+
+function renderDialogLine() {
+  var d = dialogState.dialog;
+  var idx = dialogState.lineIdx;
+  if (idx >= d.lines.length) {
+    // Fertig
+    document.getElementById('dialog-current-card').innerHTML =
+      '<div style="text-align:center;padding:.75rem;"><div style="font-size:2rem;">🎉</div>'+
+      '<div style="font-weight:700;margin-top:.4rem;">Dialog abgeschlossen!</div>'+
+      '<button class="btn primary" onclick="closeDialogPlayer()" style="margin-top:.75rem;width:100%;">← Zurück zu Dialogen</button></div>';
+    document.getElementById('dialog-next-btn').style.display = 'none';
+    document.getElementById('dialog-trans-btn').style.display = 'none';
+    var speakBtn = document.querySelector('[onclick="dialogSpeak()"]');
+    if (speakBtn) speakBtn.style.display = 'none';
+    addXP(2);
+    return;
+  }
+  var line = d.lines[idx];
+  var lang = niveauState.lang || 'ru';
+  var trans = lang==='tr'?(line.tr||line.ru):(line.ru||'');
+
+  document.getElementById('dialog-speaker').textContent =
+    (line.speaker === 'Du' ? '👤 ' : '🗣️ ') + line.speaker;
+  document.getElementById('dialog-line-de').textContent = line.de;
+  document.getElementById('dialog-line-trans').textContent = '';
+  dialogState.showTrans = false;
+  document.getElementById('dialog-trans-btn').textContent = '👁 Übersetzung';
+
+  // Fortschritt
+  var pct = Math.round((idx/d.lines.length)*100);
+  document.getElementById('dialog-progress-bar').style.width = pct+'%';
+  document.getElementById('dialog-progress-text').textContent = (idx+1)+' / '+d.lines.length;
+  document.getElementById('dialog-next-btn').style.display = '';
+
+  // History
+  if (idx > 0) {
+    var prev = d.lines[idx-1];
+    var histEl = document.createElement('div');
+    histEl.style.cssText = 'background:var(--surface2);border-radius:8px;padding:.4rem .6rem;font-size:.75rem;';
+    histEl.innerHTML = '<span style="font-weight:700;color:var(--muted);">'+prev.speaker+':</span> '+prev.de;
+    document.getElementById('dialog-history').appendChild(histEl);
+    document.getElementById('dialog-history').scrollTop = 9999;
+  }
+}
+
+function dialogShowTrans() {
+  var d = dialogState.dialog;
+  var line = d.lines[dialogState.lineIdx];
+  var lang = niveauState.lang || 'ru';
+  var trans = lang==='tr'?(line.tr||line.ru):(line.ru||'');
+  dialogState.showTrans = !dialogState.showTrans;
+  document.getElementById('dialog-line-trans').textContent = dialogState.showTrans ? trans : '';
+  document.getElementById('dialog-trans-btn').textContent = dialogState.showTrans ? '👁 Ausblenden' : '👁 Übersetzung';
+}
+
+function dialogSpeak() {
+  var line = dialogState.dialog.lines[dialogState.lineIdx];
+  if (line) speak(line.de, 'de');
+}
+
+function dialogNext() {
+  dialogState.lineIdx++;
+  renderDialogLine();
+}
+
+// ============================================================
+// 🔗 PHRASAL VERBS & TRENNBARE VERBEN
+// ============================================================
+var PHRASAL_DATA = {
+  en: {
+    movement: {
+      label:'🏃 Bewegung', items:[
+        {verb:'get up',       de:'aufstehen',      example_en:'I get up at 7 every day.',          example_de:'Ich stehe jeden Tag um 7 auf.'},
+        {verb:'sit down',     de:'sich setzen',    example_en:'Please sit down.',                   example_de:'Bitte setzen Sie sich.'},
+        {verb:'stand up',     de:'aufstehen',      example_en:'Stand up and stretch.',              example_de:'Steh auf und streck dich.'},
+        {verb:'go out',       de:'ausgehen',       example_en:'We go out every Friday.',            example_de:'Wir gehen jeden Freitag aus.'},
+        {verb:'come back',    de:'zurückkommen',   example_en:'I\'ll come back later.',             example_de:'Ich komme später zurück.'},
+        {verb:'run away',     de:'weglaufen',      example_en:'The dog ran away.',                  example_de:'Der Hund lief weg.'},
+        {verb:'turn around',  de:'umdrehen',       example_en:'Turn around slowly.',                example_de:'Dreh dich langsam um.'},
+        {verb:'walk in',      de:'hereinkommen',   example_en:'She walked in without knocking.',    example_de:'Sie kam herein, ohne zu klopfen.'},
+        {verb:'go back',      de:'zurückgehen',    example_en:'Let\'s go back to the beginning.',   example_de:'Lass uns zum Anfang zurückgehen.'},
+        {verb:'move on',      de:'weitermachen',   example_en:'It\'s time to move on.',             example_de:'Es ist Zeit, weiterzumachen.'},
+      ]
+    },
+    communication: {
+      label:'🗣️ Kommunikation', items:[
+        {verb:'bring up',     de:'ansprechen/erwähnen', example_en:'Don\'t bring up politics.',     example_de:'Sprich keine Politik an.'},
+        {verb:'call back',    de:'zurückrufen',    example_en:'I\'ll call you back.',               example_de:'Ich rufe zurück.'},
+        {verb:'find out',     de:'herausfinden',   example_en:'I found out the truth.',             example_de:'Ich fand die Wahrheit heraus.'},
+        {verb:'make up',      de:'erfinden/sich versöhnen', example_en:'He made up an excuse.',    example_de:'Er erfand eine Entschuldigung.'},
+        {verb:'point out',    de:'hinweisen auf',  example_en:'She pointed out the mistake.',      example_de:'Sie wies auf den Fehler hin.'},
+        {verb:'speak up',     de:'lauter sprechen/sich äußern', example_en:'Please speak up.',     example_de:'Bitte sprechen Sie lauter.'},
+        {verb:'talk back',    de:'widersprechen',  example_en:'Don\'t talk back to your teacher.', example_de:'Widersprich deinem Lehrer nicht.'},
+        {verb:'tell off',     de:'rügen/ausschimpfen', example_en:'He told me off.',               example_de:'Er hat mich ausgeschimpft.'},
+        {verb:'work out',     de:'herausarbeiten/klären', example_en:'We worked out the details.', example_de:'Wir klärten die Details.'},
+        {verb:'turn down',    de:'ablehnen',       example_en:'She turned down the offer.',        example_de:'Sie lehnte das Angebot ab.'},
+      ]
+    },
+    daily: {
+      label:'📅 Alltag', items:[
+        {verb:'wake up',      de:'aufwachen',      example_en:'I wake up at 6 AM.',                example_de:'Ich wache um 6 Uhr auf.'},
+        {verb:'put on',       de:'anziehen',       example_en:'Put on your coat.',                 example_de:'Zieh deinen Mantel an.'},
+        {verb:'take off',     de:'ausziehen/abfliegen', example_en:'Take off your shoes.',         example_de:'Zieh deine Schuhe aus.'},
+        {verb:'turn on',      de:'einschalten',    example_en:'Turn on the light.',                example_de:'Schalte das Licht ein.'},
+        {verb:'turn off',     de:'ausschalten',    example_en:'Turn off the TV.',                  example_de:'Schalte den Fernseher aus.'},
+        {verb:'give up',      de:'aufgeben',       example_en:'Don\'t give up!',                   example_de:'Gib nicht auf!'},
+        {verb:'carry on',     de:'weitermachen',   example_en:'Carry on — you\'re doing well.',    example_de:'Mach weiter — du machst das gut.'},
+        {verb:'break down',   de:'zusammenbrechen/kaputtgehen', example_en:'My car broke down.',   example_de:'Mein Auto ist kaputtgegangen.'},
+        {verb:'set up',       de:'einrichten/aufbauen', example_en:'Set up the table.',            example_de:'Richte den Tisch ein.'},
+        {verb:'clean up',     de:'aufräumen',      example_en:'Clean up your room.',               example_de:'Räum dein Zimmer auf.'},
+      ]
+    },
+    emotions: {
+      label:'❤️ Gefühle', items:[
+        {verb:'cheer up',     de:'aufheitern',     example_en:'Cheer up, it\'ll be fine.',         example_de:'Heitere auf, es wird gut.'},
+        {verb:'calm down',    de:'beruhigen',      example_en:'Calm down and think.',              example_de:'Beruhige dich und denk nach.'},
+        {verb:'look forward to', de:'sich freuen auf', example_en:'I look forward to seeing you.',example_de:'Ich freue mich, dich zu sehen.'},
+        {verb:'fall out',     de:'sich streiten',  example_en:'They fell out over money.',         example_de:'Sie stritten sich wegen Geld.'},
+        {verb:'get over',     de:'überwinden/hinwegkommen', example_en:'Get over it.',             example_de:'Komm darüber hinweg.'},
+        {verb:'break up',     de:'sich trennen',   example_en:'They broke up last month.',         example_de:'Sie trennten sich letzten Monat.'},
+        {verb:'fall for',     de:'sich verlieben/hereinfallen', example_en:'I fell for her smile.',example_de:'Ich verliebte mich in ihr Lächeln.'},
+        {verb:'put up with',  de:'ertragen/tolerieren', example_en:'I can\'t put up with this.',   example_de:'Ich kann das nicht ertragen.'},
+        {verb:'stand by',     de:'beistehen',      example_en:'I\'ll stand by you.',               example_de:'Ich stehe dir bei.'},
+        {verb:'care for',     de:'sich kümmern um',example_en:'She cares for her parents.',        example_de:'Sie kümmert sich um ihre Eltern.'},
+      ]
+    },
+  },
+  de: {
+    alltag: {
+      label:'🏠 Alltag', items:[
+        {verb:'aufstehen',   en:'to get up',    example_de:'Ich stehe um 7 auf.',                example_ru:'Я встаю в 7.'},
+        {verb:'aufräumen',   en:'to tidy up',   example_de:'Räum dein Zimmer auf!',              example_ru:'Убери свою комнату!'},
+        {verb:'anziehen',    en:'to put on',    example_de:'Zieh den Mantel an.',                example_ru:'Надень пальто.'},
+        {verb:'ausziehen',   en:'to take off',  example_de:'Zieh die Schuhe aus.',               example_ru:'Сними туфли.'},
+        {verb:'einschalten', en:'to turn on',   example_de:'Schalte das Licht ein.',             example_ru:'Включи свет.'},
+        {verb:'ausschalten', en:'to turn off',  example_de:'Schalte den Fernseher aus.',         example_ru:'Выключи телевизор.'},
+        {verb:'aufmachen',   en:'to open',      example_de:'Mach das Fenster auf.',              example_ru:'Открой окно.'},
+        {verb:'zumachen',    en:'to close',     example_de:'Mach die Tür zu.',                   example_ru:'Закрой дверь.'},
+        {verb:'anrufen',     en:'to call',      example_de:'Ich rufe dich morgen an.',           example_ru:'Я позвоню тебе завтра.'},
+        {verb:'aufhören',    en:'to stop',      example_de:'Hör damit auf!',                     example_ru:'Прекрати!'},
+      ]
+    },
+    arbeit: {
+      label:'💼 Arbeit', items:[
+        {verb:'anfangen',    en:'to start/begin',example_de:'Wann fängst du an?',                example_ru:'Когда ты начинаешь?'},
+        {verb:'aufgeben',    en:'to give up',    example_de:'Gib nicht auf!',                    example_ru:'Не сдавайся!'},
+        {verb:'vorbereiten', en:'to prepare',    example_de:'Bereite dich auf das Meeting vor.', example_ru:'Подготовься к встрече.'},
+        {verb:'abgeben',     en:'to hand in',    example_de:'Gib den Bericht ab.',               example_ru:'Сдай отчёт.'},
+        {verb:'hinweisen',   en:'to point out',  example_de:'Ich weise auf das Problem hin.',    example_ru:'Я указываю на проблему.'},
+        {verb:'vorstellen',  en:'to introduce',  example_de:'Stell dich kurz vor.',              example_ru:'Кратко представься.'},
+        {verb:'absagen',     en:'to cancel',     example_de:'Das Meeting wurde abgesagt.',       example_ru:'Встреча была отменена.'},
+        {verb:'zustimmen',   en:'to agree',      example_de:'Ich stimme dir zu.',                example_ru:'Я с тобой согласен.'},
+        {verb:'nachfragen',  en:'to follow up',  example_de:'Frag morgen nochmal nach.',         example_ru:'Уточни завтра ещё раз.'},
+        {verb:'zusammenfassen',en:'to summarise',example_de:'Fass die Ergebnisse zusammen.',     example_ru:'Подведи итоги.'},
+      ]
+    },
+    kommunikation: {
+      label:'🗣️ Kommunikation', items:[
+        {verb:'ansprechen',  en:'to address/bring up',example_de:'Ich spreche das Problem an.', example_ru:'Я поднимаю проблему.'},
+        {verb:'widersprechen',en:'to contradict', example_de:'Ich widerspreche ihm.',            example_ru:'Я ему противоречу.'},
+        {verb:'aufklären',   en:'to clarify',    example_de:'Kläre das Missverständnis auf.',   example_ru:'Разреши недоразумение.'},
+        {verb:'herausfinden',en:'to find out',   example_de:'Finde heraus, was passiert ist.',  example_ru:'Выясни, что произошло.'},
+        {verb:'weitergeben', en:'to pass on',    example_de:'Gib die Information weiter.',      example_ru:'Передай информацию.'},
+        {verb:'zurückmelden',en:'to get back to',example_de:'Meld dich zurück!',                example_ru:'Дай обратную связь!'},
+        {verb:'einwenden',   en:'to object',     example_de:'Ich wende ein, dass…',             example_ru:'Я возражаю, что…'},
+        {verb:'aufzeigen',   en:'to show/point out',example_de:'Zeig die Lösung auf.',          example_ru:'Укажи на решение.'},
+        {verb:'ablehnen',    en:'to reject',     example_de:'Ich lehne das Angebot ab.',        example_ru:'Я отклоняю предложение.'},
+        {verb:'vereinbaren', en:'to arrange/agree',example_de:'Vereinbar einen Termin.',        example_ru:'Договорись о встрече.'},
+      ]
+    },
+    gefühle: {
+      label:'❤️ Gefühle', items:[
+        {verb:'aufheitern',  en:'to cheer up',   example_de:'Ich versuche, sie aufzuheitern.',  example_ru:'Я пытаюсь её подбодрить.'},
+        {verb:'aufregen',    en:'to upset/excite',example_de:'Reg dich nicht auf!',             example_ru:'Не волнуйся!'},
+        {verb:'beruhigen',   en:'to calm down',  example_de:'Beruhig dich!',                    example_ru:'Успокойся!'},
+        {verb:'freuen auf',  en:'to look forward to',example_de:'Ich freue mich darauf.',      example_ru:'Я этому рад.'},
+        {verb:'verlieben in',en:'to fall for',   example_de:'Er verliebte sich in sie.',        example_ru:'Он влюбился в неё.'},
+        {verb:'enttäuschen', en:'to disappoint', example_de:'Du enttäuschst mich.',             example_ru:'Ты меня разочаровываешь.'},
+        {verb:'antreiben',   en:'to motivate',   example_de:'Was treibt dich an?',              example_ru:'Что тебя движет?'},
+        {verb:'überwinden',  en:'to overcome',   example_de:'Überwinde deine Angst.',           example_ru:'Преодолей свой страх.'},
+        {verb:'aufmuntern',  en:'to encourage',  example_de:'Muntere ihn auf!',                 example_ru:'Подбодри его!'},
+        {verb:'abreagieren', en:'to let off steam',example_de:'Ich muss mich abreagieren.',    example_ru:'Мне нужно выпустить пар.'},
+      ]
+    },
+  },
+};
+
+var pvState = {
+  lang: 'en', cat: 'movement', mode: 'learn',
+  idx: 0, revealed: false, score: 0,
+  quizIdx: 0, quizAnswered: false, quizScore: 0,
+  writeIdx: 0, writeAnswered: false, writeScore: 0,
+  queue: []
+};
+
+function setPVLang(lang) {
+  pvState.lang = lang;
+  ['en','de'].forEach(function(l){
+    document.getElementById('pv-lang-'+l).className='btn'+(l===lang?' primary':'');
+  });
+  var cats = Object.keys(PHRASAL_DATA[lang]);
+  pvState.cat = cats[0];
+  renderPVCats();
+  pvInitMode();
+}
+
+function renderPVCats() {
+  var cats = PHRASAL_DATA[pvState.lang];
+  document.getElementById('pv-cat-row').innerHTML = Object.keys(cats).map(function(k){
+    return '<button class="btn'+(k===pvState.cat?' primary':'')+'" onclick="setPVCat(\''+k+'\')" style="flex:1;min-width:90px;font-size:.75rem;">'+cats[k].label+'</button>';
+  }).join('');
+}
+
+function setPVCat(cat) {
+  pvState.cat = cat;
+  renderPVCats();
+  pvInitMode();
+}
+
+function setPVMode(mode) {
+  pvState.mode = mode;
+  ['learn','quiz','write'].forEach(function(m){
+    document.getElementById('pv-mode-'+m).className='btn'+(m===mode?' primary':'');
+    document.getElementById('pv-'+m+'-area').style.display=m===mode?'block':'none';
+  });
+  pvInitMode();
+}
+
+function initPhrasal() {
+  setPVLang('en');
+}
+
+function pvInitMode() {
+  var data = (PHRASAL_DATA[pvState.lang][pvState.cat]||{items:[]}).items;
+  pvState.queue = data.slice().sort(function(){return Math.random()-.5;});
+  pvState.idx=0; pvState.revealed=false; pvState.score=0;
+  pvState.quizIdx=0; pvState.quizScore=0;
+  pvState.writeIdx=0; pvState.writeScore=0;
+  if(pvState.mode==='learn') pvRenderLearn();
+  if(pvState.mode==='quiz')  pvRenderQuiz();
+  if(pvState.mode==='write') pvRenderWrite();
+}
+
+// --- LERNEN ---
+function pvRenderLearn() {
+  var q=pvState.queue;
+  if(!q.length){document.getElementById('pv-verb').textContent='Keine Daten';return;}
+  if(pvState.idx>=q.length){pvState.idx=0;}
+  var item=q[pvState.idx];
+  var isEN=pvState.lang==='en';
+  document.getElementById('pv-verb').textContent=item.verb;
+  document.getElementById('pv-example-de').textContent=isEN?item.example_en:item.example_de;
+  document.getElementById('pv-translation').textContent='';
+  document.getElementById('pv-translation').style.opacity='0';
+  document.getElementById('pv-example-trans').textContent='';
+  document.getElementById('pv-example-trans').style.opacity='0';
+  document.getElementById('pv-learn-btns').style.display='none';
+  pvState.revealed=false;
+  document.getElementById('pv-counter').textContent=(pvState.idx+1)+' / '+q.length;
+}
+
+function pvReveal() {
+  if(pvState.revealed) return;
+  pvState.revealed=true;
+  var item=pvState.queue[pvState.idx];
+  var isEN=pvState.lang==='en';
+  var trans=isEN?item.de:item.en;
+  var exTrans=isEN?item.example_de:item.example_ru;
+  document.getElementById('pv-translation').textContent='🇩🇪 '+trans;
+  document.getElementById('pv-translation').style.opacity='1';
+  document.getElementById('pv-example-trans').textContent=exTrans;
+  document.getElementById('pv-example-trans').style.opacity='1';
+  document.getElementById('pv-learn-btns').style.display='flex';
+}
+
+function pvSpeak() {
+  var item=pvState.queue[pvState.idx];
+  var isEN=pvState.lang==='en';
+  speak(isEN?item.example_en:item.example_de, isEN?'en':'de');
+}
+
+function pvAnswer(result) {
+  document.getElementById('pv-learn-btns').style.display='none';
+  if(result===true) addXP(1);
+  pvState.idx++;
+  if(pvState.idx>=pvState.queue.length){
+    pvState.idx=0;
+    showToast('🎉 Alle Phrasal Verbs dieser Kategorie!');
+  }
+  pvRenderLearn();
+}
+
+// --- QUIZ ---
+function pvRenderQuiz() {
+  var q=pvState.queue;
+  if(pvState.quizIdx>=q.length){
+    document.getElementById('pv-quiz-q').textContent='🏆 Quiz abgeschlossen! '+pvState.quizScore+'/'+q.length;
+    document.getElementById('pv-quiz-opts').innerHTML='';
+    document.getElementById('pv-quiz-next').style.display='none';
+    document.getElementById('pv-quiz-feedback').textContent='';
+    if(pvState.quizScore===q.length) addXP(3);
+    return;
+  }
+  var w=q[pvState.quizIdx];
+  var isEN=pvState.lang==='en';
+  document.getElementById('pv-quiz-counter').textContent='Frage '+(pvState.quizIdx+1)+' / '+q.length;
+  document.getElementById('pv-quiz-q').textContent=(isEN?'🇩🇪 ':'🇬🇧 ')+(isEN?w.de:w.en)+' = ?';
+  document.getElementById('pv-quiz-feedback').textContent='';
+  document.getElementById('pv-quiz-next').style.display='none';
+  pvState.quizAnswered=false;
+  var pool=q.filter(function(x){return x.verb!==w.verb;}).sort(function(){return Math.random()-.5;}).slice(0,3);
+  var opts=[{v:w.verb,ok:true}].concat(pool.map(function(x){return{v:x.verb,ok:false};})).sort(function(){return Math.random()-.5;});
+  document.getElementById('pv-quiz-opts').innerHTML=opts.map(function(o){
+    return '<button class="btn" style="text-align:left;" onclick="pvCheckQuiz(this,'+o.ok+',\''+w.verb.replace(/'/g,"\\'")+'\')">'+o.v+'</button>';
+  }).join('');
+}
+function pvCheckQuiz(btn,ok,correct){
+  if(pvState.quizAnswered)return;pvState.quizAnswered=true;
+  if(ok){btn.style.background='var(--accent3)';btn.style.color='#fff';pvState.quizScore++;document.getElementById('pv-quiz-feedback').textContent='✓ Richtig!';document.getElementById('pv-quiz-feedback').style.color='var(--accent3)';}
+  else{btn.style.background='rgba(239,68,68,.2)';btn.style.color='#ef4444';document.getElementById('pv-quiz-feedback').textContent='✗ Richtig: '+correct;document.getElementById('pv-quiz-feedback').style.color='#ef4444';}
+  document.getElementById('pv-quiz-next').style.display='block';
+}
+function pvNextQuiz(){pvState.quizIdx++;pvState.quizAnswered=false;pvRenderQuiz();}
+
+// --- SCHREIBEN ---
+function pvRenderWrite(){
+  var q=pvState.queue;
+  if(pvState.writeIdx>=q.length){
+    document.getElementById('pv-write-prompt').textContent='🎉 Abgeschlossen! '+pvState.writeScore+'/'+q.length;
+    document.getElementById('pv-write-input').style.display='none';
+    return;
+  }
+  var w=q[pvState.writeIdx];
+  var isEN=pvState.lang==='en';
+  pvState.writeAnswered=false;
+  document.getElementById('pv-write-counter').textContent=(pvState.writeIdx+1)+' / '+q.length;
+  document.getElementById('pv-write-prompt').textContent=(isEN?'🇩🇪 ':' ')+(isEN?w.de:w.en);
+  document.getElementById('pv-write-input').value='';
+  document.getElementById('pv-write-input').style.display='block';
+  document.getElementById('pv-write-input').style.borderColor='var(--border)';
+  document.getElementById('pv-write-input').disabled=false;
+  document.getElementById('pv-write-feedback').textContent='';
+  document.getElementById('pv-write-hint').textContent='';
+  document.getElementById('pv-write-next').style.display='none';
+  setTimeout(function(){var i=document.getElementById('pv-write-input');if(i)i.focus();},100);
+}
+function pvWriteHint(){
+  var w=pvState.queue[pvState.writeIdx];
+  var hint=w.verb.slice(0,3)+'...';
+  document.getElementById('pv-write-hint').textContent='💡 '+hint;
+}
+function pvCheckWrite(){
+  if(pvState.writeAnswered)return;pvState.writeAnswered=true;
+  var w=pvState.queue[pvState.writeIdx];
+  var input=document.getElementById('pv-write-input').value.trim().toLowerCase();
+  var correct=w.verb.toLowerCase();
+  var ok=input===correct;
+  var fb=document.getElementById('pv-write-feedback');
+  var inp=document.getElementById('pv-write-input');
+  if(ok){fb.textContent='✓ Richtig!';fb.style.color='var(--accent3)';inp.style.borderColor='var(--accent3)';pvState.writeScore++;addXP(1);setTimeout(pvNextWrite,1200);}
+  else{fb.textContent='✗ Richtig: '+w.verb;fb.style.color='#ef4444';inp.style.borderColor='#ef4444';inp.disabled=true;document.getElementById('pv-write-next').style.display='block';}
+}
+function pvNextWrite(){pvState.writeIdx++;pvRenderWrite();}
+
+// ============================================================
 // 🧩 LÜCKENTEXTE — Gap Fill Training
 // ============================================================
 var gapFillData = [
@@ -14274,8 +14828,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 63;
-var BUILD_VERSION = '6.0'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 64;
+var BUILD_VERSION = '6.1'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -14381,6 +14935,17 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  64: {
+    emoji: '💬',
+    title: 'Dialoge + Phrasal Verbs',
+    items: [
+      '💬 Dialoge lernen: 11 Alltagsgespräche in 4 Kategorien (Alltag/Reise/Arbeit/Sozial)',
+      '🔗 Phrasal Verbs EN: 40 Verben in 4 Kategorien mit 3 Lernmodi',
+      '🇩🇪 Trennbare Verben DE: 40 Verben in 4 Kategorien mit Beispielen',
+      '🗣️ Übersetzungen: Russisch und Türkisch für alle Dialoge',
+      '🧪 Tests für Dialoge und Phrasal Verbs automatisch hinzugefügt',
+    ]
+  },
   63: {
     emoji: '🧪',
     title: 'Test-Fix: VOCAB_RU_DE Zählung korrigiert',
@@ -15134,6 +15699,19 @@ window.linguaTests = {
     t.assert('DE Niveau gesamt 30 Themen', (function(){
       var tot=0; ['a1','a2','b1','b2','c1','c2'].forEach(function(l){ if(NIVEAU_DATA[l]) tot+=NIVEAU_DATA[l].topics.length; }); return tot>=30;
     })());
+
+    // Dialoge & Phrasal Verbs
+    t.assert('id=dialogs existiert', !!document.getElementById('dialogs'));
+    t.assert('id=phrasal existiert', !!document.getElementById('phrasal'));
+    t.assert('DIALOG_DATA hat 4 Kategorien', Object.keys(DIALOG_DATA).length === 4);
+    t.assert('DIALOG_DATA.alltag hat 3 Dialoge', DIALOG_DATA.alltag && DIALOG_DATA.alltag.length >= 3);
+    t.assert('DIALOG_DATA.reise hat 3 Dialoge', DIALOG_DATA.reise && DIALOG_DATA.reise.length >= 3);
+    t.assert('PHRASAL_DATA.en hat 4 Kategorien', Object.keys(PHRASAL_DATA.en).length >= 4);
+    t.assert('PHRASAL_DATA.de hat 4 Kategorien', Object.keys(PHRASAL_DATA.de).length >= 4);
+    t.assert('initDialogs() existiert', typeof initDialogs === 'function');
+    t.assert('initPhrasal() existiert', typeof initPhrasal === 'function');
+    t.assert('Nav-Button dialogs', !!document.querySelector('[data-section="dialogs"]'));
+    t.assert('Nav-Button phrasal', !!document.querySelector('[data-section="phrasal"]'));
     // Neue Features
     t.assert('id=gapfill existiert', !!document.getElementById('gapfill'));
     t.assert('id=dailytasks existiert', !!document.getElementById('dailytasks'));
@@ -15302,6 +15880,8 @@ function getTalkPrompt() {
 // ============================================================
 var DEEPL_DEFAULT_KEY = 'e5b8f6d1-e5ca-4481-a83f-a1762fe3f6d9:fx';
 var DEEPL_API_URL = 'https://api-free.deepl.com/v2/translate';
+// ⬇ Nach Worker-Deployment diese URL setzen (deepl-worker.js deployen):
+var DEEPL_WORKER_URL = ''; // z.B. 'https://lingua-deepl.DEINNAME.workers.dev'
 // Mehrere CORS-Proxies als Fallback
 var DEEPL_PROXIES = [
   'https://corsproxy.io/?url=',
@@ -15388,6 +15968,15 @@ async function testDeeplKey() {
 async function _deeplFetch(key, jsonBody) {
   var url = DEEPL_API_URL;
   var proxies = [
+    // 0. Cloudflare Worker (wenn konfiguriert) — zuverlässigste Methode
+    function() {
+      if (!DEEPL_WORKER_URL) return Promise.reject(new Error('Kein Worker'));
+      return fetch(DEEPL_WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: jsonBody,
+      });
+    },
     // 1. Direkt mit Authorization Header
     function() {
       return fetch(url, {
