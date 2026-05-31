@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" id="meta-description" content="LINGUA v6.1 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" id="meta-description" content="LINGUA v6.2 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v6.1 · by René Prause</title>
+<title>LINGUA v6.2 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -659,7 +659,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v6.1</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v6.2</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -1882,7 +1882,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v6.1</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v6.2</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -2051,7 +2051,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v6.1</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v6.2</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -14828,8 +14828,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 64;
-var BUILD_VERSION = '6.1'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 65;
+var BUILD_VERSION = '6.2'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -14935,6 +14935,16 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  65: {
+    emoji: '📋',
+    title: 'Vollständiges Changelog-Protokoll',
+    items: [
+      '📋 Externes CHANGELOG.md erstellt — alle 64 Builds rückwirkend dokumentiert',
+      '📊 Statistiken: 64 Builds, v6.2, 13 Sprachen, 5005 Vokabeln, 30+22 Niveau-Themen',
+      '💬 Dialoge (11), Phrasal Verbs (80), Lückentexte (27), 95+ automatische Tests',
+      '☁️ Cloudflare Worker deepl-worker.js für CORS-freie DeepL-Integration',
+    ]
+  },
   64: {
     emoji: '💬',
     title: 'Dialoge + Phrasal Verbs',
