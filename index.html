@@ -15441,11 +15441,11 @@ var _origSwitchSection = switchSection;
 switchSection = function(id) {
   _origSwitchSection(id);
   // Navigation-spezifische Initialisierungen
-  if (id === 'srs')       initSRS();
-  if (id === 'write')     initWrite();
+  if (id === 'srs')       { initSRS(); }
+  if (id === 'write')     { initWrite(); }
   if (id === 'stats')     { updateAllStats(); renderGoalOptions(); }
-  if (id === 'badges')    renderBadges();
-  if (id === 'path')      renderLearningPath();
+  if (id === 'badges')    { renderBadges(); }
+  if (id === 'path')      { renderLearningPath(); }
   if (id === 'search')    { initSearchLangFilter(); }
   if (id === 'conjugate') { initConjugation(); renderQuickVerbs(); }
   if (id === 'deniveau')  { setNiveauLearnLang('de'); showNiveau('a1a2'); renderNiveauTopics(); }
@@ -15456,6 +15456,8 @@ switchSection = function(id) {
   if (id === 'phrasal')   { initPhrasal(); }
   if (id === 'dailytasks'){ renderDailyTasks(); }
   if (id === 'calendar')  { renderCalendar(); }
+  if (id === 'translate') { populateTranslatorDropdowns(); }
+  if (id === 'ai')        { /* KI-Assistent lädt on demand via quickPrompt */ }
 };
 
 // ============================================================
@@ -15708,7 +15710,7 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 72;
+var BUILD = 73;
 var BUILD_VERSION = '6.5'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
