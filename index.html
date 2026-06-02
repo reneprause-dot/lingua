@@ -7,7 +7,8 @@
 <meta name="description" id="meta-description" content="LINGUA v7.2 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
 <title>LINGUA v7.2 · by René Prause</title>
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22LINGUA%22%2C%22short_name%22%3A%22LINGUA%22%2C%22description%22%3A%22KI-gest%C3%BCtzte%20Sprachlern-App%22%2C%22start_url%22%3A%22.%22%2C%22scope%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a0a0f%22%2C%22theme_color%22%3A%22%230a0a0f%22%2C%22orientation%22%3A%22portrait-primary%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20192%20192'%253E%253Crect%20width%3D'192'%20height%3D'192'%20rx%3D'32'%20fill%3D'%25236366f1'%2F%253E%253Ctext%20x%3D'96'%20y%3D'130'%20font-size%3D'100'%20text-anchor%3D'middle'%20fill%3D'white'%253E%25F0%259F%258C%2590%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20512%20512'%253E%253Crect%20width%3D'512'%20height%3D'512'%20rx%3D'80'%20fill%3D'%25236366f1'%2F%253E%253Ctext%20x%3D'256'%20y%3D'340'%20font-size%3D'260'%20text-anchor%3D'middle'%20fill%3D'white'%253E%25F0%259F%258C%2590%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%236366f1'/%3E%3Ctext x='96' y='130' font-size='100' text-anchor='middle' fill='white'%3E%F0%9F%8C%90%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
@@ -15810,7 +15811,7 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 72;
+var BUILD = 73;
 var BUILD_VERSION = '7.2'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
@@ -15917,6 +15918,19 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  73: {
+    emoji: '🔧',
+    title: 'Syntax-Fix + Manifest inline + Backup-System',
+    items: [
+      'Flaggen-Emojis in Changelog-Strings durch Text ersetzt (Parser-Fix)',
+      'PWA Manifest jetzt inline als Data-URI — keine externe manifest.json noetig',
+      'Icon-404-Fehler behoben — App-Icons als inline SVG eingebettet',
+      'Backup-System: jede neue Version erstellt index_backup_buildXX.html',
+      'Tagesaufgaben-Tracking vollstaendig: quiz/srs/write/gapfill/wordorder/streak',
+      'EN Dialoge auf 12 gebracht (Bank, On the Phone)',
+      'Woechentlicher Fortschritts-Bericht in Statistiken',
+    ]
+  },
   72: {
     emoji: '🎯',
     title: 'Tagesaufgaben fix + EN Dialoge + Wochenbericht',
@@ -15945,8 +15959,8 @@ var CHANGELOG = {
     emoji: '📚',
     title: 'Große Inhaltserweiterung v7.0',
     items: [
-      '🇩🇪 DE Niveau: C2 +1 Thema (Mehrsprachigkeit) → jetzt 31 Themen',
-      '🇬🇧 EN Niveau: A2 +2, B1 +3, C1 +1, C2 +1 → jetzt 28 Themen',
+      'DE DE Niveau: C2 +1 Thema (Mehrsprachigkeit) → jetzt 31 Themen',
+      'EN EN Niveau: A2 +2, B1 +3, C1 +1, C2 +1 → jetzt 28 Themen',
       '💬 Dialoge DE: +2 (Bank, Telefonieren) | EN: unveränderlich 10',
       '🧩 Lückentexte DE: 35 Aufgaben | EN: 63 Aufgaben',
     ]
@@ -15962,13 +15976,13 @@ var CHANGELOG = {
     ]
   },
   68: {
-    emoji: '🇬🇧',
+    emoji: 'EN',
     title: 'Englische Dialoge & Lückentexte',
     items: [
-      '🇬🇧 11 englische Dialoge in 4 Kategorien (Daily/Travel/Work/Social)',
+      'EN 11 englische Dialoge in 4 Kategorien (Daily/Travel/Work/Social)',
       '🧩 27 englische Lückentexte (Easy/Medium/Hard)',
-      '🔄 Dialoge: Sprach-Toggle 🇩🇪 Deutsch / 🇬🇧 Englisch',
-      '🔄 Lückentexte: Sprach-Toggle 🇩🇪 Deutsch / 🇬🇧 Englisch',
+      '🔄 Dialoge: Sprach-Toggle DE Deutsch / EN Englisch',
+      '🔄 Lückentexte: Sprach-Toggle DE Deutsch / EN Englisch',
       '🗣️ Übersetzungssprachen: RU / TR / DE (je nach Lernsprache)',
       '🔊 Aussprache wechselt automatisch auf korrekte Sprache',
     ]
@@ -16009,7 +16023,7 @@ var CHANGELOG = {
     items: [
       '💬 Dialoge lernen: 11 Alltagsgespräche in 4 Kategorien (Alltag/Reise/Arbeit/Sozial)',
       '🔗 Phrasal Verbs EN: 40 Verben in 4 Kategorien mit 3 Lernmodi',
-      '🇩🇪 Trennbare Verben DE: 40 Verben in 4 Kategorien mit Beispielen',
+      'DE Trennbare Verben DE: 40 Verben in 4 Kategorien mit Beispielen',
       '🗣️ Übersetzungen: Russisch und Türkisch für alle Dialoge',
       '🧪 Tests für Dialoge und Phrasal Verbs automatisch hinzugefügt',
     ]
@@ -16024,7 +16038,7 @@ var CHANGELOG = {
     ]
   },
   62: {
-    emoji: '🇩🇪',
+    emoji: 'DE',
     title: 'Deutsch Niveau stark erweitert',
     items: [
       '📈 B1: +2 Themen (Gesundheitssystem & Vorsorge, Politik & Gesellschaft)',
@@ -16122,23 +16136,23 @@ var CHANGELOG = {
     ]
   },
   53: {
-    emoji: '🇬🇧',
+    emoji: 'EN',
     title: 'Englisch Sprachniveau — eigene Sektion',
     items: [
-      '🇬🇧 Englisch Sprachniveau als eigenständige Sektion (id=enniveau)',
-      '🗺 Nav-Button 🇬🇧 EN Niveau in der Navigationsleiste',
+      'EN Englisch Sprachniveau als eigenständige Sektion (id=enniveau)',
+      '🗺 Nav-Button EN EN Niveau in der Navigationsleiste',
       '🏠 Home-Card Englisch Sprachniveau ergänzt',
-      '🇩🇪 Übersetzungssprache DE/RU/TR für Englisch Niveau wählbar',
+      'DE Übersetzungssprache DE/RU/TR für Englisch Niveau wählbar',
       '✍️ Alle 5 Modi: Vokabeln, Grammatik, Sätze, Quiz, Schreiben',
-      '🇩🇪 Deutsch Niveau: Übersetzung nur RU/TR (EN nicht mehr nötig)',
+      'DE Deutsch Niveau: Übersetzung nur RU/TR (EN nicht mehr nötig)',
     ]
   },
   52: {
-    emoji: '🇬🇧',
+    emoji: 'EN',
     title: 'Englisch Sprachniveau A1–C2',
     items: [
-      '🇬🇧 Englisch Sprachniveau A1–C2 komplett eingebaut — Englisch LERNEN',
-      '🔄 Lernsprache wählbar oben in der Sektion: 🇩🇪 Deutsch oder 🇬🇧 Englisch',
+      'EN Englisch Sprachniveau A1–C2 komplett eingebaut — Englisch LERNEN',
+      '🔄 Lernsprache wählbar oben in der Sektion: DE Deutsch oder EN Englisch',
       '📚 6 A1-Themen, 4 A2, 3 B1, 1 B2, C1, C2 mit Vokabeln/Grammatik/Sätzen/Quiz',
       '🔑 Neuer DeepL Key eingebettet (e5b8f6d1...)',
       '🔧 DeepL: 4 Proxy-Fallbacks, Authorization-Header, JSON-Body',
@@ -16146,10 +16160,10 @@ var CHANGELOG = {
     ]
   },
   51: {
-    emoji: '🇬🇧',
+    emoji: 'EN',
     title: 'Englisch Sprachniveau + Weiter-Button',
     items: [
-      '🇬🇧 Englisch als dritte Übersetzungssprache im Sprachniveau',
+      'EN Englisch als dritte Übersetzungssprache im Sprachniveau',
       '274 englische Vokabelübersetzungen eingebaut (A1–C2)',
       '69 englische Satzübersetzungen eingebaut',
       '→ Weiter-Button im Vokabeltraining — nächste Karte ohne Wertung',
@@ -16183,10 +16197,10 @@ var CHANGELOG = {
     ]
   },
   47: {
-    emoji: '🇩🇪🇹🇷',
+    emoji: 'DETR',
     title: 'Türkisch im Sprachniveau + Navigationsleiste',
     items: [
-      '🇹🇷 Türkisch als zweite Übersetzungssprache im Sprachniveau wählbar',
+      'TR Türkisch als zweite Übersetzungssprache im Sprachniveau wählbar',
       '246 türkische Vokabelübersetzungen eingebaut (A1–C2)',
       '69 türkische Satzübersetzungen eingebaut',
       '🗺 Deutsch Sprachniveau in der Navigationsleiste ergänzt',
@@ -16194,24 +16208,24 @@ var CHANGELOG = {
     ]
   },
   46: {
-    emoji: '🇩🇪',
+    emoji: 'DE',
     title: 'Deutsch Sprachniveau A1–C2',
     items: [
-      '🇩🇪 Neues Modul: Deutsch Sprachniveau mit 6 Leveln (A1/A2/B1/B2/C1/C2)',
+      'DE Neues Modul: Deutsch Sprachniveau mit 6 Leveln (A1/A2/B1/B2/C1/C2)',
       '📚 23 Themen mit Vokabeln, Grammatik, Sätzen und Quiz',
       '🏠 Home-Card und Navigationsleiste ergänzt',
-      '🇷🇺 Übersetzungssprache Russisch mit Grammatik-Vergleichen',
+      'RU Übersetzungssprache Russisch mit Grammatik-Vergleichen',
       '🎯 Fortschrittsanzeige pro Thema in % ',
     ]
   },
   45: {
-    emoji: '🇵🇱',
+    emoji: 'PL',
     title: 'Polnisch vollständig integriert',
     items: [
-      '🇵🇱 Polnisch als Lern- UND App-Sprache komplett eingebaut',
+      'PL Polnisch als Lern- UND App-Sprache komplett eingebaut',
       '📚 150+ polnische Vokabelpaare in 5 Themen',
       '🌍 Vollständige polnische UI-Übersetzung aller Strings',
-      '🔤 Header-Pill 🇵🇱 PL in der Sprachleiste ergänzt',
+      '🔤 Header-Pill PL PL in der Sprachleiste ergänzt',
       '🔗 DeepL-Unterstützung für Polnisch (PL) hinzugefügt',
     ]
   },
@@ -16241,7 +16255,7 @@ var CHANGELOG = {
     title: '5.005 Russisch-Deutsch Wörter',
     items: [
       '📚 5.005 russisch-deutsche Wortpaare in 100+ Themen eingebaut',
-      '🇩🇪 Deutsch als Lernsprache aus dem Russischen vollständig',
+      'DE Deutsch als Lernsprache aus dem Russischen vollständig',
       '⏱ Tagesziel: Wörter ODER Zeit wählbar (5/10/15/30 Min.)',
       '🔥 Streak zählt nur bei erfülltem Tagesziel',
       '🌍 DeepL-Integration mit eingebettetem Key + Proxy-Fallback',
@@ -16265,7 +16279,7 @@ function getChangelogEntry(build) {
       '✅ Neue Funktionen und Verbesserungen',
       '⚡ Performance optimiert',
       '🔧 Stabilität verbessert',
-      '🇩🇪 Deutsch Sprachniveau A1–C2',
+      'DE Deutsch Sprachniveau A1–C2',
     ]
   };
 }
