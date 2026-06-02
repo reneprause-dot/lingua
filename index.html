@@ -2,9 +2,6 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
 <meta name="description" id="meta-description" content="LINGUA v7.1 – KI-gestützte Sprachlern-App von René Prause">
@@ -658,6 +655,19 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 .psb-lock { background:var(--border); color:var(--muted); }
 .psb-new { background:rgba(108,99,255,.2); color:var(--accent); }
 </style>
+<script>
+// Cache-Cleaner - laeuft sofort beim Laden
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(regs) {
+    regs.forEach(function(r) { r.unregister(); });
+  });
+  if ('caches' in window) {
+    caches.keys().then(function(names) {
+      names.forEach(function(name) { caches.delete(name); });
+    });
+  }
+}
+</script>
 </head>
 <body>
 <div id="app">
@@ -1076,13 +1086,6 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <div class="stat-box"><div class="stat-num" id="stats-best-streak">0</div><div class="stat-lbl" id="ui-stats-best-streak">Bester Streak</div></div>
         <div class="stat-box"><div class="stat-num" id="stats-xp">0</div><div class="stat-lbl">XP</div></div>
       </div>
-
-      <!-- Wöchentlicher Fortschritts-Bericht -->
-      <div class="card" style="margin-top:1rem;">
-        <div class="card-title">📈 Wochenbericht</div>
-        <div id="weekly-report-content">
-          <div style="font-size:.72rem;color:var(--muted);text-align:center;padding:.5rem;">Wird geladen…</div>
-        </div>
       </div>
     </div>
 
@@ -11017,14 +11020,7 @@ function showToast(msg) {
 // ============================================================
 if ('serviceWorker' in navigator) {
   // Zuerst alle alten Service Worker loeschen (verhindert Cache-Probleme)
-  navigator.serviceWorker.getRegistrations().then(function(registrations) {
-    var unregisterAll = registrations.map(function(r) { return r.unregister(); });
-    Promise.all(unregisterAll).then(function() {
-      navigator.serviceWorker.register('sw.js').catch(function() {});
-    });
-  }).catch(function() {
-    navigator.serviceWorker.register('sw.js').catch(function() {});
-  });
+  navigator.serviceWorker.register('sw.js').catch(function() {});
 }
 
 // ============================================================
@@ -11531,7 +11527,6 @@ function updateAllStats() {
   renderAccuracyChart();
   renderWeakTopics();
   renderBadges();
-  renderWeeklyReport();
   var tl = document.getElementById('stats-total-learned');
   if (tl) tl.textContent = Object.values(state.learned||{}).reduce(function(a,b){return a+Object.keys(b).length;},0);
   var tq = document.getElementById('stats-total-quiz');
@@ -11543,111 +11538,14 @@ function updateAllStats() {
 }
 
 // ============================================================
-// 📈 WÖCHENTLICHER FORTSCHRITTS-BERICHT
-// ============================================================
-function renderWeeklyReport() {
-  var el = document.getElementById('weekly-report-content');
-  if (!el) return;
-
-  // Letzte 7 Tage ermitteln
-  var days = [];
-  for (var i = 6; i >= 0; i--) {
-    var d = new Date();
-    d.setDate(d.getDate() - i);
-    var key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-    days.push(key);
-  }
-
-  // Aktivitätsdaten
-  var activity = JSON.parse(localStorage.getItem('lingua_activity') || '{}');
-  var dailyData = JSON.parse(localStorage.getItem('lingua_daily') || '{}');
-  var dailyTasks = JSON.parse(localStorage.getItem('lingua_daily_tasks') || '{}');
-
-  // Wochenwerte berechnen
-  var weekWords = 0, weekStreak = 0, weekXPStart = 0;
-  var activeDays = 0;
-  days.forEach(function(key) {
-    if (activity[key]) weekWords += (activity[key].learned || 0);
-    if (dailyData[key]) { activeDays++; weekStreak++; }
-  });
-
-  // XP diese Woche (aus XP-History wenn vorhanden, sonst gesamt)
-  var totalXP = getXP();
-  var weekXP = parseInt(localStorage.getItem('lingua_week_xp_snapshot') || '0');
-  var xpThisWeek = Math.max(0, totalXP - weekXP);
-
-  // Quiz-Rate diese Woche
-  var totalQuiz = state.quizTotal || 0;
-  var quizSnap = parseInt(localStorage.getItem('lingua_week_quiz_snapshot') || '0');
-  var quizThisWeek = Math.max(0, totalQuiz - quizSnap);
-
-  // Aktuellen Streak
-  var streak = state.streak || 0;
-  var bestStreak = state.bestStreak || streak;
-
-  // Tagesaufgaben diese Woche
-  var todayTasks = dailyTasks[days[days.length-1]] || {};
-  var completedTasks = Object.values(todayTasks).filter(function(v){ return v >= 1; }).length;
-  var totalTasks = DAILY_TASKS_DEF.length;
-
-  // Vergleich zur Vorwoche (7-14 Tage zurück)
-  var prevDays = [];
-  for (var j = 13; j >= 7; j--) {
-    var pd = new Date();
-    pd.setDate(pd.getDate() - j);
-    prevDays.push(pd.getFullYear()+'-'+String(pd.getMonth()+1).padStart(2,'0')+'-'+String(pd.getDate()).padStart(2,'0'));
-  }
-  var prevWords = 0;
-  prevDays.forEach(function(key) {
-    if (activity[key]) prevWords += (activity[key].learned || 0);
-  });
-  var wordsTrend = weekWords > prevWords ? '↑' : weekWords < prevWords ? '↓' : '→';
-  var wordsTrendColor = weekWords > prevWords ? 'var(--accent3)' : weekWords < prevWords ? '#ef4444' : 'var(--muted)';
-
-  // 7-Tage Mini-Heatmap
-  var heatmapHTML = days.map(function(key) {
-    var hasData = !!dailyData[key];
-    var dayLabel = new Date(key+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short'}).slice(0,2);
-    return '<div style="display:flex;flex-direction:column;align-items:center;gap:.2rem;flex:1;">' +
-      '<div style="width:28px;height:28px;border-radius:6px;background:'+(hasData?'var(--accent3)':'var(--surface2)')+';border:1px solid var(--border);"></div>' +
-      '<div style="font-size:.6rem;color:var(--muted);">'+dayLabel+'</div></div>';
-  }).join('');
-
-  // Motivations-Nachricht
-  var motivMsg = '';
-  if (streak >= 7) motivMsg = '🔥 Beeindruckend — '+ streak +' Tage am Stück!';
-  else if (weekWords >= 50) motivMsg = '💪 Starke Woche — weiter so!';
-  else if (activeDays === 0) motivMsg = '💡 Heute wäre ein guter Tag zum Starten!';
-  else if (activeDays < 3) motivMsg = '📈 Noch '+(3-activeDays)+' aktive Tage für eine gute Woche!';
-  else motivMsg = '✅ Du bist auf dem richtigen Weg!';
-
-  el.innerHTML =
-    // Motivations-Nachricht
-    '<div style="background:var(--surface2);border-radius:8px;padding:.6rem .75rem;margin-bottom:.75rem;font-size:.78rem;font-weight:600;text-align:center;">'+motivMsg+'</div>' +
-
-    // Mini-Heatmap
-    '<div style="display:flex;gap:.25rem;margin-bottom:.75rem;padding:.5rem;background:var(--surface2);border-radius:8px;">'+heatmapHTML+'</div>' +
-
-    // Kennzahlen-Grid
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;">' +
-      _weekStat('📚', 'Wörter', weekWords, wordsTrend, wordsTrendColor) +
-      _weekStat('⚡', 'XP diese Woche', xpThisWeek, '', '') +
-      _weekStat('❓', 'Quiz absolviert', quizThisWeek, '', '') +
-      _weekStat('🔥', 'Aktueller Streak', streak + ' Tage', '', '') +
-      _weekStat('📅', 'Aktive Tage', activeDays + ' / 7', '', '') +
-      _weekStat('🎯', 'Aufgaben heute', completedTasks + ' / ' + totalTasks, '', '') +
-    '</div>' +
-
-    // Bester Streak
-    '<div style="font-size:.72rem;color:var(--muted);text-align:center;">Bester Streak: '+bestStreak+' Tage</div>';
-}
-
-function _weekStat(icon, label, value, trend, trendColor) {
-  return '<div style="background:var(--surface2);border-radius:8px;padding:.5rem .65rem;">' +
-    '<div style="font-size:.65rem;color:var(--muted);margin-bottom:.2rem;">'+icon+' '+label+'</div>' +
-    '<div style="font-size:1rem;font-weight:800;">' + value +
-      (trend ? '<span style="font-size:.75rem;color:'+trendColor+';margin-left:.3rem;">'+trend+'</span>' : '') +
-    '</div></div>';
+// SRS - SPACED REPETITION
+  if (tl) tl.textContent = Object.values(state.learned||{}).reduce(function(a,b){return a+Object.keys(b).length;},0);
+  var tq = document.getElementById('stats-total-quiz');
+  if (tq) tq.textContent = state.quizTotal || 0;
+  var bs = document.getElementById('stats-best-streak');
+  if (bs) bs.textContent = state.bestStreak || state.streak || 0;
+  var xpEl = document.getElementById('stats-xp');
+  if (xpEl) xpEl.textContent = getXP();
 }
 
 // ============================================================
