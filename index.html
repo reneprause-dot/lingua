@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%236366f1'/><text x='16' y='23' font-size='20' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>L</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
 <meta name="description" id="meta-description" content="LINGUA v6.5 – KI-gestützte Sprachlern-App von René Prause">
@@ -11288,7 +11289,8 @@ var BADGES_DEF = [
   {id:'perfect_quiz',  icon:'💯', name:'Perfektes Quiz',    desc:'Quiz ohne Fehler abgeschlossen', check:function(s){return (s.perfectQuizzes||0)>=1;}},
   {id:'five_langs',    icon:'🌍', name:'Weltenbürger',      desc:'5 Sprachen ausprobiert',      check:function(s){return Object.keys(s.learned||{}).length>=5;}},
   {id:'custom_vocab',  icon:'✏️', name:'Eigener Forscher',  desc:'10 eigene Vokabeln hinzugefügt', check:function(){
-    Object.keys(LANG_NAMES).forEach(function(l) { data.myVocab[l] = getMyVocab(l); });
+    var total = 0;
+    Object.keys(LANG_NAMES).forEach(function(l) { total += getMyVocab(l).length; });
     return total >= 10;
   }},
 ];
@@ -15706,7 +15708,7 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 70;
+var BUILD = 71;
 var BUILD_VERSION = '6.5'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
