@@ -5,9 +5,9 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%236366f1'/><text x='16' y='23' font-size='20' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>L</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" id="meta-description" content="LINGUA v8.1 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" id="meta-description" content="LINGUA v8.2 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v8.1 · by René Prause</title>
+<title>LINGUA v8.2 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -58,11 +58,13 @@ body::before {
 
 /* HEADER */
 header {
-  display:flex; align-items:center; justify-content:space-between;
+  display:flex; align-items:center; gap:.4rem;
   padding:.5rem .75rem; border-bottom:1px solid var(--border);
   background:rgba(7,7,13,.92); backdrop-filter:blur(20px);
-  flex-wrap:nowrap; gap:.4rem;
+  flex-wrap:nowrap; overflow:visible;
 }
+.logo { flex-shrink:0; }
+.lang-pills { flex:1; }
 .topbar-sticky {
   position:sticky; top:0; z-index:100;
   background:var(--bg);
@@ -72,8 +74,7 @@ header {
   letter-spacing:-.02em; color:var(--text); flex-shrink:0;
 }
 .logo span { color:var(--accent); }
-.header-right { display:flex; align-items:center; gap:.4rem; flex:1; overflow:visible; min-width:0; }
-.header-controls { display:flex; align-items:center; gap:.4rem; flex-shrink:0; }
+/* header-right entfernt - buttons direkt in header */
 .lang-pills { display:flex; gap:.35rem; flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
 .lang-pills::-webkit-scrollbar { display:none; }
 .lang-pill {
@@ -133,7 +134,7 @@ nav::-webkit-scrollbar { display:none; }
 :root.light .nav-btn.active { background:#fff; color:var(--accent); border-color:var(--accent); }
 
 /* MAIN */
-main { padding:1.25rem; max-width:900px; width:100%; margin:0 auto; flex:1; }
+main { padding:1rem; max-width:900px; width:100%; margin:0 auto; }
 
 /* SECTIONS */
 .section { display:none; animation:fadeIn .3s ease; }
@@ -157,8 +158,8 @@ main { padding:1.25rem; max-width:900px; width:100%; margin:0 auto; flex:1; }
 /* VOCAB TRAINER */
 .vocab-card {
   background:var(--surface); border:1px solid var(--border); border-radius:20px;
-  padding:3rem 2rem; text-align:center; margin-bottom:1.5rem; position:relative;
-  min-height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:1.5rem 1.25rem; text-align:center; margin-bottom:1rem; position:relative;
+  min-height:120px; display:flex; flex-direction:column; align-items:center; justify-content:center;
   transition:transform .3s; cursor:pointer;
 }
 .vocab-card:hover { transform:translateY(-2px); }
@@ -686,9 +687,8 @@ if (window.caches) {
 <div id="app">
   <div class="topbar-sticky">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v8.1</span></div>
-    <div class="header-right">
-      <div class="lang-pills">
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v8.2</span></div>
+    <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
         <button class="lang-pill" data-lang="da">🇩🇰 DA</button>
         <button class="lang-pill" data-lang="de">🇩🇪 DE</button>
@@ -703,13 +703,10 @@ if (window.caches) {
         <button class="lang-pill" data-lang="th">🇹🇭 TH</button>
         <button class="lang-pill" data-lang="tr">🇹🇷 TR</button>
       </div>
-      <div class="header-controls">
-        <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Hell/Dunkel">🌙</button>
-        <button class="settings-btn" onclick="openSettings()" title="Einstellungen">
-          <span class="api-dot-inline" id="api-dot"></span>⚙
-        </button>
-      </div>
-    </div>
+      <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Hell/Dunkel">🌙</button>
+      <button class="settings-btn" onclick="openSettings()" title="Einstellungen">
+        <span class="api-dot-inline" id="api-dot"></span>⚙
+      </button>
   </header>
 
   <nav>
@@ -2001,7 +1998,7 @@ if (window.caches) {
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v8.1</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v8.2</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -2170,7 +2167,7 @@ if (window.caches) {
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v8.1</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v8.2</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -15722,8 +15719,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 82;
-var BUILD_VERSION = '8.1'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 83;
+var BUILD_VERSION = '8.2'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -15829,6 +15826,16 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  83: {
+    emoji: '🛠️',
+    title: 'v8.2 – Layout & Settings komplett gefixt',
+    items: [
+      'Header neu: Logo | Sprachpillen (scroll) | Darkmode | Settings',
+      'Settings-Button immer sichtbar und klickbar',
+      'vocab-card: padding und min-height reduziert (kein schwarzer Leerraum)',
+      'main: flex:1 entfernt damit Sektionen content-basiert hoehe haben',
+    ]
+  },
   82: {
     emoji: '⚙️',
     title: 'v8.1 – Settings-Button immer sichtbar',
