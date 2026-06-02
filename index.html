@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" id="meta-description" content="LINGUA v6.4 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" id="meta-description" content="LINGUA v6.5 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v6.4 · by René Prause</title>
+<title>LINGUA v6.5 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -659,7 +659,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v6.4</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v6.5</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -1902,7 +1902,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v6.4</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v6.5</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -2071,7 +2071,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v6.4</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v6.5</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -15112,8 +15112,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 68;
-var BUILD_VERSION = '6.4'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 69;
+var BUILD_VERSION = '6.5'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -15219,6 +15219,16 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  69: {
+    emoji: '☁️',
+    title: 'Cloudflare Worker aktiv',
+    items: [
+      '☁️ DEEPL_WORKER_URL gesetzt: lingua.rene-prause.workers.dev',
+      '🔑 DeepL Key jetzt serverseitig — nicht mehr im Browser-Code sichtbar',
+      '✅ DeepL läuft jetzt zuverlässig ohne CORS-Probleme',
+      '⚡ Worker ist Fallback 0 — wird immer zuerst versucht',
+    ]
+  },
   68: {
     emoji: '🇬🇧',
     title: 'Englische Dialoge & Lückentexte',
@@ -16275,7 +16285,7 @@ function getTalkPrompt() {
 var DEEPL_DEFAULT_KEY = 'e5b8f6d1-e5ca-4481-a83f-a1762fe3f6d9:fx';
 var DEEPL_API_URL = 'https://api-free.deepl.com/v2/translate';
 // ⬇ Nach Worker-Deployment diese URL setzen (deepl-worker.js deployen):
-var DEEPL_WORKER_URL = ''; // z.B. 'https://lingua-deepl.DEINNAME.workers.dev'
+var DEEPL_WORKER_URL = 'https://lingua.rene-prause.workers.dev';
 // Mehrere CORS-Proxies als Fallback
 var DEEPL_PROXIES = [
   'https://corsproxy.io/?url=',
