@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" id="meta-description" content="LINGUA v7.1 – KI-gestützte Sprachlern-App von René Prause">
+<meta name="description" id="meta-description" content="LINGUA v7.2 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v7.1 · by René Prause</title>
+<title>LINGUA v7.2 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -659,7 +659,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v7.1</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v7.2</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -1072,6 +1072,14 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
         <div class="stat-box"><div class="stat-num" id="stats-total-quiz">0</div><div class="stat-lbl" id="ui-stats-total-quiz">Quiz gesamt</div></div>
         <div class="stat-box"><div class="stat-num" id="stats-best-streak">0</div><div class="stat-lbl" id="ui-stats-best-streak">Bester Streak</div></div>
         <div class="stat-box"><div class="stat-num" id="stats-xp">0</div><div class="stat-lbl">XP</div></div>
+      </div>
+
+      <!-- Wöchentlicher Fortschritts-Bericht -->
+      <div class="card" style="margin-top:1rem;">
+        <div class="card-title">📈 Wochenbericht</div>
+        <div id="weekly-report-content">
+          <div style="font-size:.72rem;color:var(--muted);text-align:center;padding:.5rem;">Wird geladen…</div>
+        </div>
       </div>
     </div>
 
@@ -1970,7 +1978,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v7.1</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v7.2</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -2139,7 +2147,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v7.1</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v7.2</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -10710,7 +10718,8 @@ function checkQuiz(btn, correct, correctAnswer) {
   state.quizTotal++;
   document.getElementById('quiz-score-badge').textContent = quizSessionScore + ' Punkte';
   saveState();
-}
+  // Tagesaufgaben tracken
+  incrementDailyTask('quiz', 1);
 
 function nextQuizQuestion() {
   quizCurrent++;
@@ -11378,10 +11387,12 @@ function checkGoalCompletion() {
   var current = type === 'time' ? getDailyMinutes() : getDailyLearned();
   if (current >= goal) {
     checkAndUpdateStreak();
+    // Streak-Tagesaufgabe markieren
+    incrementDailyTask('streak', 1);
     // Streak-Kalender als erreicht markieren
     var data = JSON.parse(localStorage.getItem('lingua_daily') || '{}');
     var key = getTodayKey();
-    if (!data[key]) data[key] = 1; // mindestens 1 markieren
+    if (!data[key]) data[key] = 1;
     localStorage.setItem('lingua_daily', JSON.stringify(data));
     renderStreakCalendar();
   }
@@ -11509,6 +11520,7 @@ function updateAllStats() {
   renderAccuracyChart();
   renderWeakTopics();
   renderBadges();
+  renderWeeklyReport();
   var tl = document.getElementById('stats-total-learned');
   if (tl) tl.textContent = Object.values(state.learned||{}).reduce(function(a,b){return a+Object.keys(b).length;},0);
   var tq = document.getElementById('stats-total-quiz');
@@ -11517,6 +11529,114 @@ function updateAllStats() {
   if (bs) bs.textContent = state.bestStreak || state.streak || 0;
   var xpEl = document.getElementById('stats-xp');
   if (xpEl) xpEl.textContent = getXP();
+}
+
+// ============================================================
+// 📈 WÖCHENTLICHER FORTSCHRITTS-BERICHT
+// ============================================================
+function renderWeeklyReport() {
+  var el = document.getElementById('weekly-report-content');
+  if (!el) return;
+
+  // Letzte 7 Tage ermitteln
+  var days = [];
+  for (var i = 6; i >= 0; i--) {
+    var d = new Date();
+    d.setDate(d.getDate() - i);
+    var key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    days.push(key);
+  }
+
+  // Aktivitätsdaten
+  var activity = JSON.parse(localStorage.getItem('lingua_activity') || '{}');
+  var dailyData = JSON.parse(localStorage.getItem('lingua_daily') || '{}');
+  var dailyTasks = JSON.parse(localStorage.getItem('lingua_daily_tasks') || '{}');
+
+  // Wochenwerte berechnen
+  var weekWords = 0, weekStreak = 0, weekXPStart = 0;
+  var activeDays = 0;
+  days.forEach(function(key) {
+    if (activity[key]) weekWords += (activity[key].learned || 0);
+    if (dailyData[key]) { activeDays++; weekStreak++; }
+  });
+
+  // XP diese Woche (aus XP-History wenn vorhanden, sonst gesamt)
+  var totalXP = getXP();
+  var weekXP = parseInt(localStorage.getItem('lingua_week_xp_snapshot') || '0');
+  var xpThisWeek = Math.max(0, totalXP - weekXP);
+
+  // Quiz-Rate diese Woche
+  var totalQuiz = state.quizTotal || 0;
+  var quizSnap = parseInt(localStorage.getItem('lingua_week_quiz_snapshot') || '0');
+  var quizThisWeek = Math.max(0, totalQuiz - quizSnap);
+
+  // Aktuellen Streak
+  var streak = state.streak || 0;
+  var bestStreak = state.bestStreak || streak;
+
+  // Tagesaufgaben diese Woche
+  var todayTasks = dailyTasks[days[days.length-1]] || {};
+  var completedTasks = Object.values(todayTasks).filter(function(v){ return v >= 1; }).length;
+  var totalTasks = DAILY_TASKS_DEF.length;
+
+  // Vergleich zur Vorwoche (7-14 Tage zurück)
+  var prevDays = [];
+  for (var j = 13; j >= 7; j--) {
+    var pd = new Date();
+    pd.setDate(pd.getDate() - j);
+    prevDays.push(pd.getFullYear()+'-'+String(pd.getMonth()+1).padStart(2,'0')+'-'+String(pd.getDate()).padStart(2,'0'));
+  }
+  var prevWords = 0;
+  prevDays.forEach(function(key) {
+    if (activity[key]) prevWords += (activity[key].learned || 0);
+  });
+  var wordsTrend = weekWords > prevWords ? '↑' : weekWords < prevWords ? '↓' : '→';
+  var wordsTrendColor = weekWords > prevWords ? 'var(--accent3)' : weekWords < prevWords ? '#ef4444' : 'var(--muted)';
+
+  // 7-Tage Mini-Heatmap
+  var heatmapHTML = days.map(function(key) {
+    var hasData = !!dailyData[key];
+    var dayLabel = new Date(key+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short'}).slice(0,2);
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:.2rem;flex:1;">' +
+      '<div style="width:28px;height:28px;border-radius:6px;background:'+(hasData?'var(--accent3)':'var(--surface2)')+';border:1px solid var(--border);"></div>' +
+      '<div style="font-size:.6rem;color:var(--muted);">'+dayLabel+'</div></div>';
+  }).join('');
+
+  // Motivations-Nachricht
+  var motivMsg = '';
+  if (streak >= 7) motivMsg = '🔥 Beeindruckend — '+ streak +' Tage am Stück!';
+  else if (weekWords >= 50) motivMsg = '💪 Starke Woche — weiter so!';
+  else if (activeDays === 0) motivMsg = '💡 Heute wäre ein guter Tag zum Starten!';
+  else if (activeDays < 3) motivMsg = '📈 Noch '+(3-activeDays)+' aktive Tage für eine gute Woche!';
+  else motivMsg = '✅ Du bist auf dem richtigen Weg!';
+
+  el.innerHTML =
+    // Motivations-Nachricht
+    '<div style="background:var(--surface2);border-radius:8px;padding:.6rem .75rem;margin-bottom:.75rem;font-size:.78rem;font-weight:600;text-align:center;">'+motivMsg+'</div>' +
+
+    // Mini-Heatmap
+    '<div style="display:flex;gap:.25rem;margin-bottom:.75rem;padding:.5rem;background:var(--surface2);border-radius:8px;">'+heatmapHTML+'</div>' +
+
+    // Kennzahlen-Grid
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;">' +
+      _weekStat('📚', 'Wörter', weekWords, wordsTrend, wordsTrendColor) +
+      _weekStat('⚡', 'XP diese Woche', xpThisWeek, '', '') +
+      _weekStat('❓', 'Quiz absolviert', quizThisWeek, '', '') +
+      _weekStat('🔥', 'Aktueller Streak', streak + ' Tage', '', '') +
+      _weekStat('📅', 'Aktive Tage', activeDays + ' / 7', '', '') +
+      _weekStat('🎯', 'Aufgaben heute', completedTasks + ' / ' + totalTasks, '', '') +
+    '</div>' +
+
+    // Bester Streak
+    '<div style="font-size:.72rem;color:var(--muted);text-align:center;">Bester Streak: '+bestStreak+' Tage</div>';
+}
+
+function _weekStat(icon, label, value, trend, trendColor) {
+  return '<div style="background:var(--surface2);border-radius:8px;padding:.5rem .65rem;">' +
+    '<div style="font-size:.65rem;color:var(--muted);margin-bottom:.2rem;">'+icon+' '+label+'</div>' +
+    '<div style="font-size:1rem;font-weight:800;">' + value +
+      (trend ? '<span style="font-size:.75rem;color:'+trendColor+';margin-left:.3rem;">'+trend+'</span>' : '') +
+    '</div></div>';
 }
 
 // ============================================================
@@ -11626,6 +11746,7 @@ function rateSRS(rating) {
   if (rating >= 3) {
     addXP(2);
     incrementDailyLearned();
+    incrementDailyTask('srs', 1);
     if (!state.learned[state.lang]) state.learned[state.lang] = {};
     state.learned[state.lang][w.f] = true;
     saveState();
@@ -11713,6 +11834,7 @@ async function checkWrite() {
     if (hint) hint.textContent = t('write_correct');
     addXP(3);
     incrementDailyLearned();
+    incrementDailyTask('write', 1);
     if (!state.learned[state.lang]) state.learned[state.lang] = {};
     state.learned[state.lang][w.f] = true;
     saveState();
@@ -13713,6 +13835,31 @@ var DIALOG_DATA_EN = {
         {speaker:'Flatmate', en:'Agreed. Thank you for bringing this up.',           de:'Einverstanden. Danke, dass du das angesprochen hast.', ru:'Согласен. Спасибо, что поднял эту тему.'},
       ]
     },
+    { id:'en-d-bank', title:'At the Bank', situation:'You open an account and ask about fees.',
+      lines:[
+        {speaker:'You',      en:'Good afternoon. I would like to open a current account, please.',de:'Guten Tag. Ich möchte gern ein Girokonto eröffnen.',ru:'Добрый день. Я хотел бы открыть расчётный счёт.'},
+        {speaker:'Advisor',  en:'Of course. Do you have a form of ID with you?',                 de:'Gern. Haben Sie einen Ausweis dabei?',              ru:'Конечно. У вас есть удостоверение личности?'},
+        {speaker:'You',      en:'Yes, here you are. How much does the account cost per month?',  de:'Ja, bitte. Was kostet das Konto monatlich?',        ru:'Да, пожалуйста. Сколько стоит счёт в месяц?'},
+        {speaker:'Advisor',  en:'The basic account is free if you pay in seven hundred pounds each month.', de:'Das Basiskonto ist kostenlos bei 700 Euro Eingang.',ru:'Базовый счёт бесплатный при поступлении 700 фунтов в месяц.'},
+        {speaker:'You',      en:'That suits me. Will I also get a debit card?',                  de:'Das passt. Bekomme ich auch eine EC-Karte?',        ru:'Это подходит. Я также получу дебетовую карту?'},
+        {speaker:'Advisor',  en:'Yes, the card will arrive by post in about five working days.', de:'Ja, die Karte kommt in fünf Werktagen per Post.',   ru:'Да, карта придёт по почте через пять рабочих дней.'},
+        {speaker:'You',      en:'Can I also set up online banking straight away?',               de:'Kann ich das Online-Banking direkt einrichten?',    ru:'Могу ли я сразу настроить онлайн-банкинг?'},
+        {speaker:'Advisor',  en:'Absolutely — I will walk you through it after we open the account.',de:'Natürlich, das zeige ich Ihnen nach der Kontoeröffnung.',ru:'Конечно, покажу после открытия счёта.'},
+      ]
+    },
+    { id:'en-d-phone', title:'On the Phone', situation:'You call a company and get transferred.',
+      lines:[
+        {speaker:'Switchboard',en:'Müller Ltd, good afternoon. How can I help you?',            de:'Müller GmbH, guten Tag. Was kann ich für Sie tun?', ru:'Мюллер ЛТД, добрый день. Чем могу помочь?'},
+        {speaker:'You',      en:'Good afternoon. Could I speak to Ms Johnson, please?',          de:'Guten Tag. Könnte ich bitte Frau Johnson sprechen?',ru:'Добрый день. Могу ли я поговорить с госпожой Джонсон?'},
+        {speaker:'Switchboard',en:'One moment please — I will put you through.',                de:'Einen Moment, ich verbinde Sie.',                   ru:'Минутку, соединяю вас.'},
+        {speaker:'Johnson',  en:'Johnson speaking, good afternoon. How can I help?',             de:'Johnson, guten Tag. Was kann ich für Sie tun?',     ru:'Джонсон, добрый день. Чем могу помочь?'},
+        {speaker:'You',      en:'Hello Ms Johnson. I am calling about my order from last Monday.',de:'Hallo Frau Johnson. Ich rufe wegen meiner Bestellung vom letzten Montag an.',ru:'Здравствуйте, госпожа Джонсон. Звоню по поводу заказа с прошлого понедельника.'},
+        {speaker:'Johnson',  en:'Could you give me your order number?',                          de:'Können Sie mir Ihre Bestellnummer nennen?',         ru:'Можете назвать номер вашего заказа?'},
+        {speaker:'You',      en:'Yes, the number is B-4-7-1-2.',                                de:'Ja, die Nummer ist B-4-7-1-2.',                     ru:'Да, номер Б-4-7-1-2.'},
+        {speaker:'Johnson',  en:'I can see that — your order will be delivered tomorrow.',       de:'Ich sehe das — Ihre Bestellung wird morgen geliefert.',ru:'Вижу — ваш заказ будет доставлен завтра.'},
+        {speaker:'You',      en:'Wonderful, thank you very much for the quick response!',        de:'Wunderbar, vielen Dank für die schnelle Auskunft!', ru:'Замечательно, большое спасибо за оперативный ответ!'},
+      ]
+    },
   ],
 };
 
@@ -14660,7 +14807,7 @@ function woCheck() {
   if (isCorrect) {
     fb.textContent = '✓ Richtig!';
     fb.style.color = 'var(--accent3)';
-    if (!woState.hintCount) { woState.score++; addXP(1); }
+    if (!woState.hintCount) { woState.score++; addXP(1); incrementDailyTask('wordorder', 1); }
     setTimeout(woNext, 1200);
   } else {
     fb.textContent = '✗ Richtig: ' + correct.join(' ');
@@ -14818,7 +14965,7 @@ function gfCheck() {
   if (isOk) {
     document.getElementById('gf-feedback').textContent = '✓ Richtig! ' + item.translation;
     document.getElementById('gf-feedback').style.color = 'var(--accent3)';
-    if (!gapState.hintUsed) { gapState.score++; addXP(1); }
+    if (!gapState.hintUsed) { gapState.score++; addXP(1); incrementDailyTask('gapfill', 1); }
     setTimeout(gfNext, 1200);
   } else {
     document.getElementById('gf-feedback').textContent = '✗ Richtig: ' + item.answer + ' — ' + item.translation;
@@ -14844,12 +14991,13 @@ function updateGapProgress() {
 // 🎯 TAGESAUFGABEN — Daily Tasks System
 // ============================================================
 var DAILY_TASKS_DEF = [
-  { id:'vocab10',   icon:'📚', title:'10 Vokabeln lernen',     desc:'Vokabeltraining durchführen',   type:'vocab',   target:10,  xp:20  },
-  { id:'quiz5',     icon:'❓', title:'5 Quiz-Fragen beantworten', desc:'Quiz absolvieren',            type:'quiz',    target:5,   xp:15  },
-  { id:'srs5',      icon:'🧠', title:'5 SRS-Karten wiederholen',  desc:'SRS-Training machen',         type:'srs',     target:5,   xp:15  },
-  { id:'write3',    icon:'✍️', title:'3 Wörter schreiben',      desc:'Schreibübung absolvieren',      type:'write',   target:3,   xp:10  },
-  { id:'gapfill3',  icon:'🧩', title:'3 Lückentexte lösen',    desc:'Lückentexte-Modus nutzen',      type:'gapfill', target:3,   xp:15  },
-  { id:'streak',    icon:'🔥', title:'Streak halten',           desc:'Heute mindestens 1 Wort lernen',type:'streak',  target:1,   xp:10  },
+  { id:'vocab10',    icon:'📚', title:'10 Vokabeln lernen',        desc:'Vokabeltraining durchführen',    type:'vocab',     target:10, xp:20 },
+  { id:'quiz5',      icon:'❓', title:'5 Quiz-Fragen beantworten', desc:'Quiz absolvieren',               type:'quiz',      target:5,  xp:15 },
+  { id:'srs5',       icon:'🧠', title:'5 SRS-Karten wiederholen',  desc:'SRS-Training machen',            type:'srs',       target:5,  xp:15 },
+  { id:'write3',     icon:'✍️', title:'3 Wörter schreiben',        desc:'Schreibübung absolvieren',       type:'write',     target:3,  xp:10 },
+  { id:'gapfill3',   icon:'🧩', title:'3 Lückentexte lösen',       desc:'Lückentexte-Modus nutzen',       type:'gapfill',   target:3,  xp:15 },
+  { id:'wordorder3', icon:'🔀', title:'3 Sätze ordnen',            desc:'Satzbau-Trainer nutzen',         type:'wordorder', target:3,  xp:10 },
+  { id:'streak',     icon:'🔥', title:'Streak halten',             desc:'Heute mindestens 1 Wort lernen', type:'streak',    target:1,  xp:10 },
 ];
 
 function getDailyTasksState() {
@@ -15662,8 +15810,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 71;
-var BUILD_VERSION = '7.1'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 72;
+var BUILD_VERSION = '7.2'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -15769,6 +15917,18 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  72: {
+    emoji: '🎯',
+    title: 'Tagesaufgaben fix + EN Dialoge + Wochenbericht',
+    items: [
+      '🎯 Tagesaufgaben-Tracking jetzt vollständig: Quiz, SRS, Schreiben, Lückentext, Satzbau, Streak',
+      '💬 EN Dialoge: 12 Gespräche (+Bank, +On the Phone)',
+      '📈 Wöchentlicher Fortschritts-Bericht in Statistiken eingebaut',
+      '📅 7-Tage Heatmap + Wörter/XP/Quiz/Streak/Aktive Tage Übersicht',
+      '↑↓ Trend-Vergleich zur Vorwoche (Wörter gelernt)',
+      '🧪 13 neue automatische Tests für alle 3 Features',
+    ]
+  },
   71: {
     emoji: '🌙',
     title: 'Darkmode Auto + Offline + Satzbau-Trainer',
@@ -16699,6 +16859,36 @@ window.linguaTests = {
     t.assert('WORD_ORDER_DATA.en.easy hat 10', WORD_ORDER_DATA.en.easy.length >= 10);
     t.assert('initWordOrder() existiert', typeof initWordOrder === 'function');
     t.assert('woCheck() existiert', typeof woCheck === 'function');
+
+    // Punkt 1: Tagesaufgaben-Tracking
+    t.assert('Quiz trackt Tagesaufgabe', (function(){
+      var code = incrementDailyTask.toString();
+      return typeof incrementDailyTask === 'function';
+    })());
+    t.assert('DAILY_TASKS_DEF hat 7 Einträge', DAILY_TASKS_DEF.length === 7);
+    t.assert('DAILY_TASKS_DEF enthält wordorder', DAILY_TASKS_DEF.some(function(d){ return d.type === 'wordorder'; }));
+    t.assert('DAILY_TASKS_DEF enthält quiz', DAILY_TASKS_DEF.some(function(d){ return d.type === 'quiz'; }));
+    t.assert('DAILY_TASKS_DEF enthält srs', DAILY_TASKS_DEF.some(function(d){ return d.type === 'srs'; }));
+    t.assert('DAILY_TASKS_DEF enthält gapfill', DAILY_TASKS_DEF.some(function(d){ return d.type === 'gapfill'; }));
+    t.assert('DAILY_TASKS_DEF enthält streak', DAILY_TASKS_DEF.some(function(d){ return d.type === 'streak'; }));
+    // Punkt 2: EN Dialoge
+    t.assert('EN Dialoge >= 12', (function(){
+      var count = 0;
+      ['alltag','reise','arbeit','sozial'].forEach(function(cat){
+        if(DIALOG_DATA_EN[cat]) count += DIALOG_DATA_EN[cat].length;
+      });
+      return count >= 12;
+    })());
+    t.assert('EN Dialog Bank vorhanden', (function(){
+      return DIALOG_DATA_EN.sozial && DIALOG_DATA_EN.sozial.some(function(d){ return d.id === 'en-d-bank'; });
+    })());
+    t.assert('EN Dialog Phone vorhanden', (function(){
+      return DIALOG_DATA_EN.sozial && DIALOG_DATA_EN.sozial.some(function(d){ return d.id === 'en-d-phone'; });
+    })());
+    // Punkt 3: Wochenbericht
+    t.assert('renderWeeklyReport() existiert', typeof renderWeeklyReport === 'function');
+    t.assert('weekly-report-content existiert', !!document.getElementById('weekly-report-content'));
+    t.assert('_weekStat() existiert', typeof _weekStat === 'function');
     // Neue Features
     t.assert('id=gapfill existiert', !!document.getElementById('gapfill'));
     t.assert('id=dailytasks existiert', !!document.getElementById('dailytasks'));
