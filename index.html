@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0a0a0f">
 <meta name="description" id="meta-description" content="LINGUA v5.1 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v8.5 · by René Prause</title>
+<title>LINGUA v8.6 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -68,7 +68,10 @@ header {
   letter-spacing:-.02em; color:var(--text); flex-shrink:0;
 }
 .logo span { color:var(--accent); }
-.header-right { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; }
+.header-right { display:flex; align-items:center; gap:.4rem; flex-wrap:nowrap; }
+.lang-pills { flex:1; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+.lang-pills::-webkit-scrollbar { display:none; }
+.header-btn-group { display:flex; align-items:center; gap:.4rem; flex-shrink:0; }
 .lang-pills { display:flex; gap:.35rem; flex-wrap:wrap; }
 .lang-pill {
   padding:.28rem .6rem; border-radius:100px; border:1px solid var(--border);
@@ -146,7 +149,7 @@ main { padding:1.25rem; max-width:900px; width:100%; margin:0 auto; flex:1; }
 .vocab-card {
   background:var(--surface); border:1px solid var(--border); border-radius:20px;
   padding:3rem 2rem; text-align:center; margin-bottom:1.5rem; position:relative;
-  min-height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  min-height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center;
   transition:transform .3s; cursor:pointer;
 }
 .vocab-card:hover { transform:translateY(-2px); }
@@ -667,7 +670,7 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v8.5</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v8.6</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -684,10 +687,12 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
         <button class="lang-pill" data-lang="th">🇹🇭 TH</button>
         <button class="lang-pill" data-lang="tr">🇹🇷 TR</button>
       </div>
-      <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Hell/Dunkel">🌙</button>
-      <button class="settings-btn" onclick="openSettings()" title="Einstellungen">
-        <span class="api-dot-inline" id="api-dot"></span>⚙
-      </button>
+      <div class="header-btn-group">
+        <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Hell/Dunkel">🌙</button>
+        <button class="settings-btn" onclick="openSettings()" title="Einstellungen">
+          <span class="api-dot-inline" id="api-dot"></span>⚙
+        </button>
+      </div>
     </div>
   </header>
 
@@ -709,6 +714,8 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
     <button class="nav-btn" data-section="myvocab"><span class="nav-icon">⭐</span> Meine Vokabeln</button>
     <button class="nav-btn" data-section="translate"><span class="nav-icon">⇄</span> Übersetzer</button>
     <button class="nav-btn" data-section="ai"><span class="nav-icon">✦</span> KI-Assistent</button>
+    <button class="nav-btn" data-section="gapfill"><span class="nav-icon">🧩</span> Lückentexte</button>
+    <button class="nav-btn" data-section="dialogs"><span class="nav-icon">💬</span> Dialoge</button>
   </nav>
 
   <main>
@@ -935,7 +942,7 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
       </div>
 
       <div id="mv-list" class="vocab-list"></div>
-      <div id="mv-empty" style="text-align:center;padding:3rem;color:var(--muted);font-size:.85rem;">
+      <div id="mv-empty" style="text-align:center;padding:1rem;color:var(--muted);font-size:.85rem;">
         Noch keine eigenen Vokabeln.<br>Füge Wörter hinzu oder generiere sie mit dem KI-Generator.
       </div>
     </div>
@@ -1096,11 +1103,11 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
       </div>
       <div class="search-result-count" id="search-count"></div>
       <div id="search-results" class="vocab-list"></div>
-      <div id="search-empty" style="text-align:center;padding:3rem;color:var(--muted);display:none;">
+      <div id="search-empty" style="text-align:center;padding:1rem;color:var(--muted);display:none;">
         <div style="font-size:2.5rem;">🔎</div>
         <div style="margin-top:.5rem;" id="ui-search-empty">Kein Ergebnis gefunden.</div>
       </div>
-      <div id="search-placeholder" style="text-align:center;padding:3rem;color:var(--muted);">
+      <div id="search-placeholder" style="text-align:center;padding:1rem;color:var(--muted);">
         <div style="font-size:2.5rem;">💬</div>
         <div style="margin-top:.5rem;" id="ui-search-hint">Tippe oben um zu suchen — in allen Sprachen gleichzeitig.</div>
       </div>
@@ -1236,6 +1243,72 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
         <button class="btn" id="ui-btn-talk" onclick="quickPrompt(getTalkPrompt())">🗣 Gespräch starten</button>
       </div>
     </div>
+  <!-- ════════════════ LÜCKENTEXTE ════════════════ -->
+  <div class="section" id="gapfill">
+    <div class="section-header">
+      <span style="font-size:1.1rem;">🧩</span>
+      <span class="section-title">Lückentexte</span>
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem;">Wähle das fehlende Wort — Vokabeln im Kontext üben.</p>
+    <div style="display:flex;gap:.4rem;margin-bottom:.5rem;">
+      <button class="btn primary" id="gf-lang-de" onclick="setGFLang('de')" style="flex:1;font-size:.78rem;">🌍 Deutsch</button>
+      <button class="btn" id="gf-lang-en" onclick="setGFLang('en')" style="flex:1;font-size:.78rem;">🌐 Englisch</button>
+    </div>
+    <div style="display:flex;gap:.4rem;margin-bottom:.75rem;">
+      <button class="btn primary" id="gf-diff-easy" onclick="setGFDiff('easy')" style="flex:1;font-size:.78rem;">🌱 Leicht</button>
+      <button class="btn" id="gf-diff-medium" onclick="setGFDiff('medium')" style="flex:1;font-size:.78rem;">📗 Mittel</button>
+      <button class="btn" id="gf-diff-hard" onclick="setGFDiff('hard')" style="flex:1;font-size:.78rem;">🔥 Schwer</button>
+    </div>
+    <div class="card" id="gf-card">
+      <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-bottom:.75rem;">
+        <span id="gf-progress">Aufgabe 1 / 10</span><span id="gf-score">0 ✓</span>
+      </div>
+      <div id="gf-sentence" style="font-size:1.05rem;font-weight:700;text-align:center;margin-bottom:.5rem;line-height:1.6;"></div>
+      <div id="gf-translation" style="font-size:.75rem;color:var(--muted);text-align:center;margin-bottom:.75rem;font-style:italic;"></div>
+      <div id="gf-options" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;"></div>
+      <div id="gf-feedback" style="font-size:.85rem;font-weight:600;text-align:center;min-height:1.4em;"></div>
+      <button class="btn" id="gf-next-btn" onclick="gfNext()" style="width:100%;margin-top:.5rem;display:none;">Weiter →</button>
+    </div>
+    <div style="margin-top:.75rem;background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;">
+      <div id="gf-bar" style="height:100%;background:var(--accent3);width:0%;transition:width .4s;border-radius:4px;"></div>
+    </div>
+  </div>
+
+  <!-- ════════════════ DIALOGE ════════════════ -->
+  <div class="section" id="dialogs">
+    <div class="section-header">
+      <span style="font-size:1.1rem;">💬</span>
+      <span class="section-title">Dialoge lernen</span>
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem;">Alltagsgespräche Schritt für Schritt — mit Übersetzung.</p>
+    <div style="display:flex;gap:.4rem;margin-bottom:.5rem;">
+      <button class="btn primary" id="dlang-de" onclick="setDLang('de')" style="flex:1;font-size:.78rem;">🌍 Deutsch</button>
+      <button class="btn" id="dlang-en" onclick="setDLang('en')" style="flex:1;font-size:.78rem;">🌐 Englisch</button>
+    </div>
+    <div style="display:flex;gap:.4rem;margin-bottom:.75rem;flex-wrap:wrap;">
+      <button class="btn primary" id="dcat-alltag" onclick="setDialogCat('alltag')" style="flex:1;font-size:.75rem;min-width:60px;">🏠 Alltag</button>
+      <button class="btn" id="dcat-reise" onclick="setDialogCat('reise')" style="flex:1;font-size:.75rem;min-width:60px;">✈️ Reise</button>
+      <button class="btn" id="dcat-arbeit" onclick="setDialogCat('arbeit')" style="flex:1;font-size:.75rem;min-width:60px;">💼 Arbeit</button>
+      <button class="btn" id="dcat-sozial" onclick="setDialogCat('sozial')" style="flex:1;font-size:.75rem;min-width:60px;">🤝 Sozial</button>
+    </div>
+    <div id="dialog-list" style="display:flex;flex-direction:column;gap:.5rem;"></div>
+    <div class="card" id="dialog-player" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+        <div style="font-weight:700;font-size:.9rem;" id="dialog-title"></div>
+        <button class="btn" onclick="closeDialog()" style="font-size:.72rem;padding:.25rem .5rem;">✕</button>
+      </div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.75rem;font-style:italic;" id="dialog-situation"></div>
+      <div id="dialog-lines" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem;max-height:45vh;overflow-y:auto;"></div>
+      <div style="display:flex;gap:.4rem;">
+        <button class="btn" onclick="dialogPrev()" id="dialog-prev-btn" style="flex:1;">← Zurück</button>
+        <button class="btn primary" onclick="dialogNext()" id="dialog-next-btn" style="flex:2;">Weiter →</button>
+      </div>
+      <div style="margin-top:.5rem;background:var(--surface2);border-radius:4px;height:4px;overflow:hidden;">
+        <div id="dialog-bar" style="height:100%;background:var(--accent3);width:0%;transition:width .4s;border-radius:4px;"></div>
+      </div>
+    </div>
+  </div>
+
   </main>
 
 
@@ -1573,7 +1646,7 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v8.5</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v8.6</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
   </footer>
 </div>
@@ -1741,7 +1814,7 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v8.5</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v8.6</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
     </div>
 
@@ -12990,6 +13063,8 @@ switchSection = function(id) {
   if (id === 'path') renderLearningPath();
   if (id === 'deniveau') { setNiveauLearnLang('de'); showNiveau('a1a2'); renderNiveauTopics(); }
   if (id === 'enniveau') { initEnNiveau(); }
+  if (id === 'gapfill')  { initGapFill(); }
+  if (id === 'dialogs')  { initDialogs(); }
 };
 
 // ============================================================
@@ -13238,8 +13313,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 85;
-var BUILD_VERSION = '8.5'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 86;
+var BUILD_VERSION = '8.6'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -13345,6 +13420,18 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  86: {
+    emoji: '🚀',
+    title: 'v8.6 – Lückentexte, Dialoge & Fixes',
+    items: [
+      '🧩 Lückentexte DE+EN: 3 Schwierigkeiten, 8 Aufgaben je, Sofort-Feedback',
+      '💬 Dialoge DE+EN: 4 Kategorien, Zeile-für-Zeile mit Übersetzung',
+      'Header: Settings-Button immer sichtbar (header-btn-group)',
+      'vocab-card min-height: 220px → 100px',
+      'Onboarding nur beim allerersten Start',
+    ]
+  },
+  
   56: {
     emoji: '→',
     title: 'Weiter-Button in allen Vokabeltrainings',
@@ -14213,6 +14300,358 @@ if (!getApiKey()) {
   setTimeout(openSettings, 800);
 }
 updateOnboardingPrefBtn();
+// ════════════════════════════════════════════════════════
+// 🧩  LÜCKENTEXTE
+// ════════════════════════════════════════════════════════
+var GF_DATA = {
+  de: {
+    easy: [
+      {s:'___ heißt du?', a:'Wie', o:['Wie','Was','Wo','Wer'], t:'How are you called?'},
+      {s:'Ich ___ aus Deutschland.', a:'komme', o:['komme','gehe','bin','habe'], t:'I come from Germany.'},
+      {s:'Das Wetter ist heute sehr ___.', a:'schön', o:['schön','groß','alt','schnell'], t:'The weather is very nice today.'},
+      {s:'Ich ___ Hunger.', a:'habe', o:['habe','bin','mache','gehe'], t:'I am hungry.'},
+      {s:'___ ist die Kasse?', a:'Wo', o:['Wo','Wie','Was','Wer'], t:'Where is the checkout?'},
+      {s:'Das kostet fünf ___.', a:'Euro', o:['Euro','Liter','Meter','Kilo'], t:'That costs five euros.'},
+      {s:'Ich ___ gern Tee.', a:'trinke', o:['trinke','esse','lese','schlafe'], t:'I like to drink tea.'},
+      {s:'Ich stehe um sieben Uhr ___.', a:'auf', o:['auf','an','ab','zu'], t:'I get up at seven o\'clock.'},
+    ],
+    medium: [
+      {s:'Obwohl es regnete, ___ wir spazieren.', a:'gingen', o:['gingen','bleiben','hatten','wurden'], t:'Although it rained, we went for a walk.'},
+      {s:'Der Zug ___ in fünf Minuten ab.', a:'fährt', o:['fährt','kommt','geht','bleibt'], t:'The train departs in five minutes.'},
+      {s:'Ich habe mich um die Stelle ___.', a:'beworben', o:['beworben','gearbeitet','gefahren','getrunken'], t:'I applied for the position.'},
+      {s:'Wegen des Stresses ___ er krank.', a:'wurde', o:['wurde','hat','ist','war'], t:'Due to stress he got sick.'},
+      {s:'Er arbeitet, ___ er müde ist.', a:'obwohl', o:['obwohl','weil','wenn','dass'], t:'He works although he is tired.'},
+      {s:'Wenn ich Zeit ___, würde ich mehr reisen.', a:'hätte', o:['hätte','habe','hatte','haben'], t:'If I had time, I would travel more.'},
+      {s:'Das Paket ___ gestern geliefert.', a:'wurde', o:['wurde','wird','war','ist'], t:'The parcel was delivered yesterday.'},
+      {s:'Sie hat sich ___ die Stelle beworben.', a:'um', o:['um','für','an','über'], t:'She applied for the position.'},
+    ],
+    hard: [
+      {s:'Wenngleich die Beweise fehlen, ___ die Theorie plausibel.', a:'bleibt', o:['bleibt','ist','scheint','wirkt'], t:'Although evidence is lacking, the theory remains plausible.'},
+      {s:'Man muss zwischen Korrelation und ___ unterscheiden.', a:'Kausalität', o:['Kausalität','Qualität','Quantität','Kapazität'], t:'One must distinguish between correlation and causality.'},
+      {s:'Die Autorin ___ sich der Ironie, um Kritik zu üben.', a:'bedient', o:['bedient','benutzt','verwendet','nutzt'], t:'The author uses irony to make a critique.'},
+      {s:'Hätte er rechtzeitig gewarnt, ___ das Unglück verhindert worden.', a:'wäre', o:['wäre','würde','hätte','könnte'], t:'Had he warned in time, the accident would have been prevented.'},
+      {s:'Der Subtext ___ mehr als der explizite Text.', a:'verrät', o:['verrät','zeigt','sagt','enthält'], t:'The subtext reveals more than the explicit text.'},
+      {s:'___ man auch argumentieren mag — die Fakten sprechen für sich.', a:'Was', o:['Was','Wie','Wer','Ob'], t:'Whatever one may argue — the facts speak for themselves.'},
+      {s:'Die Schlussfolgerung ___ sich aus den Daten.', a:'ergibt', o:['ergibt','zeigt','macht','bringt'], t:'The conclusion follows from the data.'},
+      {s:'Er behauptet, er ___ nichts gewusst.', a:'habe', o:['habe','hat','hatte','haben'], t:'He claims he knew nothing. (Konjunktiv I)'},
+    ],
+  },
+  en: {
+    easy: [
+      {s:'She ___ to school every day.', a:'goes', o:['goes','go','went','going'], t:'Sie geht jeden Tag zur Schule.'},
+      {s:'I always ___ coffee in the morning.', a:'drink', o:['drink','drinks','drank','drinking'], t:'Ich trinke morgens immer Kaffee.'},
+      {s:'The cat ___ on the mat.', a:'sits', o:['sits','sit','sat','sitting'], t:'Die Katze sitzt auf der Matte.'},
+      {s:'He ___ never been to Japan.', a:'has', o:['has','have','had','having'], t:'Er war noch nie in Japan.'},
+      {s:'They ___ watching TV right now.', a:'are', o:['are','is','were','be'], t:'Sie sehen gerade fern.'},
+      {s:'I ___ my homework yesterday.', a:'did', o:['did','do','does','doing'], t:'Ich habe gestern meine Hausaufgaben gemacht.'},
+      {s:'She can ___ three languages.', a:'speak', o:['speak','speaks','spoke','speaking'], t:'Sie kann drei Sprachen sprechen.'},
+      {s:'We ___ to the cinema last night.', a:'went', o:['went','go','gone','going'], t:'Wir sind gestern Abend ins Kino gegangen.'},
+    ],
+    medium: [
+      {s:'Although it was raining, we ___ for a walk.', a:'went', o:['went','go','gone','going'], t:'Obwohl es regnete, gingen wir spazieren.'},
+      {s:'By the time she arrived, he ___ already left.', a:'had', o:['had','has','have','having'], t:'Als sie ankam, war er schon gegangen.'},
+      {s:'I wish I ___ more time to study.', a:'had', o:['had','have','has','having'], t:'Ich wünschte, ich hätte mehr Zeit zum Lernen.'},
+      {s:'The report must ___ submitted by Friday.', a:'be', o:['be','been','being','is'], t:'Der Bericht muss bis Freitag eingereicht werden.'},
+      {s:'She is used to ___ late at the office.', a:'working', o:['working','work','worked','works'], t:'Sie ist es gewohnt, im Büro bis spät zu arbeiten.'},
+      {s:'Not only did he refuse, ___ he also complained.', a:'but', o:['but','and','or','so'], t:'Er weigerte sich nicht nur, sondern beschwerte sich auch.'},
+      {s:'I suggested ___ the meeting to Thursday.', a:'moving', o:['moving','move','moved','to move'], t:'Ich schlug vor, das Meeting auf Donnerstag zu verlegen.'},
+      {s:'Despite the bad weather, the match ___ ahead.', a:'went', o:['went','go','gone','going'], t:'Trotz des schlechten Wetters wurde das Spiel ausgetragen.'},
+    ],
+    hard: [
+      {s:'Had she known the answer, she ___ have spoken up.', a:'would', o:['would','could','should','might'], t:'Hätte sie die Antwort gewusst, hätte sie sich gemeldet.'},
+      {s:'Rarely ___ such a convincing argument been made.', a:'has', o:['has','have','had','having'], t:'Selten wurde ein so überzeugendes Argument vorgebracht.'},
+      {s:'It is essential that the matter ___ reviewed immediately.', a:'be', o:['be','is','was','been'], t:'Es ist unerlässlich, dass die Angelegenheit sofort überprüft wird.'},
+      {s:'What I find most compelling ___ the nuanced approach.', a:'is', o:['is','are','was','were'], t:'Was ich am überzeugendsten finde, ist der nuancierte Ansatz.'},
+      {s:'Not until the results were published ___ the error become clear.', a:'did', o:['did','does','had','was'], t:'Erst als die Ergebnisse veröffentlicht wurden, wurde der Fehler klar.'},
+      {s:'The data ___ a strong correlation between the two variables.', a:'suggests', o:['suggests','suggest','suggested','suggesting'], t:'Die Daten deuten auf eine starke Korrelation hin.'},
+      {s:'I recommend that this proposal ___ considered carefully.', a:'be', o:['be','is','was','been'], t:'Ich empfehle, dass dieser Vorschlag sorgfältig geprüft wird.'},
+      {s:'___ she the opportunity, she would have accepted immediately.', a:'Had', o:['Had','Has','Have','Having'], t:'Hätte sie die Gelegenheit gehabt, hätte sie sofort zugestimmt.'},
+    ],
+  }
+};
+
+var gfState = { lang:'de', diff:'easy', queue:[], idx:0, score:0, answered:false };
+
+function setGFLang(lang) {
+  gfState.lang = lang;
+  ['de','en'].forEach(function(l){
+    var b=document.getElementById('gf-lang-'+l);
+    if(b) b.className='btn'+(l===lang?' primary':'');
+  });
+  initGapFill();
+}
+function setGFDiff(diff) {
+  gfState.diff = diff;
+  ['easy','medium','hard'].forEach(function(d){
+    var b=document.getElementById('gf-diff-'+d);
+    if(b) b.className='btn'+(d===diff?' primary':'');
+  });
+  initGapFill();
+}
+function initGapFill() {
+  var data = ((GF_DATA[gfState.lang]||{})[gfState.diff]||[]).slice().sort(function(){return Math.random()-.5;});
+  gfState.queue=data; gfState.idx=0; gfState.score=0; gfState.answered=false;
+  renderGF();
+}
+function renderGF() {
+  var q=gfState.queue;
+  var card=document.getElementById('gf-card');
+  if(!card) return;
+  if(gfState.idx>=q.length){
+    card.innerHTML='<div style="text-align:center;padding:1.5rem;"><div style="font-size:2.5rem;">🎉</div><div style="font-weight:800;margin:.5rem 0;">'+gfState.score+' / '+q.length+' richtig!</div><button class="btn primary" onclick="initGapFill()" style="width:100%;margin-top:.75rem;">🔄 Nochmal</button></div>';
+    return;
+  }
+  var item=q[gfState.idx]; gfState.answered=false;
+  var el=function(id){return document.getElementById(id);};
+  if(el('gf-progress')) el('gf-progress').textContent='Aufgabe '+(gfState.idx+1)+' / '+q.length;
+  if(el('gf-score')) el('gf-score').textContent=gfState.score+' ✓';
+  if(el('gf-sentence')) el('gf-sentence').textContent=item.s;
+  if(el('gf-translation')) el('gf-translation').textContent=item.t;
+  if(el('gf-feedback')) { el('gf-feedback').textContent=''; el('gf-feedback').style.color=''; }
+  if(el('gf-next-btn')) el('gf-next-btn').style.display='none';
+  var opts=el('gf-options');
+  if(opts) opts.innerHTML=item.o.map(function(o){
+    return '<button class="btn" onclick="gfAnswer(this,\''+o.replace(/'/g,"\\'")+'\',\''+item.a.replace(/'/g,"\\'")+'\')">'+o+'</button>';
+  }).join('');
+  if(el('gf-bar')) el('gf-bar').style.width=(gfState.idx/q.length*100)+'%';
+}
+function gfAnswer(btn, chosen, correct) {
+  if(gfState.answered) return;
+  gfState.answered=true;
+  var ok=chosen===correct;
+  var fb=document.getElementById('gf-feedback');
+  if(ok){ if(fb){fb.textContent='✓ Richtig!';fb.style.color='var(--accent3)';} gfState.score++; if(typeof addXP==='function') addXP(1); setTimeout(gfNext,900); }
+  else { if(fb){fb.textContent='✗ Richtig: '+correct;fb.style.color='#ef4444';} var nb=document.getElementById('gf-next-btn'); if(nb) nb.style.display='block'; }
+  var opts=document.getElementById('gf-options');
+  if(opts) opts.querySelectorAll('button').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent===correct) b.style.background='var(--accent3)';
+    else if(b.textContent===chosen&&!ok) b.style.background='#ef4444';
+  });
+}
+function gfNext() { gfState.idx++; renderGF(); }
+
+// ════════════════════════════════════════════════════════
+// 💬  DIALOGE
+// ════════════════════════════════════════════════════════
+var DIALOG_DATA = {
+  de:{
+    alltag:[
+      {id:'d-supermarkt',title:'Im Supermarkt',situation:'Du kaufst Lebensmittel ein.',lines:[
+        {sp:'Verkäufer',text:'Guten Tag! Kann ich Ihnen helfen?',tr:'Good day! Can I help you?'},
+        {sp:'Du',text:'Ja, wo finde ich den Käse?',tr:'Yes, where can I find the cheese?'},
+        {sp:'Verkäufer',text:'Der Käse ist in Gang 3, links neben den Milchprodukten.',tr:'The cheese is in aisle 3, left of the dairy products.'},
+        {sp:'Du',text:'Danke! Und haben Sie auch Vollkornbrot?',tr:'Thank you! And do you also have wholemeal bread?'},
+        {sp:'Verkäufer',text:'Ja, das Brot finden Sie in der Bäckereiabteilung.',tr:'Yes, the bread is in the bakery section.'},
+        {sp:'Du',text:'Was kostet dieser Joghurt?',tr:'How much is this yoghurt?'},
+        {sp:'Verkäufer',text:'Das sind 1,29 Euro.',tr:'That is 1.29 euros.'},
+        {sp:'Du',text:'Gut, ich nehme ihn. Vielen Dank!',tr:'Good, I\'ll take it. Many thanks!'},
+      ]},
+      {id:'d-arzt',title:'Beim Arzt',situation:'Du hast einen Termin beim Arzt.',lines:[
+        {sp:'Arzthelferin',text:'Guten Morgen! Haben Sie einen Termin?',tr:'Good morning! Do you have an appointment?'},
+        {sp:'Du',text:'Ja, um 10 Uhr. Mein Name ist Müller.',tr:'Yes, at 10 o\'clock. My name is Müller.'},
+        {sp:'Arzthelferin',text:'Nehmen Sie bitte Platz im Wartezimmer.',tr:'Please take a seat in the waiting room.'},
+        {sp:'Arzt',text:'Herr Müller? Kommen Sie rein. Was führt Sie zu mir?',tr:'Mr Müller? Come in. What brings you here?'},
+        {sp:'Du',text:'Ich habe seit drei Tagen starke Halsschmerzen und Fieber.',tr:'I\'ve had a bad sore throat and fever for three days.'},
+        {sp:'Arzt',text:'Öffnen Sie bitte den Mund. Die Mandeln sind gerötet.',tr:'Please open your mouth. The tonsils are inflamed.'},
+        {sp:'Du',text:'Ist es etwas Ernstes?',tr:'Is it anything serious?'},
+        {sp:'Arzt',text:'Nein, eine Erkältung. Ich verschreibe Ihnen ein Antibiotikum.',tr:'No, just a cold. I\'ll prescribe you an antibiotic.'},
+      ]},
+      {id:'d-bank',title:'Bei der Bank',situation:'Du möchtest ein Konto eröffnen.',lines:[
+        {sp:'Berater',text:'Guten Tag! Was kann ich für Sie tun?',tr:'Good day! What can I do for you?'},
+        {sp:'Du',text:'Ich möchte gern ein Girokonto eröffnen.',tr:'I would like to open a current account.'},
+        {sp:'Berater',text:'Gern. Haben Sie Ihren Ausweis dabei?',tr:'Of course. Do you have your ID with you?'},
+        {sp:'Du',text:'Ja, hier bitte. Was kostet das Konto?',tr:'Yes, here you go. How much does the account cost?'},
+        {sp:'Berater',text:'Das Basiskonto ist kostenlos bei 700 Euro Eingang monatlich.',tr:'The basic account is free with 700 euros monthly income.'},
+        {sp:'Du',text:'Das passt. Bekomme ich auch eine Debitkarte?',tr:'That suits me. Will I also get a debit card?'},
+        {sp:'Berater',text:'Ja, die Karte kommt in fünf Werktagen per Post.',tr:'Yes, the card will arrive by post in five working days.'},
+        {sp:'Du',text:'Wunderbar, vielen Dank!',tr:'Wonderful, many thanks!'},
+      ]},
+    ],
+    reise:[
+      {id:'d-hotel',title:'Im Hotel',situation:'Du checkst in deinem Hotel ein.',lines:[
+        {sp:'Rezeptionist',text:'Willkommen! Haben Sie eine Reservierung?',tr:'Welcome! Do you have a reservation?'},
+        {sp:'Du',text:'Ja, auf den Namen Schmidt. Drei Nächte.',tr:'Yes, in the name of Schmidt. Three nights.'},
+        {sp:'Rezeptionist',text:'Zimmer 204 im zweiten Stock.',tr:'Room 204 on the second floor.'},
+        {sp:'Du',text:'Ist Frühstück inklusive?',tr:'Is breakfast included?'},
+        {sp:'Rezeptionist',text:'Ja, von 7 bis 10 Uhr im Erdgeschoss.',tr:'Yes, from 7 to 10 on the ground floor.'},
+        {sp:'Du',text:'Gibt es WLAN?',tr:'Is there WiFi?'},
+        {sp:'Rezeptionist',text:'Natürlich. Das Passwort steht auf der Schlüsselkarte.',tr:'Of course. The password is on the key card.'},
+        {sp:'Du',text:'Perfekt, vielen Dank!',tr:'Perfect, many thanks!'},
+      ]},
+      {id:'d-bahn',title:'Am Bahnhof',situation:'Du kaufst eine Fahrkarte.',lines:[
+        {sp:'Schalter',text:'Guten Tag! Wohin möchten Sie fahren?',tr:'Good day! Where would you like to travel?'},
+        {sp:'Du',text:'Einmal München bitte. Wann fährt der nächste Zug?',tr:'One ticket to Munich please. When does the next train leave?'},
+        {sp:'Schalter',text:'Um 14:32 Uhr. Einfach oder hin und zurück?',tr:'At 14:32. Single or return?'},
+        {sp:'Du',text:'Einfach, zweite Klasse.',tr:'Single, second class.'},
+        {sp:'Schalter',text:'45 Euro. Sitzplatzreservierung?',tr:'45 euros. Seat reservation?'},
+        {sp:'Du',text:'Ja, am Fenster wenn möglich.',tr:'Yes, window seat if possible.'},
+        {sp:'Schalter',text:'Kein Problem. Gleis 7.',tr:'No problem. Platform 7.'},
+        {sp:'Du',text:'Herzlichen Dank!',tr:'Many thanks!'},
+      ]},
+    ],
+    arbeit:[
+      {id:'d-bewerbung',title:'Vorstellungsgespräch',situation:'Du bewirbst dich um eine Stelle.',lines:[
+        {sp:'Personalerin',text:'Herzlich willkommen! Bitte nehmen Sie Platz.',tr:'Welcome! Please take a seat.'},
+        {sp:'Du',text:'Danke. Ich freue mich, hier zu sein.',tr:'Thank you. I\'m pleased to be here.'},
+        {sp:'Personalerin',text:'Erzählen Sie mir etwas über sich.',tr:'Tell me something about yourself.'},
+        {sp:'Du',text:'Ich habe Informatik studiert und drei Jahre als Entwickler gearbeitet.',tr:'I studied Computer Science and worked as a developer for three years.'},
+        {sp:'Personalerin',text:'Warum möchten Sie zu uns wechseln?',tr:'Why would you like to move to us?'},
+        {sp:'Du',text:'Ich schätze die innovativen Projekte Ihres Unternehmens.',tr:'I value your company\'s innovative projects greatly.'},
+        {sp:'Personalerin',text:'Welche Stärken bringen Sie mit?',tr:'What strengths do you bring?'},
+        {sp:'Du',text:'Ich bin teamfähig, lösungsorientiert und eigenverantwortlich.',tr:'I am a team player, solution-focused and self-reliant.'},
+      ]},
+    ],
+    sozial:[
+      {id:'d-kennenlernen',title:'Jemanden kennenlernen',situation:'Du lernst jemanden auf einer Party kennen.',lines:[
+        {sp:'Person',text:'Hallo! Ich bin Lena. Bist du auch zum ersten Mal hier?',tr:'Hi! I\'m Lena. Is it your first time here too?'},
+        {sp:'Du',text:'Ja! Ich bin Tom. Ein Freund hat mich eingeladen.',tr:'Yes! I\'m Tom. A friend invited me.'},
+        {sp:'Person',text:'Was machst du beruflich?',tr:'What do you do professionally?'},
+        {sp:'Du',text:'Ich arbeite als Grafikdesigner. Und du?',tr:'I work as a graphic designer. And you?'},
+        {sp:'Person',text:'Ich studiere Psychologie im dritten Semester.',tr:'I\'m studying psychology in my third semester.'},
+        {sp:'Du',text:'Interessant! Magst du auch Musik? Die Band ist toll.',tr:'Interesting! Do you like music too? The band is great.'},
+        {sp:'Person',text:'Ja, total. Ich gehe oft auf Konzerte.',tr:'Yes, totally. I go to concerts often.'},
+        {sp:'Du',text:'Vielleicht können wir das nächste Mal zusammen hingehen!',tr:'Maybe we can go to the next one together!'},
+      ]},
+    ],
+  },
+  en:{
+    alltag:[
+      {id:'en-supermarket',title:'At the Supermarket',situation:'You are buying groceries.',lines:[
+        {sp:'Assistant',text:'Good afternoon! Can I help you?',tr:'Guten Tag! Kann ich Ihnen helfen?'},
+        {sp:'You',text:'Yes, where can I find the cheese?',tr:'Ja, wo finde ich den Käse?'},
+        {sp:'Assistant',text:'The cheese is in aisle 3, next to the dairy products.',tr:'Der Käse ist in Gang 3, neben den Milchprodukten.'},
+        {sp:'You',text:'Thank you. Do you also have wholemeal bread?',tr:'Danke. Haben Sie auch Vollkornbrot?'},
+        {sp:'Assistant',text:'Yes, the bread section is at the back of the store.',tr:'Ja, die Brotabteilung ist hinten im Laden.'},
+        {sp:'You',text:'How much is this yoghurt?',tr:'Was kostet dieser Joghurt?'},
+        {sp:'Assistant',text:'That\'s 89p.',tr:'Das kostet 89 Cent.'},
+        {sp:'You',text:'Great, I\'ll take it. Thank you!',tr:'Gut, ich nehme ihn. Danke!'},
+      ]},
+      {id:'en-doctor',title:'At the Doctor\'s',situation:'You visit your GP.',lines:[
+        {sp:'Receptionist',text:'Good morning! Do you have an appointment?',tr:'Guten Morgen! Haben Sie einen Termin?'},
+        {sp:'You',text:'Yes, a 10 o\'clock appointment. My name is Smith.',tr:'Ja, um 10 Uhr. Mein Name ist Smith.'},
+        {sp:'Receptionist',text:'Please take a seat in the waiting area.',tr:'Bitte nehmen Sie im Wartezimmer Platz.'},
+        {sp:'Doctor',text:'Mr Smith? Come through. What seems to be the problem?',tr:'Herr Smith? Kommen Sie rein. Was führt Sie zu mir?'},
+        {sp:'You',text:'I\'ve had a bad sore throat and a temperature for three days.',tr:'Ich habe seit drei Tagen Halsschmerzen und Fieber.'},
+        {sp:'Doctor',text:'Open wide please. Yes, your throat looks quite inflamed.',tr:'Öffnen Sie den Mund. Ihr Rachen sieht entzündet aus.'},
+        {sp:'You',text:'Is it anything serious?',tr:'Ist es etwas Ernstes?'},
+        {sp:'Doctor',text:'Nothing to worry about. I\'ll prescribe you antibiotics.',tr:'Nichts Ernstes. Ich verschreibe Ihnen ein Antibiotikum.'},
+      ]},
+    ],
+    reise:[
+      {id:'en-hotel',title:'At the Hotel',situation:'You are checking in.',lines:[
+        {sp:'Receptionist',text:'Welcome to the Grand Hotel! Do you have a reservation?',tr:'Willkommen! Haben Sie eine Reservierung?'},
+        {sp:'You',text:'Yes, in the name of Johnson. Three nights.',tr:'Ja, auf den Namen Johnson. Drei Nächte.'},
+        {sp:'Receptionist',text:'Room 204 on the second floor.',tr:'Zimmer 204 im zweiten Stock.'},
+        {sp:'You',text:'Is breakfast included?',tr:'Ist das Frühstück inklusive?'},
+        {sp:'Receptionist',text:'Yes, served in the dining room from 7 until 10.',tr:'Ja, von 7 bis 10 Uhr im Speisesaal.'},
+        {sp:'You',text:'Is there free WiFi?',tr:'Gibt es kostenloses WLAN?'},
+        {sp:'Receptionist',text:'Of course. The password is on your key card.',tr:'Natürlich. Das Passwort steht auf der Schlüsselkarte.'},
+        {sp:'You',text:'Wonderful, thank you!',tr:'Wunderbar, danke!'},
+      ]},
+    ],
+    arbeit:[
+      {id:'en-interview',title:'Job Interview',situation:'You are interviewing for a position.',lines:[
+        {sp:'Interviewer',text:'Welcome! Please take a seat. Did you find us alright?',tr:'Willkommen! Bitte nehmen Sie Platz. Haben Sie uns gut gefunden?'},
+        {sp:'You',text:'Yes, no problem at all. Thank you for having me.',tr:'Ja, kein Problem. Danke, dass ich hier sein darf.'},
+        {sp:'Interviewer',text:'Could you tell me a little about yourself?',tr:'Könnten Sie etwas über sich erzählen?'},
+        {sp:'You',text:'I studied Computer Science and have three years\' experience as a developer.',tr:'Ich habe Informatik studiert und drei Jahre als Entwickler gearbeitet.'},
+        {sp:'Interviewer',text:'Why are you looking to move on from your current role?',tr:'Warum möchten Sie Ihre aktuelle Stelle wechseln?'},
+        {sp:'You',text:'I\'m very excited about the innovative projects your company is working on.',tr:'Ich bin sehr begeistert von Ihren innovativen Projekten.'},
+        {sp:'Interviewer',text:'What would you say are your main strengths?',tr:'Was würden Sie als Ihre wichtigsten Stärken nennen?'},
+        {sp:'You',text:'I\'m a strong team player, solution-focused, and I thrive working independently.',tr:'Ich bin ein Teamplayer, lösungsorientiert und arbeite gern eigenverantwortlich.'},
+      ]},
+    ],
+    sozial:[
+      {id:'en-meetpeople',title:'Meeting Someone New',situation:'You meet someone at a party.',lines:[
+        {sp:'Person',text:'Hi! I\'m Emma. Is this your first time here too?',tr:'Hallo! Ich bin Emma. Bist du auch zum ersten Mal hier?'},
+        {sp:'You',text:'Yes! I\'m Jack. A friend invited me.',tr:'Ja! Ich bin Jack. Ein Freund hat mich eingeladen.'},
+        {sp:'Person',text:'Nice to meet you! What do you do?',tr:'Schön, dich kennenzulernen! Was machst du beruflich?'},
+        {sp:'You',text:'I work as a graphic designer. And you?',tr:'Ich arbeite als Grafikdesigner. Und du?'},
+        {sp:'Person',text:'I\'m still at uni, studying psychology.',tr:'Ich studiere noch Psychologie.'},
+        {sp:'You',text:'That\'s interesting! Do you like the band tonight?',tr:'Das ist interessant! Magst du die Band heute?'},
+        {sp:'Person',text:'Yes, they\'re great! I go to concerts quite often.',tr:'Ja, sie sind toll! Ich gehe oft auf Konzerte.'},
+        {sp:'You',text:'Maybe we could go to the next one together!',tr:'Vielleicht können wir beim nächsten zusammen hingehen!'},
+      ]},
+    ],
+  }
+};
+
+var dlgState = { lang:'de', cat:'alltag', current:null, idx:0 };
+
+function setDLang(lang){
+  dlgState.lang=lang;
+  ['de','en'].forEach(function(l){var b=document.getElementById('dlang-'+l);if(b)b.className='btn'+(l===lang?' primary':'');});
+  dlgState.cat='alltag';
+  ['alltag','reise','arbeit','sozial'].forEach(function(c){var b=document.getElementById('dcat-'+c);if(b)b.className='btn'+(c==='alltag'?' primary':'');});
+  initDialogs();
+}
+function setDialogCat(cat){
+  dlgState.cat=cat;
+  ['alltag','reise','arbeit','sozial'].forEach(function(c){var b=document.getElementById('dcat-'+c);if(b)b.className='btn'+(c===cat?' primary':'');});
+  initDialogs();
+}
+function initDialogs(){
+  var player=document.getElementById('dialog-player');
+  if(player) player.style.display='none';
+  var list=document.getElementById('dialog-list');
+  if(!list) return;
+  var data=((DIALOG_DATA[dlgState.lang]||{})[dlgState.cat])||[];
+  if(!data.length){list.innerHTML='<div style="text-align:center;color:var(--muted);padding:1rem;">Keine Dialoge verfügbar.</div>';return;}
+  list.style.display='flex';
+  list.innerHTML=data.map(function(d){
+    return '<div class="card" style="cursor:pointer;padding:.75rem 1rem;" onclick="openDialog(\''+d.id+'\')">'+
+      '<div style="font-weight:700;margin-bottom:.2rem;">'+d.title+'</div>'+
+      '<div style="font-size:.75rem;color:var(--muted);">'+d.situation+'</div>'+
+      '<div style="font-size:.7rem;color:var(--muted);margin-top:.2rem;">'+d.lines.length+' Zeilen</div>'+
+    '</div>';
+  }).join('');
+}
+function openDialog(id){
+  var data=((DIALOG_DATA[dlgState.lang]||{})[dlgState.cat])||[];
+  var d=data.find(function(x){return x.id===id;});
+  if(!d) return;
+  dlgState.current=d; dlgState.idx=0;
+  var list=document.getElementById('dialog-list');
+  if(list) list.style.display='none';
+  var player=document.getElementById('dialog-player');
+  if(player) player.style.display='block';
+  var t=document.getElementById('dialog-title');if(t)t.textContent=d.title;
+  var s=document.getElementById('dialog-situation');if(s)s.textContent=d.situation;
+  renderDlgLines();
+}
+function closeDialog(){
+  var player=document.getElementById('dialog-player');if(player)player.style.display='none';
+  var list=document.getElementById('dialog-list');if(list)list.style.display='flex';
+  dlgState.current=null;
+}
+function renderDlgLines(){
+  var d=dlgState.current; if(!d) return;
+  var lines=document.getElementById('dialog-lines'); if(!lines) return;
+  var idx=dlgState.idx;
+  lines.innerHTML=d.lines.slice(0,idx+1).map(function(line,i){
+    var last=i===idx;
+    return '<div style="background:'+(last?'var(--surface)':'var(--surface2)')+';border-radius:10px;padding:.5rem .75rem;border:1px solid '+(last?'var(--accent)':'var(--border)')+';">'+
+      '<div style="font-size:.62rem;font-weight:700;color:var(--muted);margin-bottom:.15rem;">'+line.sp.toUpperCase()+'</div>'+
+      '<div style="font-weight:'+(last?'600':'400')+';">'+line.text+'</div>'+
+      (last?'<div style="font-size:.72rem;color:var(--muted);margin-top:.15rem;font-style:italic;">'+line.tr+'</div>':'')+
+    '</div>';
+  }).join('');
+  lines.scrollTop=lines.scrollHeight;
+  var bar=document.getElementById('dialog-bar');if(bar)bar.style.width=((idx+1)/d.lines.length*100)+'%';
+  var prev=document.getElementById('dialog-prev-btn');if(prev)prev.disabled=idx===0;
+  var next=document.getElementById('dialog-next-btn');if(next)next.textContent=idx>=d.lines.length-1?'✓ Fertig':'Weiter →';
+}
+function dialogNext(){
+  var d=dlgState.current; if(!d) return;
+  if(dlgState.idx<d.lines.length-1){dlgState.idx++;renderDlgLines();if(dlgState.idx===d.lines.length-1&&typeof addXP==='function')addXP(3);}
+  else closeDialog();
+}
+function dialogPrev(){if(dlgState.idx>0){dlgState.idx--;renderDlgLines();}}
+
+// ════════════════════════════════════════════════════════
+// 📋  CHANGELOG — alle Einträge rückwirkend
+// ════════════════════════════════════════════════════════
 checkAndShowChangelog();
 </script>
 </body>
