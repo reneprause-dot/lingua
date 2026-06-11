@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0a0a0f">
 <meta name="description" id="meta-description" content="LINGUA v5.1 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v8.9 · by René Prause</title>
+<title>LINGUA v9.0 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -514,6 +514,22 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   .chat-window { height:320px; }
   .vocab-card { min-height:200px; }
 }
+
+/* Nav Level Toggles */
+.nav-level-toggle {
+  display:flex; align-items:center; gap:.35rem;
+  background:none; border:none; border-left:2px solid var(--border);
+  padding:.35rem .6rem; cursor:pointer; margin-left:.25rem;
+  border-radius:0; flex-shrink:0; opacity:.75; transition:opacity .2s;
+  touch-action: manipulation; -webkit-tap-highlight-color:transparent;
+}
+.nav-level-toggle:hover { opacity:1; }
+.nav-level-toggle.open { border-left-color:var(--accent); opacity:1; }
+.nav-toggle-icon {
+  font-size:.65rem; color:var(--muted); transition:transform .25s; display:inline-block;
+}
+.nav-level-toggle.open .nav-toggle-icon { transform:rotate(90deg); color:var(--accent); }
+
 </style>
 
 <style>
@@ -687,7 +703,7 @@ nav { touch-action: pan-x; }
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v8.9</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v9.0</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -714,26 +730,34 @@ nav { touch-action: pan-x; }
   </header>
 
   <nav>
-    <button class="nav-btn active" data-section="home"><span class="nav-icon">⌂</span> Start</button>
-    <button class="nav-btn" data-section="search"><span class="nav-icon">🔍</span> Suche</button>
-    <button class="nav-btn" data-section="vocab"><span class="nav-icon">📚</span> Vokabeln</button>
-    <button class="nav-btn" data-section="srs"><span class="nav-icon">🧠</span> SRS</button>
-    <button class="nav-btn" data-section="write"><span class="nav-icon">✍</span> Schreiben</button>
-    <button class="nav-btn" data-section="conjugate"><span class="nav-icon">🔀</span> Konjugation</button>
-    <button class="nav-btn" data-section="quiz"><span class="nav-icon">❓</span> Quiz</button>
-    <button class="nav-btn" data-section="free"><span class="nav-icon">🗂</span> Freies Lernen</button>
-    <button class="nav-btn" data-section="path"><span class="nav-icon">🗺</span> Lernpfad</button>
-    <button class="nav-btn" data-section="deniveau"><span class="nav-icon">🇩🇪</span> DE Niveau</button>
-    <button class="nav-btn" data-section="enniveau"><span class="nav-icon">🇬🇧</span> EN Niveau</button>
-    <button class="nav-btn" data-section="stats"><span class="nav-icon">📊</span> Statistiken</button>
-    <button class="nav-btn" data-section="badges"><span class="nav-icon">🏆</span> Abzeichen</button>
-    <button class="nav-btn" data-section="generator"><span class="nav-icon">✨</span> KI-Generator</button>
-    <button class="nav-btn" data-section="myvocab"><span class="nav-icon">⭐</span> Meine Vokabeln</button>
-    <button class="nav-btn" data-section="translate"><span class="nav-icon">⇄</span> Übersetzer</button>
-    <button class="nav-btn" data-section="ai"><span class="nav-icon">✦</span> KI-Assistent</button>
-    <button class="nav-btn" data-section="gapfill"><span class="nav-icon">🧩</span> Lückentexte</button>
-    <button class="nav-btn" data-section="dialogs"><span class="nav-icon">💬</span> Dialoge</button>
-    <button class="nav-btn" data-section="wordorder"><span class="nav-icon">🔀</span> Satzbau</button>
+    <button class="nav-btn active" data-section="home" data-level="anfaenger"><span class="nav-icon">⌂</span> Start</button>
+    <button class="nav-btn" data-section="search" data-level="anfaenger"><span class="nav-icon">🔍</span> Suche</button>
+    <button class="nav-btn" data-section="vocab" data-level="anfaenger"><span class="nav-icon">📚</span> Vokabeln</button>
+    <button class="nav-btn" data-section="dialogs" data-level="anfaenger"><span class="nav-icon">💬</span> Dialoge</button>
+    <button class="nav-btn" data-section="deniveau" data-level="anfaenger"><span class="nav-icon">🇩🇪</span> DE Niveau</button>
+    <button class="nav-btn" data-section="enniveau" data-level="anfaenger"><span class="nav-icon">🇬🇧</span> EN Niveau</button>
+    <button class="nav-btn" data-section="badges" data-level="anfaenger"><span class="nav-icon">🏆</span> Abzeichen</button>
+    <button class="nav-btn" data-section="stats" data-level="anfaenger"><span class="nav-icon">📊</span> Statistiken</button>
+    <button class="nav-level-toggle" id="nav-toggle-fort" onclick="toggleNavLevel('fortgeschritten')" title="Fortgeschritten ein-/ausblenden">
+      <span class="nav-toggle-icon" id="nav-toggle-fort-icon">▸</span>
+      <span style="font-size:.65rem;font-weight:700;letter-spacing:.06em;color:var(--muted);">FORTGESCHRITTEN</span>
+    </button>
+    <button class="nav-btn" data-section="gapfill" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">🧩</span> Lückentexte</button>
+    <button class="nav-btn" data-section="wordorder" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">🔀</span> Satzbau</button>
+    <button class="nav-btn" data-section="quiz" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">❓</span> Quiz</button>
+    <button class="nav-btn" data-section="write" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">✍</span> Schreiben</button>
+    <button class="nav-btn" data-section="srs" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">🧠</span> SRS</button>
+    <button class="nav-btn" data-section="myvocab" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">⭐</span> Meine Vokabeln</button>
+    <button class="nav-btn" data-section="conjugate" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">🔗</span> Konjugation</button>
+    <button class="nav-level-toggle" id="nav-toggle-profi" onclick="toggleNavLevel('profi')" title="Profi ein-/ausblenden">
+      <span class="nav-toggle-icon" id="nav-toggle-profi-icon">▸</span>
+      <span style="font-size:.65rem;font-weight:700;letter-spacing:.06em;color:var(--muted);">PROFI</span>
+    </button>
+    <button class="nav-btn" data-section="ai" data-level="profi" data-hidden="1" style="display:none;"><span class="nav-icon">✦</span> KI-Assistent</button>
+    <button class="nav-btn" data-section="generator" data-level="profi" data-hidden="1" style="display:none;"><span class="nav-icon">✨</span> KI-Generator</button>
+    <button class="nav-btn" data-section="translate" data-level="profi" data-hidden="1" style="display:none;"><span class="nav-icon">⇄</span> Übersetzer</button>
+    <button class="nav-btn" data-section="free" data-level="profi" data-hidden="1" style="display:none;"><span class="nav-icon">🗂</span> Freies Lernen</button>
+    <button class="nav-btn" data-section="path" data-level="profi" data-hidden="1" style="display:none;"><span class="nav-icon">🗺</span> Lernpfad</button>
   </nav>
 
   <main>
@@ -1693,8 +1717,8 @@ nav { touch-action: pan-x; }
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v8.9</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
-    <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
+    LINGUA <span id="footer-version">v9.0</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · <span class="build-date">Juni 2026</span></span>
   </footer>
 </div>
 
@@ -1861,8 +1885,8 @@ nav { touch-action: pan-x; }
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v8.9</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
-      <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Mai 2026</span>
+      LINGUA <span id="settings-version">v9.0</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · <span class="build-date">Juni 2026</span></span>
     </div>
 
     </div><!-- end scrollable -->
@@ -13971,8 +13995,30 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 89;
-var BUILD_VERSION = '8.9'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 90; // Juni 2026; // Juni 2026
+var BUILD_VERSION = '9.0'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+
+// ── AUTO-DATE: Monat und Jahr automatisch aktuell halten ──────────────────
+(function updateBuildDate() {
+  var MONTHS_DE = ['Januar','Februar','März','April','Mai','Juni',
+                   'Juli','August','September','Oktober','November','Dezember'];
+  var now = new Date();
+  var dateStr = MONTHS_DE[now.getMonth()] + ' ' + now.getFullYear();
+  // Update all date spans on page load and after DOM ready
+  function applyDate() {
+    document.querySelectorAll('.build-date').forEach(function(el) {
+      el.textContent = dateStr;
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyDate);
+  } else {
+    applyDate();
+    setTimeout(applyDate, 500); // Fallback für langsame Renderer
+  }
+  // Export for use elsewhere
+  window.BUILD_DATE = dateStr;
+})();
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -14078,6 +14124,17 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  90: {
+    emoji: '🗂️',
+    title: 'v9.0 – Nav-Kategorien: Anfänger / Fortgeschritten / Profi',
+    items: [
+      'Nav in 3 Level unterteilt: Anfänger immer sichtbar',
+      'Fortgeschritten + Profi per Toggle ein-/ausklappbar',
+      'Zustand wird gespeichert (localStorage)',
+      'Aktive Sektion öffnet ihr Level automatisch',
+    ]
+  },
+
   89: {
     emoji: '📱',
     title: 'v8.9 – Android Touch Fixes',
@@ -15411,6 +15468,49 @@ function calcPronScore(spoken,target){if(!spoken||!target)return 0;spoken=spoken
 function showPronScore(score,spoken,target){var old=document.getElementById('pron-score-box');if(old)old.remove();var color=score>=80?'var(--accent3)':score>=50?'#f59e0b':'#ef4444';var emoji=score>=80?'🎉':score>=50?'👍':'💪';var msg=score>=80?'Ausgezeichnet!':score>=50?'Fast! Weiter üben.':'Nochmal versuchen.';var box=document.createElement('div');box.id='pron-score-box';box.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface);border:2px solid '+color+';border-radius:16px;padding:.75rem 1.25rem;text-align:center;z-index:999;min-width:220px;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:fadeIn .3s ease;';box.innerHTML='<div style="font-size:1.5rem;">'+emoji+'</div><div style="font-weight:800;font-size:1.4rem;color:'+color+';">'+score+'%</div><div style="font-size:.75rem;color:var(--muted);">'+msg+'</div><div style="font-size:.72rem;margin-top:.3rem;"><span style="color:var(--muted);">Gesagt: </span><span style="color:'+color+';">'+spoken+'</span></div><div style="font-size:.72rem;"><span style="color:var(--muted);">Ziel: </span>'+target+'</div><button onclick="this.parentNode.remove()" style="margin-top:.5rem;background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;">✕</button>';document.body.appendChild(box);setTimeout(function(){var b=document.getElementById('pron-score-box');if(b)b.remove();},5000);}
 
 
+
+// ════════ NAV LEVEL TOGGLE ════════════════════════════════════════
+var NAV_LEVEL_STATE = { fortgeschritten: false, profi: false };
+
+function toggleNavLevel(level) {
+  NAV_LEVEL_STATE[level] = !NAV_LEVEL_STATE[level];
+  applyNavLevels();
+  // Persist
+  try { localStorage.setItem('lingua_nav_levels', JSON.stringify(NAV_LEVEL_STATE)); } catch(e){}
+}
+
+function applyNavLevels() {
+  ['fortgeschritten','profi'].forEach(function(level) {
+    var open = NAV_LEVEL_STATE[level];
+    var toggle = document.getElementById('nav-toggle-' + level);
+    if (toggle) toggle.classList.toggle('open', open);
+    document.querySelectorAll('.nav-btn[data-level="' + level + '"]').forEach(function(btn) {
+      btn.style.display = open ? '' : 'none';
+      btn.dataset.hidden = open ? '0' : '1';
+    });
+  });
+}
+
+function initNavLevels() {
+  // Restore persisted state
+  try {
+    var saved = JSON.parse(localStorage.getItem('lingua_nav_levels') || '{}');
+    if (saved.fortgeschritten) NAV_LEVEL_STATE.fortgeschritten = true;
+    if (saved.profi) NAV_LEVEL_STATE.profi = true;
+  } catch(e) {}
+  applyNavLevels();
+
+  // If current active section is hidden, show its level
+  var activeBtn = document.querySelector('.nav-btn.active');
+  if (activeBtn) {
+    var level = activeBtn.dataset.level;
+    if (level && level !== 'anfaenger' && !NAV_LEVEL_STATE[level]) {
+      NAV_LEVEL_STATE[level] = true;
+      applyNavLevels();
+    }
+  }
+}
+
 // ── ANDROID TOUCH FIX: Global Event Delegation ──────────────────
 (function() {
   function handleNav(target) {
@@ -15443,6 +15543,7 @@ function showPronScore(score,spoken,target){var old=document.getElementById('pro
 })();
 
 checkAndShowChangelog();
+initNavLevels();
 </script>
 </body>
 </html>
