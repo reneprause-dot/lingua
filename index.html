@@ -78,8 +78,6 @@ header {
   font-size:.68rem; font-family:'Syne',sans-serif; font-weight:600; letter-spacing:.04em;
   cursor:pointer; transition:all .2s; background:transparent; color:var(--muted);
   -webkit-tap-highlight-color:transparent;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
 }
 .lang-pill.active { border-color:var(--pill-color,var(--accent)); color:var(--pill-color,var(--accent)); background:rgba(108,99,255,.1); }
 .lang-pill[data-lang="ru"] { --pill-color:var(--ru); }
@@ -110,7 +108,6 @@ nav {
   display:flex; gap:.2rem; overflow-x:auto; padding:.6rem 1rem;
   background:var(--nav-bg, rgba(7,7,13,.6)); border-bottom:1px solid var(--border);
   scrollbar-width:none; -webkit-overflow-scrolling:touch; flex-shrink:0;
-  touch-action: pan-x;
 }
 nav::-webkit-scrollbar { display:none; }
 .nav-btn {
@@ -119,9 +116,6 @@ nav::-webkit-scrollbar { display:none; }
   color:var(--nav-text, var(--muted)); font-family:'Syne',sans-serif; font-size:.75rem; font-weight:600;
   cursor:pointer; transition:all .2s; white-space:nowrap; letter-spacing:.02em;
   -webkit-tap-highlight-color:transparent; flex-shrink:0;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
 }
 .nav-btn:hover { color:var(--text); border-color:var(--border); background:var(--surface2); }
 .nav-btn.active { background:var(--surface); border-color:var(--accent); color:var(--accent); }
@@ -311,8 +305,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   display:flex; align-items:center; justify-content:center; padding:1rem;
   backdrop-filter:blur(8px); overflow-y:auto;
 }
-.modal-overlay.hidden { display:none;   pointer-events: none !important;
-}
+.modal-overlay.hidden { display:none; }
 .modal-box {
   background:var(--surface); border:1px solid var(--border); border-radius:20px;
   padding:1.5rem; max-width:460px; width:100%;
@@ -515,21 +508,29 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   .vocab-card { min-height:200px; }
 }
 
-/* Nav Level Toggles */
+/* Android Touch Fix v2 */
+* { -webkit-tap-highlight-color: rgba(0,0,0,0); }
+button, .btn, .nav-btn, .lang-pill, .nav-level-toggle {
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+nav { touch-action: pan-x; }
+.hidden { pointer-events: none !important; }
+.modal-overlay.hidden, .onboarding-overlay.hidden {
+  pointer-events: none !important;
+  display: none !important;
+}
 .nav-level-toggle {
   display:flex; align-items:center; gap:.35rem;
   background:none; border:none; border-left:2px solid var(--border);
   padding:.35rem .6rem; cursor:pointer; margin-left:.25rem;
   border-radius:0; flex-shrink:0; opacity:.75; transition:opacity .2s;
-  touch-action: manipulation; -webkit-tap-highlight-color:transparent;
 }
-.nav-level-toggle:hover { opacity:1; }
 .nav-level-toggle.open { border-left-color:var(--accent); opacity:1; }
-.nav-toggle-icon {
-  font-size:.65rem; color:var(--muted); transition:transform .25s; display:inline-block;
-}
+.nav-toggle-icon { font-size:.65rem; color:var(--muted); transition:transform .25s; display:inline-block; }
 .nav-level-toggle.open .nav-toggle-icon { transform:rotate(90deg); color:var(--accent); }
-
 </style>
 
 <style>
@@ -546,7 +547,6 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:900;
   display:flex; align-items:center; justify-content:center; padding:1.5rem;
   backdrop-filter:blur(12px);
-  pointer-events: auto;
 }
 .onboarding-overlay.hidden { display:none; }
 .onboarding-box {
@@ -690,15 +690,6 @@ if ('serviceWorker' in navigator) {
 }
 if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){caches.delete(n);});}); }
 </script>
-<style id="android-touch-fix">
-/* Android touch delay fix */
-* { -webkit-tap-highlight-color: rgba(0,0,0,0); }
-button, a, [onclick], .btn, .nav-btn, .lang-pill, .card, .vocab-card {
-  touch-action: manipulation;
-  cursor: pointer;
-}
-nav { touch-action: pan-x; }
-</style>
 </head>
 <body>
 <div id="app">
@@ -730,34 +721,34 @@ nav { touch-action: pan-x; }
   </header>
 
   <nav>
-    <button class="nav-btn active" data-section="home" data-level="anfaenger"><span class="nav-icon">⌂</span> Start</button>
-    <button class="nav-btn" data-section="search" data-level="anfaenger"><span class="nav-icon">🔍</span> Suche</button>
-    <button class="nav-btn" data-section="vocab" data-level="anfaenger"><span class="nav-icon">📚</span> Vokabeln</button>
-    <button class="nav-btn" data-section="dialogs" data-level="anfaenger"><span class="nav-icon">💬</span> Dialoge</button>
-    <button class="nav-btn" data-section="deniveau" data-level="anfaenger"><span class="nav-icon">🇩🇪</span> DE Niveau</button>
-    <button class="nav-btn" data-section="enniveau" data-level="anfaenger"><span class="nav-icon">🇬🇧</span> EN Niveau</button>
-    <button class="nav-btn" data-section="badges" data-level="anfaenger"><span class="nav-icon">🏆</span> Abzeichen</button>
-    <button class="nav-btn" data-section="stats" data-level="anfaenger"><span class="nav-icon">📊</span> Statistiken</button>
-    <button class="nav-level-toggle" id="nav-toggle-fort" onclick="toggleNavLevel('fortgeschritten')" title="Fortgeschritten ein-/ausblenden">
-      <span class="nav-toggle-icon" id="nav-toggle-fort-icon">▸</span>
-      <span style="font-size:.65rem;font-weight:700;letter-spacing:.06em;color:var(--muted);">FORTGESCHRITTEN</span>
+    <button class="nav-btn active" data-section="home" data-level="anfaenger" onclick="switchSection('home')"><span class="nav-icon">⌂</span> Start</button>
+    <button class="nav-btn" data-section="search" data-level="anfaenger" onclick="switchSection('search')"><span class="nav-icon">🔍</span> Suche</button>
+    <button class="nav-btn" data-section="vocab" data-level="anfaenger" onclick="switchSection('vocab')"><span class="nav-icon">📚</span> Vokabeln</button>
+    <button class="nav-btn" data-section="dialogs" data-level="anfaenger" onclick="switchSection('dialogs')"><span class="nav-icon">💬</span> Dialoge</button>
+    <button class="nav-btn" data-section="deniveau" data-level="anfaenger" onclick="switchSection('deniveau')"><span class="nav-icon">🇩🇪</span> DE Niveau</button>
+    <button class="nav-btn" data-section="enniveau" data-level="anfaenger" onclick="switchSection('enniveau')"><span class="nav-icon">🇬🇧</span> EN Niveau</button>
+    <button class="nav-btn" data-section="badges" data-level="anfaenger" onclick="switchSection('badges')"><span class="nav-icon">🏆</span> Abzeichen</button>
+    <button class="nav-btn" data-section="stats" data-level="anfaenger" onclick="switchSection('stats')"><span class="nav-icon">📊</span> Statistiken</button>
+    <button class="nav-level-toggle" id="nav-toggle-fort" onclick="toggleNavLevel('fortgeschritten')">
+      <span class="nav-toggle-icon" id="nav-toggle-fort-icon">&#9658;</span>
+      <span style="font-size:.65rem;font-weight:700;letter-spacing:.06em;">FORTGESCHRITTEN</span>
     </button>
-    <button class="nav-btn" data-section="gapfill" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">🧩</span> Lückentexte</button>
-    <button class="nav-btn" data-section="wordorder" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">🔀</span> Satzbau</button>
-    <button class="nav-btn" data-section="quiz" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">❓</span> Quiz</button>
-    <button class="nav-btn" data-section="write" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">✍</span> Schreiben</button>
-    <button class="nav-btn" data-section="srs" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">🧠</span> SRS</button>
-    <button class="nav-btn" data-section="myvocab" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">⭐</span> Meine Vokabeln</button>
-    <button class="nav-btn" data-section="conjugate" data-level="fortgeschritten" data-hidden="1" style="display:none;"><span class="nav-icon">🔗</span> Konjugation</button>
-    <button class="nav-level-toggle" id="nav-toggle-profi" onclick="toggleNavLevel('profi')" title="Profi ein-/ausblenden">
-      <span class="nav-toggle-icon" id="nav-toggle-profi-icon">▸</span>
-      <span style="font-size:.65rem;font-weight:700;letter-spacing:.06em;color:var(--muted);">PROFI</span>
+    <button class="nav-btn" data-section="gapfill" data-level="fortgeschritten" onclick="switchSection('gapfill')" data-hidden="1" style="display:none;"><span class="nav-icon">🧩</span> Lückentexte</button>
+    <button class="nav-btn" data-section="wordorder" data-level="fortgeschritten" onclick="switchSection('wordorder')" data-hidden="1" style="display:none;"><span class="nav-icon">🔀</span> Satzbau</button>
+    <button class="nav-btn" data-section="quiz" data-level="fortgeschritten" onclick="switchSection('quiz')" data-hidden="1" style="display:none;"><span class="nav-icon">❓</span> Quiz</button>
+    <button class="nav-btn" data-section="write" data-level="fortgeschritten" onclick="switchSection('write')" data-hidden="1" style="display:none;"><span class="nav-icon">✍</span> Schreiben</button>
+    <button class="nav-btn" data-section="srs" data-level="fortgeschritten" onclick="switchSection('srs')" data-hidden="1" style="display:none;"><span class="nav-icon">🧠</span> SRS</button>
+    <button class="nav-btn" data-section="myvocab" data-level="fortgeschritten" onclick="switchSection('myvocab')" data-hidden="1" style="display:none;"><span class="nav-icon">⭐</span> Meine Vokabeln</button>
+    <button class="nav-btn" data-section="conjugate" data-level="fortgeschritten" onclick="switchSection('conjugate')" data-hidden="1" style="display:none;"><span class="nav-icon">🔗</span> Konjugation</button>
+    <button class="nav-level-toggle" id="nav-toggle-profi" onclick="toggleNavLevel('profi')">
+      <span class="nav-toggle-icon" id="nav-toggle-profi-icon">&#9658;</span>
+      <span style="font-size:.65rem;font-weight:700;letter-spacing:.06em;">PROFI</span>
     </button>
-    <button class="nav-btn" data-section="ai" data-level="profi" data-hidden="1" style="display:none;"><span class="nav-icon">✦</span> KI-Assistent</button>
-    <button class="nav-btn" data-section="generator" data-level="profi" data-hidden="1" style="display:none;"><span class="nav-icon">✨</span> KI-Generator</button>
-    <button class="nav-btn" data-section="translate" data-level="profi" data-hidden="1" style="display:none;"><span class="nav-icon">⇄</span> Übersetzer</button>
-    <button class="nav-btn" data-section="free" data-level="profi" data-hidden="1" style="display:none;"><span class="nav-icon">🗂</span> Freies Lernen</button>
-    <button class="nav-btn" data-section="path" data-level="profi" data-hidden="1" style="display:none;"><span class="nav-icon">🗺</span> Lernpfad</button>
+    <button class="nav-btn" data-section="ai" data-level="profi" onclick="switchSection('ai')" data-hidden="1" style="display:none;"><span class="nav-icon">✦</span> KI-Assistent</button>
+    <button class="nav-btn" data-section="generator" data-level="profi" onclick="switchSection('generator')" data-hidden="1" style="display:none;"><span class="nav-icon">✨</span> KI-Generator</button>
+    <button class="nav-btn" data-section="translate" data-level="profi" onclick="switchSection('translate')" data-hidden="1" style="display:none;"><span class="nav-icon">⇄</span> Übersetzer</button>
+    <button class="nav-btn" data-section="free" data-level="profi" onclick="switchSection('free')" data-hidden="1" style="display:none;"><span class="nav-icon">🗂</span> Freies Lernen</button>
+    <button class="nav-btn" data-section="path" data-level="profi" onclick="switchSection('path')" data-hidden="1" style="display:none;"><span class="nav-icon">🗺</span> Lernpfad</button>
   </nav>
 
   <main>
@@ -1903,7 +1894,16 @@ nav { touch-action: pan-x; }
       <button class="btn primary" id="onboarding-next" onclick="nextOnboardingStep()" style="min-width:120px;">Weiter →</button>
     </div>
     <div id="onboarding-no-more" style="display:none;text-align:center;margin-top:.75rem;">
-      <butto
+      <button onclick="disableOnboarding()" style="background:none;border:none;color:var(--muted);font-size:.72rem;cursor:pointer;text-decoration:underline;">
+        Tutorial nicht mehr beim Start anzeigen
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
 // ============================================================
 // VOCABULARY DATABASE – ERWEITERT (~400 Wörter pro Sprache)
 // ============================================================
@@ -6271,22 +6271,8 @@ function switchSection(id) {
   if (id === 'myvocab') renderMyVocab();
 }
 
-document.querySelectorAll('.nav-btn').forEach(function(b) {
-  var sec = b.dataset.section;
-  if (!sec) return;
-  // touchend for faster response on Android (no 300ms delay)
-  var triggered = false;
-  b.addEventListener('touchend', function(e) {
-    e.preventDefault();
-    triggered = true;
-    switchSection(sec);
-    // Reset flag after click would have fired
-    setTimeout(function(){ triggered = false; }, 500);
-  }, {passive: false});
-  b.addEventListener('click', function(e) {
-    if (triggered) return; // already handled by touchend
-    switchSection(sec);
-  });
+document.querySelectorAll('.nav-btn').forEach(b => {
+  b.addEventListener('click', () => switchSection(b.dataset.section));
 });
 
 // ============================================================
@@ -13995,30 +13981,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 90; // Juni 2026; // Juni 2026
+var BUILD = 90; // Juni 2026;
 var BUILD_VERSION = '9.0'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
-
-// ── AUTO-DATE: Monat und Jahr automatisch aktuell halten ──────────────────
-(function updateBuildDate() {
-  var MONTHS_DE = ['Januar','Februar','März','April','Mai','Juni',
-                   'Juli','August','September','Oktober','November','Dezember'];
-  var now = new Date();
-  var dateStr = MONTHS_DE[now.getMonth()] + ' ' + now.getFullYear();
-  // Update all date spans on page load and after DOM ready
-  function applyDate() {
-    document.querySelectorAll('.build-date').forEach(function(el) {
-      el.textContent = dateStr;
-    });
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyDate);
-  } else {
-    applyDate();
-    setTimeout(applyDate, 500); // Fallback für langsame Renderer
-  }
-  // Export for use elsewhere
-  window.BUILD_DATE = dateStr;
-})();
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -14126,25 +14090,13 @@ function updateAllVersionDisplays() {
 var CHANGELOG = {
   90: {
     emoji: '🗂️',
-    title: 'v9.0 – Nav-Kategorien: Anfänger / Fortgeschritten / Profi',
+    title: 'v9.0 - Nav-Kategorien + Android-Fix + Bugfixes',
     items: [
-      'Nav in 3 Level unterteilt: Anfänger immer sichtbar',
-      'Fortgeschritten + Profi per Toggle ein-/ausklappbar',
-      'Zustand wird gespeichert (localStorage)',
-      'Aktive Sektion öffnet ihr Level automatisch',
-    ]
-  },
-
-  89: {
-    emoji: '📱',
-    title: 'v8.9 – Android Touch Fixes',
-    items: [
-      'touchend-Handler für Nav-Buttons (kein 300ms Delay)',
-      'touch-action: manipulation auf allen Schaltflächen',
-      '-webkit-tap-highlight-color: transparent',
-      'Globale Event-Delegation als Fallback für Android',
-      '.hidden pointer-events:none (keine blockierten Touches)',
-      'Viewport: user-scalable:no (kein Doppeltipp-Zoom)',
+      'Nav in 3 Level: Anfaenger / Fortgeschritten / Profi',
+      'Toggle klappt Gruppen auf/zu, Zustand wird gespeichert',
+      'Android Fix: Nur CSS (kein globales touchend das Events blockiert)',
+      'Bugfix: e.preventDefault auf document entfernt (API-Key wieder stabil)',
+      'Datum automatisch: Juni 2026',
     ]
   },
 
@@ -15468,82 +15420,61 @@ function calcPronScore(spoken,target){if(!spoken||!target)return 0;spoken=spoken
 function showPronScore(score,spoken,target){var old=document.getElementById('pron-score-box');if(old)old.remove();var color=score>=80?'var(--accent3)':score>=50?'#f59e0b':'#ef4444';var emoji=score>=80?'🎉':score>=50?'👍':'💪';var msg=score>=80?'Ausgezeichnet!':score>=50?'Fast! Weiter üben.':'Nochmal versuchen.';var box=document.createElement('div');box.id='pron-score-box';box.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface);border:2px solid '+color+';border-radius:16px;padding:.75rem 1.25rem;text-align:center;z-index:999;min-width:220px;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:fadeIn .3s ease;';box.innerHTML='<div style="font-size:1.5rem;">'+emoji+'</div><div style="font-weight:800;font-size:1.4rem;color:'+color+';">'+score+'%</div><div style="font-size:.75rem;color:var(--muted);">'+msg+'</div><div style="font-size:.72rem;margin-top:.3rem;"><span style="color:var(--muted);">Gesagt: </span><span style="color:'+color+';">'+spoken+'</span></div><div style="font-size:.72rem;"><span style="color:var(--muted);">Ziel: </span>'+target+'</div><button onclick="this.parentNode.remove()" style="margin-top:.5rem;background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;">✕</button>';document.body.appendChild(box);setTimeout(function(){var b=document.getElementById('pron-score-box');if(b)b.remove();},5000);}
 
 
-
-// ════════ NAV LEVEL TOGGLE ════════════════════════════════════════
+// NAV LEVEL TOGGLE
 var NAV_LEVEL_STATE = { fortgeschritten: false, profi: false };
 
 function toggleNavLevel(level) {
   NAV_LEVEL_STATE[level] = !NAV_LEVEL_STATE[level];
   applyNavLevels();
-  // Persist
-  try { localStorage.setItem('lingua_nav_levels', JSON.stringify(NAV_LEVEL_STATE)); } catch(e){}
+  try { localStorage.setItem('lingua_nav_levels', JSON.stringify(NAV_LEVEL_STATE)); } catch(e) {}
 }
 
 function applyNavLevels() {
-  ['fortgeschritten','profi'].forEach(function(level) {
+  ['fortgeschritten', 'profi'].forEach(function(level) {
     var open = NAV_LEVEL_STATE[level];
     var toggle = document.getElementById('nav-toggle-' + level);
     if (toggle) toggle.classList.toggle('open', open);
     document.querySelectorAll('.nav-btn[data-level="' + level + '"]').forEach(function(btn) {
       btn.style.display = open ? '' : 'none';
-      btn.dataset.hidden = open ? '0' : '1';
     });
   });
 }
 
 function initNavLevels() {
-  // Restore persisted state
   try {
     var saved = JSON.parse(localStorage.getItem('lingua_nav_levels') || '{}');
     if (saved.fortgeschritten) NAV_LEVEL_STATE.fortgeschritten = true;
     if (saved.profi) NAV_LEVEL_STATE.profi = true;
   } catch(e) {}
   applyNavLevels();
-
-  // If current active section is hidden, show its level
-  var activeBtn = document.querySelector('.nav-btn.active');
-  if (activeBtn) {
-    var level = activeBtn.dataset.level;
-    if (level && level !== 'anfaenger' && !NAV_LEVEL_STATE[level]) {
-      NAV_LEVEL_STATE[level] = true;
-      applyNavLevels();
-    }
+  var active = document.querySelector('.nav-btn.active');
+  if (active && active.dataset.level && active.dataset.level !== 'anfaenger') {
+    var lv = active.dataset.level;
+    if (!NAV_LEVEL_STATE[lv]) { NAV_LEVEL_STATE[lv] = true; applyNavLevels(); }
   }
 }
 
-// ── ANDROID TOUCH FIX: Global Event Delegation ──────────────────
+// AUTO-DATE
 (function() {
-  function handleNav(target) {
-    var el = target;
-    for (var i = 0; i < 6 && el && el.tagName !== 'BODY'; i++) {
-      if (el.dataset && el.dataset.section && typeof switchSection === 'function') {
-        switchSection(el.dataset.section);
-        return true;
-      }
-      if (el.dataset && el.dataset.lang && el.classList && el.classList.contains('lang-pill') && typeof setLang === 'function') {
-        setLang(el.dataset.lang);
-        return true;
-      }
-      el = el.parentElement;
-    }
-    return false;
+  var MD = ['Januar','Februar','Maerz','April','Mai','Juni',
+            'Juli','August','September','Oktober','November','Dezember'];
+  var MONTHS = ['Januar','Februar','März','April','Mai','Juni',
+                'Juli','August','September','Oktober','November','Dezember'];
+  var d = new Date();
+  var ds = MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+  function apply() {
+    document.querySelectorAll('.build-date').forEach(function(el){ el.textContent = ds; });
   }
-  var delegateFired = false;
-  document.addEventListener('touchend', function(e) {
-    if (handleNav(e.target)) {
-      e.preventDefault();
-      delegateFired = true;
-      setTimeout(function(){ delegateFired = false; }, 600);
-    }
-  }, {passive: false});
-  document.addEventListener('click', function(e) {
-    if (delegateFired) { delegateFired = false; return; }
-    handleNav(e.target);
-  });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', apply);
+  } else {
+    apply();
+  }
+  window.BUILD_DATE = ds;
 })();
 
-checkAndShowChangelog();
-initNavLevels();
+checkAndShowChangelog()
+initNavLevels();;
 </script>
 </body>
 </html>
