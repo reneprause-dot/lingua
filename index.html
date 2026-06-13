@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0a0a0f">
 <meta name="description" id="meta-description" content="LINGUA v5.1 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v9.0 · by René Prause</title>
+<title>LINGUA v9.4 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -507,30 +507,16 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
   .chat-window { height:320px; }
   .vocab-card { min-height:200px; }
 }
-
-/* Android Touch Fix v2 */
-* { -webkit-tap-highlight-color: rgba(0,0,0,0); }
-button, .btn, .nav-btn, .lang-pill, .nav-level-toggle {
-  touch-action: manipulation;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-}
-nav { touch-action: pan-x; }
-.hidden { pointer-events: none !important; }
-.modal-overlay.hidden, .onboarding-overlay.hidden {
-  pointer-events: none !important;
-  display: none !important;
-}
-.nav-level-toggle {
-  display:flex; align-items:center; gap:.35rem;
-  background:none; border:none; border-left:2px solid var(--border);
-  padding:.35rem .6rem; cursor:pointer; margin-left:.25rem;
-  border-radius:0; flex-shrink:0; opacity:.75; transition:opacity .2s;
-}
-.nav-level-toggle.open { border-left-color:var(--accent); opacity:1; }
-.nav-toggle-icon { font-size:.65rem; color:var(--muted); transition:transform .25s; display:inline-block; }
-.nav-level-toggle.open .nav-toggle-icon { transform:rotate(90deg); color:var(--accent); }
+/* Android+NavLevel */
+*{-webkit-tap-highlight-color:rgba(0,0,0,0);}
+button,.btn,.nav-btn,.lang-pill,.nav-level-toggle{touch-action:manipulation;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;}
+nav{touch-action:pan-x;}
+.hidden{pointer-events:none!important;}
+.modal-overlay.hidden,.onboarding-overlay.hidden{pointer-events:none!important;display:none!important;}
+.nav-level-toggle{display:flex;align-items:center;gap:.35rem;background:none;border:none;border-left:2px solid var(--border);padding:.35rem .6rem;cursor:pointer;margin-left:.25rem;border-radius:0;flex-shrink:0;opacity:.75;transition:opacity .2s;}
+.nav-level-toggle.open{border-left-color:var(--accent);opacity:1;}
+.nav-toggle-icon{font-size:.65rem;color:var(--muted);transition:transform .25s;display:inline-block;}
+.nav-level-toggle.open .nav-toggle-icon{transform:rotate(90deg);color:var(--accent);}
 </style>
 
 <style>
@@ -694,7 +680,7 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v9.0</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v9.4</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -730,9 +716,10 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
     <button class="nav-btn" data-section="badges" data-level="anfaenger" onclick="switchSection('badges')"><span class="nav-icon">🏆</span> Abzeichen</button>
     <button class="nav-btn" data-section="stats" data-level="anfaenger" onclick="switchSection('stats')"><span class="nav-icon">📊</span> Statistiken</button>
     <button class="nav-level-toggle" id="nav-toggle-fort" onclick="toggleNavLevel('fortgeschritten')">
-      <span class="nav-toggle-icon" id="nav-toggle-fort-icon">&#9658;</span>
+      <span class="nav-toggle-icon">&#9658;</span>
       <span style="font-size:.65rem;font-weight:700;letter-spacing:.06em;">FORTGESCHRITTEN</span>
     </button>
+    <button class="nav-btn" data-section="dailytasks" data-level="fortgeschritten" onclick="switchSection('dailytasks')" data-hidden="1" style="display:none;"><span class="nav-icon">📋</span> Tagesaufgaben</button>
     <button class="nav-btn" data-section="gapfill" data-level="fortgeschritten" onclick="switchSection('gapfill')" data-hidden="1" style="display:none;"><span class="nav-icon">🧩</span> Lückentexte</button>
     <button class="nav-btn" data-section="wordorder" data-level="fortgeschritten" onclick="switchSection('wordorder')" data-hidden="1" style="display:none;"><span class="nav-icon">🔀</span> Satzbau</button>
     <button class="nav-btn" data-section="quiz" data-level="fortgeschritten" onclick="switchSection('quiz')" data-hidden="1" style="display:none;"><span class="nav-icon">❓</span> Quiz</button>
@@ -741,7 +728,7 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
     <button class="nav-btn" data-section="myvocab" data-level="fortgeschritten" onclick="switchSection('myvocab')" data-hidden="1" style="display:none;"><span class="nav-icon">⭐</span> Meine Vokabeln</button>
     <button class="nav-btn" data-section="conjugate" data-level="fortgeschritten" onclick="switchSection('conjugate')" data-hidden="1" style="display:none;"><span class="nav-icon">🔗</span> Konjugation</button>
     <button class="nav-level-toggle" id="nav-toggle-profi" onclick="toggleNavLevel('profi')">
-      <span class="nav-toggle-icon" id="nav-toggle-profi-icon">&#9658;</span>
+      <span class="nav-toggle-icon">&#9658;</span>
       <span style="font-size:.65rem;font-weight:700;letter-spacing:.06em;">PROFI</span>
     </button>
     <button class="nav-btn" data-section="ai" data-level="profi" onclick="switchSection('ai')" data-hidden="1" style="display:none;"><span class="nav-icon">✦</span> KI-Assistent</button>
@@ -1042,6 +1029,12 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
       <!-- Daily Goal -->
       <div class="card" style="margin-bottom:1rem;">
         <div class="card-title" id="ui-stats-goal">🎯 Tagesziel</div>
+      <div class="card" style="margin-bottom:1rem;">
+        <div class="card-title">📈 Wöchentlicher Bericht</div>
+        <div id="weekly-chart" style="display:flex;align-items:flex-end;gap:3px;height:60px;margin:.75rem 0;"></div>
+        <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted);" id="weekly-labels"></div>
+        <div style="display:flex;gap:1rem;margin-top:.75rem;"><div style="flex:1;text-align:center;"><div style="font-size:1.2rem;font-weight:800;" id="weekly-xp">0</div><div style="font-size:.65rem;color:var(--muted);">XP Woche</div></div><div style="flex:1;text-align:center;"><div style="font-size:1.2rem;font-weight:800;" id="weekly-days">0</div><div style="font-size:.65rem;color:var(--muted);">Lerntage</div></div><div style="flex:1;text-align:center;"><div style="font-size:1.2rem;font-weight:800;" id="weekly-best">0</div><div style="font-size:.65rem;color:var(--muted);">Bester Tag</div></div></div>
+      </div>
         <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1rem;">
           <div class="goal-ring">
             <svg width="80" height="80" viewBox="0 0 80 80">
@@ -1371,6 +1364,15 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
     <div style="margin-top:.75rem;background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;"><div id="wo-bar" style="height:100%;background:var(--accent3);width:0%;transition:width .4s;border-radius:4px;"></div></div>
   </div>
 
+  <div class="section" id="dailytasks">
+    <div class="section-header"><span style="font-size:1.1rem;">📋</span><span class="section-title">Tagesaufgaben</span></div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem;">Erledige alle 5 Aufgaben und sichere deinen Streak.</p>
+    <div id="dt-date" style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem;text-align:center;"></div>
+    <div id="dt-tasks" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem;"></div>
+    <div style="background:var(--surface2);border-radius:4px;height:8px;overflow:hidden;margin-bottom:.75rem;"><div id="dt-bar" style="height:100%;background:var(--accent3);width:0%;transition:width .5s;border-radius:4px;"></div></div>
+    <div id="dt-summary" style="text-align:center;font-size:.85rem;color:var(--muted);margin-bottom:.75rem;"></div>
+    <div style="display:flex;gap:.4rem;"><button class="btn" onclick="switchSection('vocab')" style="flex:1;font-size:.78rem;">📚 Vokabeln</button><button class="btn" onclick="switchSection('gapfill')" style="flex:1;font-size:.78rem;">🧩 Lückentexte</button></div>
+  </div>
   </main>
 
 
@@ -1708,8 +1710,8 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v9.0</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
-    <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · <span class="build-date">Juni 2026</span></span>
+    LINGUA <span id="footer-version">v9.4</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Juni 2026</span>
   </footer>
 </div>
 
@@ -1876,8 +1878,8 @@ if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){cach
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v9.0</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
-      <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · <span class="build-date">Juni 2026</span></span>
+      LINGUA <span id="settings-version">v9.4</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Juni 2026</span>
     </div>
 
     </div><!-- end scrollable -->
@@ -10394,9 +10396,9 @@ function speakCurrent() {
 // Übersetzt eine Liste von Wörtern vorab in einem einzigen Batch-Request
 // Nur Wörter die noch nicht im Cache sind werden übersetzt
 async function preloadDeeplBatch(words) {
-  if (uiLang === 'de') return; // Kein Bedarf
+  if (uiLang === 'de') return Promise.resolve(); // Kein Bedarf
   var deeplLang = DEEPL_LANG_MAP[uiLang];
-  if (!deeplLang) return;
+  if (!deeplLang) return Promise.resolve();
 
   // Nur nicht-gecachte Wörter übersetzen
   var toTranslate = words.filter(function(w) {
@@ -10413,7 +10415,7 @@ async function preloadDeeplBatch(words) {
     var body = JSON.stringify({
       text: toTranslate,
       target_lang: deeplLang,
-      source_lang: 'DE'
+      source_lang: DEEPL_LANG_MAP[state.lang] || 'DE'
     });
     var response = await _deeplFetch(key, body);
     if (!response || !response.ok) return;
@@ -10578,40 +10580,61 @@ function showFreeVocab(lang, topic) {
 // TRANSLATOR
 // ============================================================
 async function doTranslate() {
-  const text = document.getElementById('trans-input').value.trim();
+  var text = document.getElementById('trans-input').value.trim();
   if (!text) return;
-  const from = document.getElementById('trans-from').value;
-  const to   = document.getElementById('trans-to').value;
+  var from = document.getElementById('trans-from').value;
+  var to   = document.getElementById('trans-to').value;
   if (from === to) { showToast('Quell- und Zielsprache sind identisch.'); return; }
 
-  const fromName = LANG_NAMES[from] || from;
-  const toName   = LANG_NAMES[to]   || to;
+  var fromName = LANG_NAMES[from] || from;
+  var toName   = LANG_NAMES[to]   || to;
+  var outEl = document.getElementById('trans-output');
+  var loadEl = document.getElementById('trans-loading');
 
-  document.getElementById('trans-loading').style.display = 'block';
-  document.getElementById('trans-output').value = '';
+  if (loadEl) loadEl.style.display = 'block';
+  if (outEl) outEl.value = '';
 
-  // DeepL nutzen wenn beide Sprachen unterstützt werden
+  var claudeKey = getApiKey();
   var deeplFrom = DEEPL_LANG_MAP[from];
   var deeplTo   = DEEPL_LANG_MAP[to];
+  var result = null;
 
   try {
-    if (deeplFrom && deeplTo) {
-      // translateWithDeepl nutzen (robuste Version mit mehreren Fallbacks)
-      var result = await translateWithDeepl(text, deeplTo, deeplFrom);
-      document.getElementById('trans-output').value = result;
-    } else {
-      // Fallback: Claude für nicht-DeepL-Sprachen (sq, th)
-      const result = await callClaude({
-        model:'claude-sonnet-4-6', max_tokens:1000,
-        system:'Du bist ein praeziser Uebersetzer. Uebersetze den gegebenen Text von ' + fromName + ' nach ' + toName + '. Gib NUR die Uebersetzung aus, ohne Erklaerungen.',
-        messages:[{role:'user',content:text}]
+    // Strategie 1: Claude API (kein CORS, funktioniert immer wenn Key gesetzt)
+    if (claudeKey) {
+      result = await callClaude({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 500,
+        system: 'You are a precise translator. Translate the given text from ' + fromName + ' to ' + toName + '. Output ONLY the translation, no explanations, no notes.',
+        messages: [{ role: 'user', content: text }]
       });
-      document.getElementById('trans-output').value = result;
     }
+    // Strategie 2: DeepL (wenn kein Claude-Key, beide Sprachen unterstuetzt)
+    else if (deeplFrom && deeplTo) {
+      result = await translateWithDeepl(text, deeplTo, deeplFrom);
+    }
+    // Kein Key vorhanden
+    else {
+      if (outEl) outEl.value = '';
+      showToast('\uD83D\uDD11 Anthropic API-Key in Einstellungen eintragen.');
+      setTimeout(openSettings, 700);
+      if (loadEl) loadEl.style.display = 'none';
+      return;
+    }
+
+    if (result && outEl) outEl.value = result;
+
   } catch(e) {
-    document.getElementById('trans-output').value = '⚠ ' + (e.message || 'Fehler');
+    var msg = e.message || 'Fehler';
+    if (msg.includes('API-Key') || msg.includes('kein') || msg.includes('no_key')) {
+      if (outEl) outEl.value = '';
+      showToast('\uD83D\uDD11 Bitte API-Key in den Einstellungen eintragen.');
+      setTimeout(openSettings, 700);
+    } else {
+      if (outEl) outEl.value = '\u26A0 ' + msg;
+    }
   }
-  document.getElementById('trans-loading').style.display = 'none';
+  if (loadEl) loadEl.style.display = 'none';
 }
 
 function swapLangs() {
@@ -11389,9 +11412,13 @@ function initWrite() {
   var lang = state.lang;
   writeQueue = getAllWords(lang).sort(function() { return Math.random() - .5; }).slice(0, 20);
   writeIndex = 0;
-  preloadDeeplBatch(writeQueue).then(function() {
+  // DeepL nur wenn UI-Sprache weder Deutsch noch die Lernsprache ist
+  var needsDeepL = uiLang !== 'de' && uiLang !== lang;
+  if (needsDeepL) {
+    preloadDeeplBatch(writeQueue).then(function() { showWriteCard(); });
+  } else {
     showWriteCard();
-  });
+  }
 }
 function showWriteCard() {
   var counter = document.getElementById('write-counter');
@@ -11418,13 +11445,22 @@ function showWriteCard() {
   if (prog) prog.style.width = (writeIndex / writeQueue.length * 100) + '%';
   writeHints = 0;
   // Hint-Placeholder anpassen
-  if (inp && uiLang !== 'de') {
-    var langName = LANG_NAMES[uiLang] || uiLang;
-    inp.placeholder = 'Übersetzung auf ' + langName + '...';
+  if (inp) {
+    var needsTrans = uiLang !== 'de' && uiLang !== state.lang;
+    if (needsTrans) {
+      var langName = LANG_NAMES[uiLang] || uiLang;
+      inp.placeholder = 'Übersetzung auf ' + langName + '...';
+    } else {
+      inp.placeholder = 'Deutsche Übersetzung eingeben...';
+    }
   }
   // Korrekte Antwort vorberechnen und cachen
+  // w.t ist immer Deutsch. DeepL nur wenn UI-Sprache weder Deutsch noch die Lernsprache ist.
+  // Beispiel: uiLang=RU, lang=RU → Nutzer tippt Deutsch (w.t) → kein DeepL
+  // Beispiel: uiLang=EN, lang=RU → Nutzer tippt Englisch → DeepL(w.t, EN)
   w._cachedTranslation = w.t;
-  if (uiLang !== 'de') {
+  var needsTranslation = uiLang !== 'de' && uiLang !== state.lang;
+  if (needsTranslation) {
     var dl = DEEPL_LANG_MAP[uiLang];
     if (dl) {
       var ck = w.t + '|' + dl;
@@ -11445,8 +11481,10 @@ async function checkWrite() {
   var answer = inp.value.trim().toLowerCase();
 
   // Korrekte Antwort ermitteln
+  // w.t ist Deutsch. DeepL nur wenn uiLang weder Deutsch noch Lernsprache ist.
   var correct = w.t;
-  if (uiLang !== 'de') {
+  var needsTranslation = uiLang !== 'de' && uiLang !== state.lang;
+  if (needsTranslation) {
     var dl = DEEPL_LANG_MAP[uiLang];
     if (dl) {
       correct = w._cachedTranslation || await getTranslation(w.t);
@@ -13731,8 +13769,11 @@ switchSection = function(id) {
   if (id === 'path') renderLearningPath();
   if (id === 'deniveau') { setNiveauLearnLang('de'); showNiveau('a1a2'); renderNiveauTopics(); }
   if (id === 'enniveau') { initEnNiveau(); }
-  if (id === 'gapfill')  { initGapFill(); }
-  if (id === 'dialogs')  { initDialogs(); }
+  if (id === 'gapfill')    { initGapFill(); }
+  if (id === 'dialogs')    { initDialogs(); }
+  if (id === 'wordorder')  { initWordOrder(); }
+  if (id === 'dailytasks') { initDailyTasks(); }
+  if (id === 'stats')      { updateAllStats(); renderGoalOptions(); renderWeeklyReport(); }
 };
 
 // ============================================================
@@ -13981,8 +14022,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 90; // Juni 2026;
-var BUILD_VERSION = '9.0'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 94; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026;
+var BUILD_VERSION = '9.4'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -14088,15 +14129,46 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
-  90: {
-    emoji: '🗂️',
-    title: 'v9.0 - Nav-Kategorien + Android-Fix + Bugfixes',
+  94: {
+    emoji: '🔄',
+    title: 'v9.4 - Uebersetzer: Claude primaer, kein CORS',
     items: [
-      'Nav in 3 Level: Anfaenger / Fortgeschritten / Profi',
-      'Toggle klappt Gruppen auf/zu, Zustand wird gespeichert',
-      'Android Fix: Nur CSS (kein globales touchend das Events blockiert)',
-      'Bugfix: e.preventDefault auf document entfernt (API-Key wieder stabil)',
-      'Datum automatisch: Juni 2026',
+      'Claude API zuerst (kein CORS-Problem auf iOS)',
+      'DeepL als Fallback wenn kein Claude-Key',
+      'Kein Key: Settings oeffnen sich automatisch',
+    ]
+  },
+
+  93: {
+    emoji: '🔧',
+    title: 'v9.3 - DeepL Bugfix: RU-UI + Worker-Fallback',
+    items: [
+      'DeepL: allorigins.win Proxy als erste Option (Worker hatte 403)',
+      'source_lang auto-detect wenn nicht explizit gesetzt',
+      'Fehlermeldung mit Hinweis auf eigenen API-Key',
+      'Settings-Tipp bei fehlgeschlagener Übersetzung',
+    ]
+  },
+
+  92: {
+    emoji: '🔧',
+    title: 'v9.2 - DeepL Bugfixes Schreiben RU-DE',
+    items: [
+      'DeepL Worker als erste Proxy-Option (kein CORS)',
+      'preloadDeeplBatch: Promise.resolve() wenn kein DeepL noetig',
+      'source_lang dynamisch aus Lernsprache statt fix DE',
+      'getTranslation + checkWrite korrekt async',
+    ]
+  },
+
+  91: {
+    emoji: '📋',
+    title: 'v9.1 - Tagesaufgaben + Bericht + Fixes',
+    items: [
+      'Tagesaufgaben: 5 Ziele, Streak-Award, Fortschrittsbalken',
+      'Woechentlicher Bericht mit 7-Tage-Balkendiagramm',
+      'EN Dialoge: arbeit + sozial vollstaendig',
+      'Nav 3 Level + Android CSS-Fix (kein globales touchend)',
     ]
   },
 
@@ -14808,7 +14880,16 @@ async function testDeeplKey() {
 async function _deeplFetch(key, jsonBody) {
   var url = DEEPL_API_URL;
   var proxies = [
-    // 1. Direkt mit Authorization Header
+    // 0. CORS-Proxy allorigins (zuverlaessig, kein Auth-Header-Problem)
+    function() {
+      var encoded = encodeURIComponent(url);
+      return fetch('https://api.allorigins.win/raw?url=' + encoded, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'DeepL-Auth-Key ' + key },
+        body: jsonBody
+      });
+    },
+    // 1. Direkt (funktioniert wenn CORS-Praeflight OK — z.B. native App)
     function() {
       return fetch(url, {
         method: 'POST',
@@ -14855,7 +14936,7 @@ async function _deeplFetch(key, jsonBody) {
       if (res && res.ok) return res;
     } catch(e) { /* weiter */ }
   }
-  throw new Error('DeepL nicht erreichbar — alle Proxy-Versuche fehlgeschlagen');
+  throw new Error('DeepL nicht erreichbar. Bitte eigenen API-Key in den Einstellungen eintragen (kostenlos auf deepl.com/pro-api)')
 }
 
 async function translateWithDeepl(text, targetLang, sourceLang) {
@@ -14863,11 +14944,9 @@ async function translateWithDeepl(text, targetLang, sourceLang) {
   if (deeplCache[cacheKey]) return deeplCache[cacheKey];
 
   var key = getDeeplKey();
-  var body = JSON.stringify({
-    text: [text],
-    target_lang: targetLang,
-    source_lang: sourceLang || 'DE'
-  });
+  var bodyObj = { text: [text], target_lang: targetLang };
+  if (sourceLang) bodyObj.source_lang = sourceLang;
+  var body = JSON.stringify(bodyObj);
 
   var response = await _deeplFetch(key, body);
   var data = await response.json();
@@ -15419,62 +15498,127 @@ function woNext(){woState.idx++;renderWO();}
 function calcPronScore(spoken,target){if(!spoken||!target)return 0;spoken=spoken.toLowerCase().trim();target=target.toLowerCase().trim();if(spoken===target)return 100;var s=spoken.split(''),t=target.split('');var dp=Array.from({length:s.length+1},function(_,i){return Array.from({length:t.length+1},function(_,j){return i===0?j:j===0?i:0;});});for(var i=1;i<=s.length;i++)for(var j=1;j<=t.length;j++)dp[i][j]=s[i-1]===t[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);return Math.round(Math.max(0,100*(1-dp[s.length][t.length]/Math.max(s.length,t.length))));}
 function showPronScore(score,spoken,target){var old=document.getElementById('pron-score-box');if(old)old.remove();var color=score>=80?'var(--accent3)':score>=50?'#f59e0b':'#ef4444';var emoji=score>=80?'🎉':score>=50?'👍':'💪';var msg=score>=80?'Ausgezeichnet!':score>=50?'Fast! Weiter üben.':'Nochmal versuchen.';var box=document.createElement('div');box.id='pron-score-box';box.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface);border:2px solid '+color+';border-radius:16px;padding:.75rem 1.25rem;text-align:center;z-index:999;min-width:220px;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:fadeIn .3s ease;';box.innerHTML='<div style="font-size:1.5rem;">'+emoji+'</div><div style="font-weight:800;font-size:1.4rem;color:'+color+';">'+score+'%</div><div style="font-size:.75rem;color:var(--muted);">'+msg+'</div><div style="font-size:.72rem;margin-top:.3rem;"><span style="color:var(--muted);">Gesagt: </span><span style="color:'+color+';">'+spoken+'</span></div><div style="font-size:.72rem;"><span style="color:var(--muted);">Ziel: </span>'+target+'</div><button onclick="this.parentNode.remove()" style="margin-top:.5rem;background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;">✕</button>';document.body.appendChild(box);setTimeout(function(){var b=document.getElementById('pron-score-box');if(b)b.remove();},5000);}
 
-
 // NAV LEVEL TOGGLE
-var NAV_LEVEL_STATE = { fortgeschritten: false, profi: false };
-
-function toggleNavLevel(level) {
-  NAV_LEVEL_STATE[level] = !NAV_LEVEL_STATE[level];
-  applyNavLevels();
-  try { localStorage.setItem('lingua_nav_levels', JSON.stringify(NAV_LEVEL_STATE)); } catch(e) {}
-}
-
-function applyNavLevels() {
-  ['fortgeschritten', 'profi'].forEach(function(level) {
-    var open = NAV_LEVEL_STATE[level];
-    var toggle = document.getElementById('nav-toggle-' + level);
-    if (toggle) toggle.classList.toggle('open', open);
-    document.querySelectorAll('.nav-btn[data-level="' + level + '"]').forEach(function(btn) {
-      btn.style.display = open ? '' : 'none';
-    });
+var NAV_LEVEL_STATE={fortgeschritten:false,profi:false};
+function toggleNavLevel(level){NAV_LEVEL_STATE[level]=!NAV_LEVEL_STATE[level];applyNavLevels();try{localStorage.setItem('lingua_nav_levels',JSON.stringify(NAV_LEVEL_STATE));}catch(e){}}
+function applyNavLevels(){
+  ['fortgeschritten','profi'].forEach(function(level){
+    var open=NAV_LEVEL_STATE[level];
+    var t=document.getElementById('nav-toggle-'+level);
+    if(t) t.classList.toggle('open',open);
+    document.querySelectorAll('.nav-btn[data-level="'+level+'"]').forEach(function(b){b.style.display=open?'':'none';});
   });
 }
-
-function initNavLevels() {
-  try {
-    var saved = JSON.parse(localStorage.getItem('lingua_nav_levels') || '{}');
-    if (saved.fortgeschritten) NAV_LEVEL_STATE.fortgeschritten = true;
-    if (saved.profi) NAV_LEVEL_STATE.profi = true;
-  } catch(e) {}
+function initNavLevels(){
+  try{var s=JSON.parse(localStorage.getItem('lingua_nav_levels')||'{}');if(s.fortgeschritten)NAV_LEVEL_STATE.fortgeschritten=true;if(s.profi)NAV_LEVEL_STATE.profi=true;}catch(e){}
   applyNavLevels();
-  var active = document.querySelector('.nav-btn.active');
-  if (active && active.dataset.level && active.dataset.level !== 'anfaenger') {
-    var lv = active.dataset.level;
-    if (!NAV_LEVEL_STATE[lv]) { NAV_LEVEL_STATE[lv] = true; applyNavLevels(); }
-  }
+  var a=document.querySelector('.nav-btn.active');
+  if(a&&a.dataset.level&&a.dataset.level!=='anfaenger'){var lv=a.dataset.level;if(!NAV_LEVEL_STATE[lv]){NAV_LEVEL_STATE[lv]=true;applyNavLevels();}}
 }
 
 // AUTO-DATE
-(function() {
-  var MD = ['Januar','Februar','Maerz','April','Mai','Juni',
-            'Juli','August','September','Oktober','November','Dezember'];
-  var MONTHS = ['Januar','Februar','März','April','Mai','Juni',
-                'Juli','August','September','Oktober','November','Dezember'];
-  var d = new Date();
-  var ds = MONTHS[d.getMonth()] + ' ' + d.getFullYear();
-  function apply() {
-    document.querySelectorAll('.build-date').forEach(function(el){ el.textContent = ds; });
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', apply);
-  } else {
-    apply();
-  }
-  window.BUILD_DATE = ds;
+(function(){
+  var M=['Januar','Februar','M\u00e4rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  var d=new Date();var ds=M[d.getMonth()]+' '+d.getFullYear();
+  function ap(){document.querySelectorAll('.build-date').forEach(function(el){el.textContent=ds;});}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',ap);}else{ap();}
+  window.BUILD_DATE=ds;
 })();
 
-checkAndShowChangelog()
-initNavLevels();;
+// TAGESAUFGABEN
+var DAILY_TASKS_DEF=[
+  {id:'v5',label:'5 Vokabeln lernen',       target:5,key:'dt_vocab'},
+  {id:'q3',label:'3 Quiz-Fragen',           target:3,key:'dt_quiz'},
+  {id:'d1',label:'1 Dialog abschliessen',   target:1,key:'dt_dialog'},
+  {id:'g3',label:'3 Lueckentexte loesen',   target:3,key:'dt_gapfill'},
+  {id:'w2',label:'2 Satzbau-Aufgaben',      target:2,key:'dt_wordorder'},
+];
+function getDTState(){
+  var today=new Date().toDateString();
+  try{
+    var s=JSON.parse(localStorage.getItem('lingua_daily_tasks')||'{}');
+    if(s.date!==today){s={date:today,progress:{}};localStorage.setItem('lingua_daily_tasks',JSON.stringify(s));}
+    return s;
+  }catch(e){return{date:today,progress:{}};}
+}
+function saveDTState(s){try{localStorage.setItem('lingua_daily_tasks',JSON.stringify(s));}catch(e){}}
+function incrementDailyTask(key,amount){
+  var s=getDTState();
+  if(!s.progress) s.progress={};
+  s.progress[key]=(s.progress[key]||0)+(amount||1);
+  var task=DAILY_TASKS_DEF.find(function(t){return t.key===key;});
+  if(task&&s.progress[key]>=task.target&&s.progress[key]-(amount||1)<task.target){
+    if(typeof addXP==='function') addXP(10);
+    if(typeof showToast==='function') showToast('\u2713 Aufgabe erledigt: '+task.label);
+  }
+  var allDone=DAILY_TASKS_DEF.every(function(t){return(s.progress[t.key]||0)>=t.target;});
+  if(allDone&&!s.streakAwarded){
+    s.streakAwarded=true;
+    if(typeof checkAndUpdateStreak==='function') checkAndUpdateStreak();
+    if(typeof showToast==='function') showToast('Alle Tagesaufgaben erledigt!');
+  }
+  saveDTState(s);
+  if(document.getElementById('dt-tasks')) initDailyTasks();
+}
+function initDailyTasks(){
+  var s=getDTState();
+  var dateEl=document.getElementById('dt-date');
+  if(dateEl){
+    var d=new Date(),dn=['So','Mo','Di','Mi','Do','Fr','Sa'],mn=['Jan','Feb','Mrz','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+    dateEl.textContent=dn[d.getDay()]+', '+d.getDate()+'. '+mn[d.getMonth()]+' '+d.getFullYear();
+  }
+  var el=document.getElementById('dt-tasks');if(!el) return;
+  var done=0;
+  el.innerHTML=DAILY_TASKS_DEF.map(function(task){
+    var p=(s.progress&&s.progress[task.key])||0,pct=Math.min(100,Math.round(p/task.target*100)),fin=p>=task.target;
+    if(fin) done++;
+    return '<div style="background:var(--surface2);border-radius:10px;padding:.6rem .75rem;border:1px solid '+(fin?'var(--accent3)':'var(--border)')+';">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;">'+
+      '<span style="font-size:.85rem;">'+task.label+'</span>'+
+      '<span style="font-size:.75rem;font-weight:700;color:'+(fin?'var(--accent3)':'var(--muted)')+';">'+(fin?'\u2713 Fertig':p+' / '+task.target)+'</span></div>'+
+      '<div style="background:var(--surface);border-radius:3px;height:4px;overflow:hidden;">'+
+      '<div style="height:100%;width:'+pct+'%;background:'+(fin?'var(--accent3)':'var(--accent)')+';border-radius:3px;"></div></div></div>';
+  }).join('');
+  var bar=document.getElementById('dt-bar');if(bar) bar.style.width=Math.round(done/DAILY_TASKS_DEF.length*100)+'%';
+  var sum=document.getElementById('dt-summary');
+  if(sum){if(done===DAILY_TASKS_DEF.length)sum.innerHTML='<span style="color:var(--accent3);font-weight:700;">Alle Aufgaben erledigt!</span>';else sum.textContent=done+' von '+DAILY_TASKS_DEF.length+' erledigt';}
+}
+
+// WOECHENTLICHER BERICHT
+function renderWeeklyReport(){
+  var xp=[],lbl=[],dn=['So','Mo','Di','Mi','Do','Fr','Sa'],today=new Date();
+  for(var i=6;i>=0;i--){
+    var d=new Date(today.getTime()-i*86400000),k='lingua_xp_'+d.toDateString(),v=0;
+    try{v=parseInt(localStorage.getItem(k)||'0');}catch(e){}
+    xp.push(v);lbl.push(dn[d.getDay()]);
+  }
+  var mx=Math.max.apply(null,xp.concat([1])),tot=xp.reduce(function(a,b){return a+b;},0),act=xp.filter(function(v){return v>0;}).length,best=Math.max.apply(null,xp);
+  var chart=document.getElementById('weekly-chart');
+  if(chart) chart.innerHTML=xp.map(function(v,i){
+    var h=Math.max(4,Math.round(v/mx*56)),col=i===6?'var(--accent)':v>0?'var(--accent3)':'var(--surface2)';
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="font-size:.6rem;color:var(--muted);">'+(v>0?v:'')+'</div><div style="width:100%;height:'+h+'px;background:'+col+';border-radius:3px 3px 0 0;"></div></div>';
+  }).join('');
+  var le=document.getElementById('weekly-labels');
+  if(le) le.innerHTML=lbl.map(function(l,i){return '<span style="flex:1;text-align:center;'+(i===6?'font-weight:700;color:var(--accent);':'')+'">'+l+'</span>';}).join('');
+  var xpE=document.getElementById('weekly-xp');if(xpE) xpE.textContent=tot;
+  var dE=document.getElementById('weekly-days');if(dE) dE.textContent=act+' / 7';
+  var bE=document.getElementById('weekly-best');if(bE) bE.textContent=best;
+}
+
+// XP-TRACKING PRO TAG
+(function(){
+  if(typeof addXP!=='function') return;
+  var _orig=addXP;
+  addXP=function(amount){
+    _orig(amount);
+    try{var k='lingua_xp_'+new Date().toDateString();localStorage.setItem(k,(parseInt(localStorage.getItem(k)||'0')+(amount||0)));}catch(e){}
+    if(amount===2) incrementDailyTask('dt_vocab',1);
+  };
+})();
+
+checkAndShowChangelog();
+initNavLevels();
+
 </script>
 </body>
 </html>
