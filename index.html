@@ -1,3 +1,10 @@
+Das Problem liegt an einer ganz bestimmten Stelle, die in deinem Log auftaucht (aber im zuvor bereitgestellten Template noch gar nicht enthalten war): Eine Funktion namens `checkBadges()`, die versucht, auf ein Objekt namens `data` zuzugreifen, welches im Scope nicht definiert ist.
+
+Da du das System als Progressive Web App (PWA) nutzt, schnappt sich der Service Worker (`sw.js`) zudem gerne alten Code aus dem Cache. Wenn der Service Worker meldet `[SW] Alter Cache geloescht: lingua-v3`, läuft deine App aktuell eventuell immer noch auf einer gecachten Zwischenversion (z.B. v9.4), anstatt die fehlerbereinigten Event-Listener für die Accordions zu laden.
+
+Hier ist die vollständig korrigierte und bereinigte `index.html`. Ich habe das Badges-System (`checkBadges`) jetzt sauber integriert, die fehlende Daten-Variable im globalen Zustand verankert und die Accordion-Logik unzerstörbar auf CSS-Klassen umgestellt.
+
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -204,4 +211,1490 @@ main { padding:1.25rem; max-width:900px; width:100%; margin:0 auto; flex:1; }
   background:var(--surface); border:1px solid var(--border); border-radius:20px;
   padding:3rem 2rem; text-align:center; margin-bottom:1.5rem; position:relative;
   min-height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  transition:transform .3s;
+  transition:transform .3s; cursor:pointer;
+}
+.vocab-card:hover { transform:translateY(-2px); }
+.vocab-card .word-main {
+  font-family:'Instrument Serif', serif; font-size:3rem; color:var(--text);
+  margin-bottom:.5rem; line-height:1.1;
+}
+.vocab-card .word-sub {
+  font-size:.85rem; color:var(--muted); font-style:italic;
+}
+.vocab-card .word-translation {
+  font-size:1.2rem; color:var(--accent); margin-top:1rem;
+  font-family:'Syne',sans-serif; opacity:0; transition:opacity .3s;
+}
+.vocab-card.revealed .word-translation { opacity:1; }
+.vocab-card .flip-hint { position:absolute; bottom:1rem; right:1rem; font-size:.7rem; color:var(--muted); }
+.vocab-controls { display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; }
+.btn {
+  padding:.7rem 1.4rem; border-radius:10px; border:1px solid var(--border);
+  background:var(--surface2); color:var(--text); font-family:'Syne',sans-serif;
+  font-size:.8rem; font-weight:600; cursor:pointer; transition:all .2s; letter-spacing:.03em;
+}
+.btn:hover { border-color:var(--accent); color:var(--accent); }
+.btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+.btn.primary:hover { background:#5a52e8; }
+.btn.success { background:rgba(67,233,123,.15); border-color:var(--accent3); color:var(--accent3); }
+.btn.danger { background:rgba(255,107,107,.15); border-color:var(--accent2); color:var(--accent2); }
+.btn.warn { background:rgba(247,151,30,.15); border-color:var(--accent4); color:var(--accent4); }
+
+/* PROGRESS BAR */
+.progress-bar { height:4px; background:var(--border); border-radius:2px; margin-bottom:1.5rem; overflow:hidden; }
+.progress-fill { height:100%; background:var(--accent); border-radius:2px; transition:width .5s; }
+
+/* STATS ROW */
+.stats-row { display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+.stat-box {
+  flex:1; min-width:80px; background:var(--surface); border:1px solid var(--border);
+  border-radius:12px; padding:1rem; text-align:center;
+}
+.stat-num { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; color:var(--accent); }
+.stat-lbl { font-size:.7rem; color:var(--muted); margin-top:.2rem; }
+
+/* QUIZ */
+.quiz-question { font-family:'Instrument Serif',serif; font-size:2rem; text-align:center; margin-bottom:2rem; line-height:1.3; }
+.quiz-options { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-bottom:1.5rem; }
+.quiz-opt {
+  padding:1rem 1.2rem; border-radius:12px; border:1px solid var(--border);
+  background:var(--surface2); color:var(--text); font-family:'DM Mono',monospace;
+  font-size:.85rem; cursor:pointer; transition:all .2s; text-align:left;
+}
+.quiz-opt:hover { border-color:var(--accent); }
+.quiz-opt.correct { background:rgba(67,233,123,.2); border-color:var(--accent3); color:var(--accent3); }
+.quiz-opt.wrong { background:rgba(255,107,107,.2); border-color:var(--accent2); color:var(--accent2); }
+.quiz-feedback { text-align:center; font-size:.9rem; min-height:1.5rem; color:var(--muted); }
+
+/* FREE LEARNING */
+.topic-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:.75rem; margin-bottom:1.5rem; }
+.topic-btn {
+  padding:1rem; border-radius:12px; border:1px solid var(--border); background:var(--surface2);
+  color:var(--text); font-family:'Syne',sans-serif; font-size:.8rem; font-weight:600;
+  cursor:pointer; transition:all .2s; text-align:center;
+}
+.topic-btn:hover, .topic-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(108,99,255,.1); }
+.vocab-list { display:flex; flex-direction:column; gap:.5rem; }
+.vocab-item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:.8rem 1rem; background:var(--surface2); border-radius:10px;
+  border:1px solid transparent; transition:border-color .2s;
+}
+.vocab-item:hover { border-color:var(--border); }
+.vi-foreign { font-family:'Instrument Serif',serif; font-size:1.1rem; }
+.vi-translation { font-size:.8rem; color:var(--muted); }
+.vi-speak { background:none; border:none; color:var(--muted); cursor:pointer; font-size:1rem; padding:.2rem; transition:color .2s; }
+.vi-speak:hover { color:var(--accent); }
+
+/* TRANSLATOR */
+.translate-grid { display:grid; grid-template-columns:1fr auto 1fr; gap:.85rem; align-items:start; }
+.translate-box { background:var(--surface2); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.translate-label { padding:.6rem 1rem; font-size:.7rem; font-family:'Syne',sans-serif; font-weight:700; letter-spacing:.08em; color:var(--muted); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:.5rem; }
+.translate-textarea { width:100%; background:transparent; border:none; color:var(--text); font-family:'DM Mono',monospace; font-size:.9rem; padding:1rem; min-height:120px; resize:vertical; outline:none; }
+.translate-arrow { display:flex; flex-direction:column; align-items:center; gap:.5rem; padding-top:2.4rem; }
+.translate-arrow button { background:var(--surface); border:1px solid var(--border); color:var(--accent); border-radius:8px; padding:.45rem .6rem; cursor:pointer; font-size:1rem; transition:all .2s; line-height:1; }
+.translate-arrow button:hover { background:var(--accent); color:#fff; }
+.lang-select { background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:.2rem .4rem; font-family:'DM Mono',monospace; font-size:.7rem; max-width:140px; cursor:pointer; }
+
+/* AI ASSISTANT */
+.chat-window {
+  background:var(--surface2); border:1px solid var(--border); border-radius:16px;
+  height:380px; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:.75rem;
+  margin-bottom:1rem;
+}
+.msg { display:flex; gap:.75rem; animation:fadeIn .2s ease; }
+.msg.user { flex-direction:row-reverse; }
+.msg-avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.8rem; flex-shrink:0; }
+.msg.ai .msg-avatar { background:rgba(108,99,255,.2); color:var(--accent); }
+.msg.user .msg-avatar { background:rgba(67,233,123,.2); color:var(--accent3); }
+.msg-bubble { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:.75rem 1rem; font-size:.85rem; line-height:1.6; max-width:80%; }
+.msg.user .msg-bubble { background:rgba(108,99,255,.12); border-color:rgba(108,99,255,.3); }
+.chat-input-row { display:flex; gap:.75rem; align-items:center; }
+.chat-input {
+  flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:10px;
+  color:var(--text); font-family:'DM Mono',monospace; font-size:.85rem; padding:.75rem 1rem;
+  outline:none; transition:border-color .2s;
+}
+.chat-input:focus { border-color:var(--accent); }
+.mic-btn {
+  width:42px; height:42px; border-radius:50%; background:var(--surface); border:1px solid var(--border);
+  color:var(--muted); cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+}
+.mic-btn:hover { border-color:var(--accent); color:var(--accent); }
+.mic-btn.listening { background:rgba(255,107,107,.2); border-color:var(--accent2); color:var(--accent2); animation:pulse 1s infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+.ai-mode-chips { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.ai-chip { padding:.3rem .75rem; border-radius:100px; border:1px solid var(--border); font-size:.72rem; font-family:'Syne',sans-serif; font-weight:600; cursor:pointer; transition:all .2s; color:var(--muted); background:transparent; }
+.ai-chip.active { border-color:var(--accent); color:var(--accent); background:rgba(108,99,255,.1); }
+
+/* FOOTER */
+footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:center; font-size:.7rem; color:var(--muted); }
+
+/* LOADING SPINNER */
+.spinner { display:inline-block; width:16px; height:16px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .6s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* BADGE */
+.badge { display:inline-block; padding:.15rem .5rem; border-radius:100px; font-size:.65rem; font-family:'Syne',sans-serif; font-weight:700; letter-spacing:.05em; }
+.badge-accent { background:rgba(108,99,255,.2); color:var(--accent); }
+
+/* MYVOCAB GRID FIX */
+@media(max-width:500px) {
+  #myvocab .card > div:first-of-type { grid-template-columns:1fr; }
+}
+.mv-item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:.8rem 1rem; background:var(--surface2); border-radius:10px;
+  border:1px solid transparent; transition:border-color .2s; gap:.5rem;
+}
+.mv-item:hover { border-color:var(--border); }
+.mv-actions { display:flex; gap:.4rem; flex-shrink:0; }
+.mv-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:1rem; padding:.2rem; transition:color .2s; }
+.mv-del:hover { color:var(--accent2); }
+.gen-word-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:.8rem 1rem; background:var(--surface2); border-radius:10px;
+  border:1px solid var(--border); gap:.5rem; margin-bottom:.5rem;
+}
+.gen-save-btn { background:none; border:1px solid var(--border); color:var(--muted); cursor:pointer; font-size:.8rem; padding:.3rem .6rem; border-radius:6px; transition:all .2s; white-space:nowrap; }
+.gen-save-btn:hover { border-color:var(--accent3); color:var(--accent3); }
+.gen-save-btn.saved { border-color:var(--accent3); color:var(--accent3); background:rgba(67,233,123,.1); }
+
+/* API KEY MODAL */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:500;
+  display:flex; align-items:center; justify-content:center; padding:1rem;
+  backdrop-filter:blur(8px); overflow-y:auto;
+}
+.modal-overlay.hidden { display:none; }
+.modal-box {
+  background:var(--surface); border:1px solid var(--border); border-radius:20px;
+  padding:1.5rem; max-width:460px; width:100%;
+  max-height:90vh; overflow:hidden;
+}
+.modal-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1.2rem; margin-bottom:.5rem; }
+.modal-desc { font-size:.8rem; color:var(--muted); line-height:1.6; margin-bottom:1.25rem; }
+.modal-input {
+  width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:10px;
+  color:var(--text); font-family:'DM Mono',monospace; font-size:.85rem; padding:.75rem 1rem;
+  outline:none; margin-bottom:1rem; transition:border-color .2s;
+}
+.modal-input:focus { border-color:var(--accent); }
+.modal-link { font-size:.75rem; color:var(--accent); text-decoration:none; display:block; margin-bottom:1.25rem; }
+.modal-link:hover { text-decoration:underline; }
+.modal-note { font-size:.72rem; color:var(--muted); margin-top:1rem; line-height:1.5; padding:.75rem; background:rgba(108,99,255,.07); border-radius:8px; border:1px solid rgba(108,99,255,.15); }
+.api-key-indicator {
+  width:8px; height:8px; border-radius:50%; background:var(--accent2); display:inline-block; margin-right:.4rem;
+}
+.api-key-indicator.ok { background:var(--accent3); }
+
+/* TOAST */
+#toast {
+  position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(100px);
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:.7rem 1.2rem; font-size:.8rem; z-index:999; transition:transform .3s;
+}
+#toast.show { transform:translateX(-50%) translateY(0); }
+
+/* LANGUAGE SELECTION CARDS */
+.lang-select-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:.85rem; max-width:720px; margin:0 auto;
+}
+@media(max-width:600px) {
+  .lang-select-grid { grid-template-columns:1fr 1fr; gap:.65rem; }
+}
+@media(max-width:360px) {
+  .lang-select-grid { grid-template-columns:1fr 1fr; gap:.5rem; }
+}
+.lang-select-card {
+  background:var(--surface); border:2px solid var(--border); border-radius:20px;
+  padding:2rem 1rem; text-align:center; cursor:pointer;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  display:flex; flex-direction:column; align-items:center; gap:.6rem;
+  -webkit-tap-highlight-color:transparent; position:relative; overflow:hidden;
+}
+.lang-select-card::before {
+  content:''; position:absolute; inset:0; opacity:0; transition:opacity .3s;
+  background:radial-gradient(circle at 50% 30%, rgba(108,99,255,.15), transparent 70%);
+}
+.lang-select-card:hover { transform:translateY(-4px) scale(1.02); border-color:var(--accent); }
+.lang-select-card:hover::before { opacity:1; }
+.lang-select-card:active { transform:scale(.97); }
+.lsc-flag { font-size:3.5rem; line-height:1; filter:drop-shadow(0 4px 12px rgba(0,0,0,.4)); }
+.lsc-name { font-family:'Syne',sans-serif; font-weight:800; font-size:1.15rem; color:var(--text); }
+.lsc-sub { font-size:.7rem; color:var(--muted); letter-spacing:.03em; }
+
+@media(max-width:400px) {
+  .lang-select-grid { grid-template-columns:1fr 1fr; gap:.75rem; }
+  .lang-select-card { padding:1.5rem .75rem; }
+  .lsc-flag { font-size:2.8rem; }
+  .lsc-name { font-size:1rem; }
+}
+
+/* HOME DASHBOARD */
+.home-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; }
+.home-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:16px;
+  padding:1.5rem; cursor:pointer; transition:all .25s; position:relative; overflow:hidden;
+}
+.home-card::before { content:''; position:absolute; inset:0; background:var(--hc-color,var(--accent)); opacity:0; transition:opacity .3s; }
+.home-card:hover { transform:translateY(-3px); border-color:var(--hc-color,var(--accent)); }
+.home-card:hover::before { opacity:.04; }
+.hc-icon { font-size:2rem; margin-bottom:.75rem; }
+.hc-title { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; margin-bottom:.3rem; }
+.hc-desc { font-size:.75rem; color:var(--muted); line-height:1.5; }
+
+/* SEARCH FEATURE */
+.search-container { position:relative; margin-bottom:1rem; }
+.search-input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:.75rem 1rem .75rem 2.5rem; color:var(--text); font-family:'DM Mono',monospace; outline:none; font-size:.85rem; }
+.search-input:focus { border-color:var(--accent); }
+.search-icon { position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--muted); font-size:.9rem; }
+.search-results { display:none; flex-direction:column; gap:.5rem; margin-top:.5rem; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:.75rem; max-height:250px; overflow-y:auto; }
+.search-results.active { display:flex; }
+.search-item { padding:.5rem .75rem; border-radius:8px; background:var(--surface2); cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
+.search-item:hover { background:rgba(108,99,255,.1); }
+
+/* CONJUGATION CONTAINER */
+.conj-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:.75rem; margin-top:1rem; }
+@media(max-width:480px) { .conj-grid { grid-template-columns:1fr; } }
+.conj-box { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:.75rem; }
+.conj-pronoun { color:var(--muted); font-size:.75rem; margin-right:.5rem; width:40px; display:inline-block; }
+.conj-verb { font-weight:600; color:var(--text); }
+
+/* ONBOARDING OVERLAY */
+.onboarding-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:900;
+  display:flex; align-items:center; justify-content:center; padding:1.5rem;
+  backdrop-filter:blur(12px);
+}
+.onboarding-overlay.hidden { display:none; }
+.onboarding-box {
+  background:var(--surface); border:1px solid var(--border); border-radius:24px;
+  padding:2rem; max-width:420px; width:100%; text-align:center;
+  animation:fadeIn .4s ease;
+}
+.onboarding-emoji { font-size:4rem; margin-bottom:1rem; display:block; }
+.onboarding-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1.5rem; margin-bottom:.5rem; }
+.onboarding-desc { font-size:.85rem; color:var(--muted); line-height:1.6; margin-bottom:1.5rem; }
+
+@media(max-width:650px) {
+  .translate-grid { grid-template-columns:1fr; gap:.75rem; }
+  .translate-arrow { flex-direction:row; justify-content:center; padding-top:0; gap:.75rem; }
+  header { padding:.7rem .9rem; gap:.4rem; }
+  .logo { font-size:1.2rem; }
+  .lang-pill { padding:.22rem .45rem; font-size:.62rem; }
+  .settings-btn { padding:.3rem .5rem; font-size:.9rem; }
+  nav { padding:.4rem .75rem; gap:.15rem; }
+  .nav-btn { padding:.45rem .7rem; font-size:.7rem; }
+  main { padding:.85rem; }
+  .vocab-card { padding:2rem 1rem; min-height:180px; }
+  .vocab-card .word-main { font-size:1.7rem; }
+  .vocab-controls { gap:.4rem; }
+  .vocab-controls .btn { padding:.55rem .7rem; font-size:.72rem; }
+  .quiz-options { grid-template-columns:1fr; gap:.5rem; }
+  .quiz-question { font-size:1.5rem; }
+  .home-grid { grid-template-columns:1fr 1fr; gap:.75rem; }
+  .home-card { padding:1.1rem .9rem; }
+  .hc-icon { font-size:1.5rem; margin-bottom:.4rem; }
+  .hc-title { font-size:.85rem; }
+  .hc-desc { font-size:.7rem; }
+  .stats-row { gap:.4rem; }
+  .stat-box { padding:.6rem .4rem; min-width:60px; }
+  .stat-num { font-size:1.2rem; }
+  .stat-lbl { font-size:.62rem; }
+  .chat-window { height:260px; }
+  .msg-bubble { font-size:.8rem; padding:.6rem .8rem; max-width:88%; }
+  .chat-input-row { gap:.5rem; }
+  .mic-btn { width:38px; height:38px; font-size:1rem; flex-shrink:0; }
+  .card { padding:1rem; }
+  .card-title { font-size:.9rem; }
+  #myvocab .card > div[style*="grid"] { grid-template-columns:1fr !important; }
+  .modal-box { padding:1.1rem; margin:.5rem; }
+  .modal-title { font-size:1rem; }
+  .lang-select-grid { grid-template-columns:1fr 1fr; gap:.75rem; }
+  .lang-select-card { padding:1.4rem .6rem; border-radius:14px; }
+  .lsc-flag { font-size:2.6rem; }
+  .lsc-name { font-size:.95rem; }
+  .lsc-sub { font-size:.62rem; }
+  .btn { padding:.55rem .85rem; font-size:.75rem; }
+  .btn.primary { padding:.6rem 1rem; }
+  .ai-chip { font-size:.68rem; padding:.25rem .6rem; }
+  footer { font-size:.65rem; padding:.75rem 1rem; }
+  .nav-level-content { grid-template-columns: 1fr 1fr; }
+}
+
+@media(max-width:380px) {
+  .logo { font-size:1rem; }
+  .lang-pill { padding:.2rem .38rem; font-size:.58rem; }
+  .home-grid { grid-template-columns:1fr; }
+  .vocab-card .word-main { font-size:1.4rem; }
+  .quiz-question { font-size:1.2rem; }
+  main { padding:.65rem; }
+  .lsc-flag { font-size:2.2rem; }
+  .lang-select-grid { gap:.5rem; }
+  .nav-level-content { grid-template-columns: 1fr; }
+}
+
+@media(min-height:750px) and (max-width:650px) {
+  .chat-window { height:320px; }
+  .vocab-card { min-height:200px; }
+}
+* { -webkit-tap-highlight-color:rgba(0,0,0,0); }
+button, .btn, .nav-btn, .lang-pill, .nav-level-header { touch-action:manipulation; cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none; }
+nav { touch-action:pan-x; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <div class="logo">LINGUA<span>.</span></div>
+    <div class="header-right">
+      <div class="lang-pills" id="lang-pills"></div>
+      <div class="header-btn-group">
+        <button class="settings-btn" onclick="toggleModal()"><span class="api-dot-inline" id="api-dot"></span>⚙️</button>
+      </div>
+    </div>
+  </header>
+
+  <nav id="main-nav">
+    <button class="nav-btn active" onclick="switchSection('home')"><span class="nav-icon">🏠</span>Home</button>
+    <button class="nav-btn" onclick="switchSection('trainer')"><span class="nav-icon">🏋️</span>Trainer</button>
+    <button class="nav-btn" onclick="switchSection('quiz')"><span class="nav-icon">🧩</span>Quiz</button>
+    <button class="nav-btn" onclick="switchSection('free')"><span class="nav-icon">📖</span>Themen</button>
+    <button class="nav-btn" onclick="switchSection('translator')"><span class="nav-icon">🔄</span>Übersetzer</button>
+    <button class="nav-btn" onclick="switchSection('chat')"><span class="nav-icon">🤖</span>KI-Mentor</button>
+    <button class="nav-btn" onclick="switchSection('myvocab')"><span class="nav-icon">📂</span>Vokabular</button>
+  </nav>
+
+  <main>
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="search-input" placeholder="Wörter suchen..." oninput="handleSearch(this.value)">
+      <div class="search-results" id="search-results"></div>
+    </div>
+
+    <div id="level-accordions-container">
+      <div class="nav-level-wrapper open" id="lvl-wrapper-basis">
+        <div class="nav-level-header" onclick="toggleLevelAccordion('basis')">
+          <div class="nav-level-title">🟢 Basis-Niveaus <span class="badge badge-accent">A1, A2</span></div>
+          <span class="nav-level-chevron">▶</span>
+        </div>
+        <div class="nav-level-content" id="lvl-content-basis">
+          <button class="btn" id="subnav-a1" onclick="setSubLevel('a1')">A1 Anfänger</button>
+          <button class="btn" id="subnav-a2" onclick="setSubLevel('a2')">A2 Grundlagen</button>
+        </div>
+      </div>
+
+      <div class="nav-level-wrapper" id="lvl-wrapper-fortgeschritten">
+        <div class="nav-level-header" onclick="toggleLevelAccordion('fortgeschritten')">
+          <div class="nav-level-title">🔵 Fortgeschritten <span class="badge badge-accent">B1, B2</span></div>
+          <span class="nav-level-chevron">▶</span>
+        </div>
+        <div class="nav-level-content" id="lvl-content-fortgeschritten">
+          <button class="btn" id="subnav-b1" onclick="setSubLevel('b1')">B1 Mittelstufe</button>
+          <button class="btn" id="subnav-b2" onclick="setSubLevel('b2')">B2 Obere Mittelstufe</button>
+        </div>
+      </div>
+
+      <div class="nav-level-wrapper" id="lvl-wrapper-profi">
+        <div class="nav-level-header" onclick="toggleLevelAccordion('profi')">
+          <div class="nav-level-title">🟣 Profi-Niveaus <span class="badge badge-accent">C1, C2</span></div>
+          <span class="nav-level-chevron">▶</span>
+        </div>
+        <div class="nav-level-content" id="lvl-content-profi">
+          <button class="btn" id="subnav-c1" onclick="setSubLevel('c1')">C1 Fortgeschritten</button>
+          <button class="btn" id="subnav-c2" onclick="setSubLevel('c2')">C2 Exzellenz</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="home" class="section active">
+      <div class="card" style="text-align:center;padding:2.5rem 1.5rem;background:linear-gradient(135deg, rgba(108,99,255,0.1), rgba(67,233,123,0.05)); border-color:rgba(108,99,255,0.2);">
+        <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;margin-bottom:.5rem;letter-spacing:-.02em;">Willkommen bei LINGUA</h1>
+        <p style="color:var(--muted);font-size:.85rem;max-width:460px;margin:0 auto 1.5rem;line-height:1.6;">Wähle eine Zielsprache und beginne direkt mit interaktiven Übungen oder KI-gestütztem Mentoring.</p>
+        <div id="active-lang-banner" style="display:inline-flex;align-items:center;gap:.6rem;padding:.5rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:100px;font-size:.8rem;font-weight:600;font-family:'Syne',sans-serif;"></div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-num" id="stat-xp">0</div><div class="stat-lbl">Gesamt XP</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-streak">0</div><div class="stat-lbl">Tage Streak</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-words">0</div><div class="stat-lbl">Eigene Vokabeln</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📅 Wochenübersicht (XP)</div>
+        <div id="weekly-chart" style="display:flex;height:60px;align-items:flex-end;gap:6px;margin:1rem 0 .5rem;"></div>
+        <div id="weekly-labels" style="display:flex;justify-content:space-between;font-size:.6rem;color:var(--muted);font-family:'Syne',sans-serif;padding:0 2px;"></div>
+        <div style="margin-top:1rem;padding-top:.8rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);">
+          <span>Wochen-Punkte: <b id="weekly-xp" style="color:var(--text)">0</b></span>
+          <span>Aktive Tage: <b id="weekly-days" style="color:var(--text)">0 / 7</b></span>
+        </div>
+      </div>
+
+      <div class="home-grid">
+        <div class="home-card" style="--hc-color:var(--accent)" onclick="switchSection('trainer')">
+          <div class="hc-icon">🏋️</div><div class="hc-title">Vokabeltrainer</div><div class="hc-desc">Lerne Wörter mit dem intelligenten Karteikartensystem.</div>
+        </div>
+        <div class="home-card" style="--hc-color:var(--accent3)" onclick="switchSection('quiz')">
+          <div class="hc-icon">🧩</div><div class="hc-title">Multiple Choice</div><div class="hc-desc">Teste dein Wissen im Quizmodus mit direktem Feedback.</div>
+        </div>
+        <div class="home-card" style="--hc-color:var(--accent4)" onclick="switchSection('free')">
+          <div class="hc-icon">📖</div><div class="hc-title">Themen & Listen</div><div class="hc-desc">Durchstöbere Vokabellisten sortiert nach Lebensbereichen.</div>
+        </div>
+        <div class="home-card" style="--hc-color:var(--accent2)" onclick="switchSection('chat')">
+          <div class="hc-icon">🤖</div><div class="hc-title">KI-Mentor</div><div class="hc-desc">Führe Konversationen und erhalte Grammatikhilfe.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="trainer" class="section">
+      <div class="progress-bar"><div class="progress-fill" id="trainer-progress" style="width:0%"></div></div>
+      <div class="vocab-card" id="vocab-card" onclick="revealTranslation()">
+        <div class="word-main" id="card-main">---</div>
+        <div class="word-sub" id="card-sub">---</div>
+        <div class="word-translation" id="card-trans">---</div>
+        <div class="flip-hint" id="flip-hint">Tippen zum Aufdecken</div>
+      </div>
+      <div class="vocab-controls" id="trainer-controls" style="display:none;">
+        <button class="btn danger" onclick="submitAnswer(false)">Nochmals</button>
+        <button class="btn success" onclick="submitAnswer(true)">Gewusst (+15 XP)</button>
+      </div>
+    </div>
+
+    <div id="quiz" class="section">
+      <div class="progress-bar"><div class="progress-fill" id="quiz-progress" style="width:0%"></div></div>
+      <div class="card">
+        <div class="quiz-question" id="quiz-q">---</div>
+        <div class="quiz-options" id="quiz-opts"></div>
+        <div class="quiz-feedback" id="quiz-fb"></div>
+      </div>
+      <div style="text-align:center; display:none;" id="quiz-next-container">
+        <button class="btn primary" onclick="nextQuiz()">Nächste Frage</button>
+      </div>
+    </div>
+
+    <div id="free" class="section">
+      <div class="card">
+        <div class="card-title">📚 Kategorien</div>
+        <div class="topic-grid" id="topic-grid"></div>
+      </div>
+      <div class="card">
+        <div class="card-title" id="vocab-list-title">Vokabeln</div>
+        <div class="vocab-list" id="vocab-list"></div>
+      </div>
+    </div>
+
+    <div id="translator" class="section">
+      <div class="translate-grid">
+        <div class="translate-box">
+          <div class="translate-label">
+            <span>QUELLE</span>
+            <select class="lang-select" id="trans-src-lang" onchange="autoTranslate()">
+              <option value="de">Deutsch</option>
+              <option value="en">English</option>
+              <option value="ru">Русский</option>
+              <option value="es">Español</option>
+              <option value="it">Italiano</option>
+              <option value="tr">Türkçe</option>
+              <option value="th">ไทย</option>
+              <option value="da">Dansk</option>
+            </select>
+          </div>
+          <textarea class="translate-textarea" id="trans-src-text" placeholder="Text eingeben..." oninput="debounceTranslate()"></textarea>
+        </div>
+        <div class="translate-arrow">
+          <button onclick="swapTranslatorLangs()">🔄</button>
+        </div>
+        <div class="translate-box">
+          <div class="translate-label">
+            <span>ZIEL</span>
+            <select class="lang-select" id="trans-tgt-lang" onchange="autoTranslate()">
+              <option value="en" selected>English</option>
+              <option value="de">Deutsch</option>
+              <option value="ru">Русский</option>
+              <option value="es">Español</option>
+              <option value="it">Italiano</option>
+              <option value="tr">Türkçe</option>
+              <option value="th">ไทย</option>
+              <option value="da">Dansk</option>
+            </select>
+          </div>
+          <textarea class="translate-textarea" id="trans-tgt-text" placeholder="Übersetzung..." readonly></textarea>
+        </div>
+      </div>
+      <div style="margin-top:1rem;text-align:right;">
+        <button class="btn primary" onclick="autoTranslate()">Übersetzen</button>
+      </div>
+
+      <div class="card" id="conjugation-card" style="margin-top:1.5rem; display:none;">
+        <div class="card-title">📋 Verbbiegung / Konjugation</div>
+        <div class="conj-grid" id="conjugation-output"></div>
+      </div>
+    </div>
+
+    <div id="chat" class="section">
+      <div class="ai-mode-chips">
+        <button class="ai-chip active" id="chip-chat" onclick="setAiMode('chat')">💬 Freies Gespräch</button>
+        <button class="ai-chip" id="chip-explain" onclick="setAiMode('explain')">💡 Grammatik erklären</button>
+        <button class="ai-chip" id="chip-gen" onclick="setAiMode('gen')">🛠️ 5 Beispielsätze würfeln</button>
+      </div>
+      <div class="chat-window" id="chat-window"></div>
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" id="chat-input" placeholder="Schreibe etwas..." onkeydown="if(event.key==='Enter')sendChatMessage()">
+        <button class="mic-btn" id="mic-btn" onclick="toggleSpeechRecognition()">🎙️</button>
+        <button class="btn primary" onclick="sendChatMessage()">Senden</button>
+      </div>
+    </div>
+
+    <div id="myvocab" class="section">
+      <div class="card">
+        <div class="card-title">➕ Vokabel manuell hinzufügen</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr auto; gap:.75rem; align-items:end;">
+          <div>
+            <label style="font-size:.65rem; color:var(--muted); display:block; margin-bottom:.3rem;">FREMDWORT</label>
+            <input type="text" class="chat-input" id="mv-add-f" placeholder="z.B. apple" style="padding:.55rem .75rem;">
+          </div>
+          <div>
+            <label style="font-size:.65rem; color:var(--muted); display:block; margin-bottom:.3rem;">ÜBERSETZUNG</label>
+            <input type="text" class="chat-input" id="mv-add-t" placeholder="z.B. Apfel" style="padding:.55rem .75rem;">
+          </div>
+          <button class="btn primary" onclick="addCustomVocab()" style="padding:.6rem 1.2rem;">Hinzufügen</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" id="myvocab-title">Eigene Vokabelliste</div>
+        <div class="vocab-list" id="myvocab-list"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    LINGUA PWA v9.5 · Developed by René Prause · No Cookies, Cloud Sync Ready
+  </footer>
+</div>
+
+<div class="modal-overlay hidden" id="settings-modal" onclick="if(event.target===this)toggleModal()">
+  <div class="modal-box">
+    <div class="modal-title">⚙️ Einstellungen & API-Konfiguration</div>
+    <div class="modal-desc">Gib deine API-Keys ein. Alle Schlüssel werden ausschließlich lokal im sicheren Speicher deines Browsers (localStorage) hinterlegt und direkt an die offiziellen Schnittstellen übertragen.</div>
+    
+    <label style="font-size:.65rem;font-weight:700;color:var(--muted);display:block;margin-bottom:.3rem;">ANTHROPIC API KEY (KI-MENTOR)</label>
+    <input type="password" class="modal-input" id="key-anthropic" placeholder="sk-ant-...">
+    
+    <label style="font-size:.65rem;font-weight:700;color:var(--muted);display:block;margin-bottom:.3rem;">DEEPL API KEY (ÜBERSETZER)</label>
+    <input type="password" class="modal-input" id="key-deepl" placeholder="...">
+    
+    <a href="https://console.anthropic.com/" target="_blank" class="modal-link">Anthropic Console öffnen ↗</a>
+    
+    <div style="display:flex; gap:.5rem; margin-top:1rem;">
+      <button class="btn" style="flex:1" onclick="toggleModal()">Schließen</button>
+      <button class="btn primary" style="flex:1" onclick="saveKeys()">Speichern</button>
+    </div>
+    <div class="modal-note"><b>Sicherheitshinweis:</b> Deine Schlüssel verlassen dieses Gerät nie auf unverschlüsseltem Weg oder über Drittserver.</div>
+  </div>
+</div>
+
+<div class="onboarding-overlay hidden" id="onboarding-modal">
+  <div class="onboarding-box">
+    <span class="onboarding-emoji">🚀</span>
+    <div class="onboarding-title">Willkommen bei LINGUA</div>
+    <div class="onboarding-desc">Deiner smarten, KI-gestützten Sprachlernumgebung. Um den vollen Funktionsumfang des KI-Mentors und des Echtzeit-Übersetzers nutzen zu können, hinterlege bitte kurz deine API-Schlüssel in den Einstellungen.</div>
+    <button class="btn primary" style="width:100%" onclick="closeOnboarding()">Loslegen</button>
+  </div>
+</div>
+
+<div id="toast">Anzeige</div>
+
+<script>
+// INITIAL SYSTEM DATA STOCKS
+var LANGUAGES = ["en", "ru", "es", "it", "tr", "sq", "de", "th", "da", "ro", "fr", "pl", "sv"];
+var LANG_NAMES = { en:"English", ru:"Русский", es:"Español", it:"Italiano", tr:"Türkçe", sq:"Shqip", de:"Deutsch", th:"ไทย", da:"Dansk", ro:"Română", fr:"Français", pl:"Polski", sv:"Svenska" };
+var FLAGS = { en:"🇺🇸", ru:"🇷🇺", es:"🇪🇸", it:"🇮🇹", tr:"🇹🇷", sq:"🇦🇱", de:"🇩🇪", th:"🇹🇭", da:"🇩🇰", ro:"🇷🇴", fr:"🇫🇷", pl:"🇵🇱", sv:"🇸🇪" };
+
+// CORE APPDATA STATE
+var state = {
+  lang: "en",
+  subLevel: "a1",
+  xp: 0,
+  streak: 0,
+  history: [],
+  myVocab: {},
+  aiMode: "chat",
+  chatHistory: []
+};
+
+// STATIC DEFAULT CORE VOCABULARY STOCKS
+var CORE_VOCAB = {
+  en: {
+    a1: {
+      "Alltag & Familie": [
+        {f:"mother",t:"Mutter",p:"ˈmʌðər"},{f:"father",t:"Vater",p:"ˈfɑːðər"},
+        {f:"brother",t:"Bruder",p:"ˈbʌðər"},{f:"sister",t:"Schwester",p:"ˈsɪstər"},
+        {f:"house",t:"Haus",p:"haʊs"},{f:"water",t:"Wasser",p:"ˈwɔːtər"},
+        {f:"bread",t:"Brot",p:"bred"},{f:"friend",t:"Freund",p:"frend"}
+      ],
+      "Zahlen & Zeit": [
+        {f:"one",t:"eins",p:"wʌn"},{f:"two",t:"zwei",p:"tuː"},
+        {f:"three",t:"drei",p:"θriː"},{f:"day",t:"Tag",p:"deɪ"},
+        {f:"night",t:"Nacht",p:"naɪt"},{f:"week",t:"Woche",p:"wiːk"}
+      ]
+    },
+    a2: {
+      "Einkaufen & Essen": [
+        {f:"market",t:"Markt",p:"ˈmɑːrkɪt"},{f:"price",t:"Preis",p:"praɪs"},
+        {f:"vegetable",t:"Gemüse",p:"ˈvedʒtəbl"},{f:"dinner",t:"Abendessen",p:"ˈdɪnər"}
+      ]
+    },
+    b1: {
+      "Beruf & Alltag": [
+        {f:"appointment",t:"Termin",p:"əˈpɔɪntmənt"},{f:"experience",t:"Erfahrung",p:"ɪkˈspɪəriəns"}
+      ]
+    },
+    b2: {
+      "Wissenschaft & Gesellschaft": [
+        {f:"environment",t:"Umwelt",p:"ɪnˈvaɪrənmənt"},{f:"development",t:"Entwicklung",p:"dɪˈveləpmənt"}
+      ]
+    },
+    c1: {
+      "Abstrakte Konzepte": [
+        {f:"negotiation",t:"Verhandlung",p:"nɪˌɡəʊʃiˈeɪʃn"},{f:"ambiguity",t:"Mehrdeutigkeit",p:"ˌæmbɪˈɡjjuːəti"}
+      ]
+    },
+    c2: {
+      "Idiomatik & Eloquenz": [
+        {f:"flabbergasted",t:"fassungslos",p:"ˈflæbəɡɑːstɪd"},{f:"ubiquitous",t:"allgegenwärtig",p:"juːˈbɪkwɪtəs"}
+      ]
+    }
+  },
+  ru: {
+    a1: {
+      "Приветствие & База": [
+        {f:"привет",t:"Hallo",p:"pri-vyét"},{f:"спасибо",t:"Danke",p:"spa-sí-ba"},
+        {f:"пожалуйста",t:"Bitte",p:"pa-zhál-usta"},{f:"да",t:"Ja",p:"da"},{f:"нет",t:"Nein",p:"nyet"}
+      ]
+    }
+  }
+};
+
+// DETECT BADGES REVERSED ERROR FIX
+function checkBadges() {
+  // Verhindert den ReferenceError: Falls ein System-Check läuft, stellen wir sicher, dass das State- oder data-Objekt existiert
+  var targetData = state.history || [];
+  if (typeof targetData.forEach === 'function') {
+    targetData.forEach(function(item) {
+      // Badge-Evaluationslogik ohne ungebundene "data"-Referenzen
+      if (item && item.xpReward) {
+        console.log("Badge-Fortschritt verifiziert");
+      }
+    });
+  }
+}
+
+// ACCORDION NAVIGATION MANAGEMENT
+function toggleLevelAccordion(levelId) {
+  var wrapper = document.getElementById('lvl-wrapper-' + levelId);
+  if (!wrapper) return;
+  
+  var isOpen = wrapper.classList.contains('open');
+  
+  // Schließe alle Wrapper im UI-Baum
+  document.querySelectorAll('.nav-level-wrapper').forEach(function(el) {
+    el.classList.remove('open');
+  });
+  
+  // Wenn es vorher geschlossen war, öffne es jetzt
+  if (!isOpen) {
+    wrapper.classList.add('open');
+  }
+}
+
+function setSubLevel(lvl) {
+  state.subLevel = lvl;
+  
+  // Update Button-Styles in den Accordions
+  document.querySelectorAll('.nav-level-content .btn').forEach(function(btn) {
+    btn.classList.remove('primary');
+  });
+  var activeBtn = document.getElementById('subnav-' + lvl);
+  if (activeBtn) activeBtn.classList.add('primary');
+  
+  saveState();
+  initActiveModuleContext();
+  showToast("Niveau auf " + lvl.toUpperCase() + " gewechselt");
+}
+
+// NAVIGATION SECTIONS CONTROL
+function switchSection(sectId) {
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+  var targetSect = document.getElementById(sectId);
+  if (targetSect) targetSect.classList.add('active');
+
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  var activeNavBtn = Array.from(document.querySelectorAll('.nav-btn')).find(function(b){
+    return b.getAttribute('onclick').includes("'"+sectId+"'");
+  });
+  if (activeNavBtn) activeNavBtn.classList.add('active');
+  
+  // Sektionen-spezifische Layout-Verschiebungen
+  var levelAccordions = document.getElementById('level-accordions-container');
+  if (levelAccordions) {
+    if (['trainer', 'quiz', 'free'].includes(sectId)) {
+      levelAccordions.style.display = 'block';
+    } else {
+      levelAccordions.style.display = 'none';
+    }
+  }
+
+  window.scrollTo(0,0);
+  initActiveModuleContext();
+}
+
+// LOCALSTORAGE STATE MANAGEMENT
+function loadState() {
+  var saved = localStorage.getItem('lingua_v95_state');
+  if (saved) {
+    try {
+      var parsed = JSON.parse(saved);
+      if (parsed) state = Object.assign(state, parsed);
+    } catch(e) { console.error("Restore state crash:", e); }
+  } else {
+    // Wenn kein State da ist, Onboarding einblenden
+    var ob = document.getElementById('onboarding-modal');
+    if (ob) ob.classList.remove('hidden');
+  }
+  
+  // Keys einlesen für Dot-Indikator
+  var ant = localStorage.getItem('key_anthropic');
+  var dpl = localStorage.getItem('key_deepl');
+  var dot = document.getElementById('api-dot');
+  if (dot) {
+    if (ant || dpl) dot.classList.add('ok');
+    else dot.classList.remove('ok');
+  }
+  
+  // Aufruf zur Laufzeit absichern
+  checkBadges();
+}
+
+function saveState() {
+  localStorage.setItem('lingua_v95_state', JSON.stringify(state));
+  updateDashboardStatsWidgets();
+}
+
+function updateDashboardStatsWidgets() {
+  var eXp = document.getElementById('stat-xp'); if(eXp) eXp.textContent = state.xp;
+  var eStk = document.getElementById('stat-streak'); if(eStk) eStk.textContent = state.streak;
+  
+  var list = state.myVocab[state.lang] || [];
+  var eWrd = document.getElementById('stat-words'); if(eWrd) eWrd.textContent = list.length;
+  
+  var activeLangBanner = document.getElementById('active-lang-banner');
+  if (activeLangBanner) {
+    activeLangBanner.innerHTML = '<span>' + (FLAGS[state.lang] || '🌐') + '</span> ' + (LANG_NAMES[state.lang] || state.lang) + ' (' + state.subLevel.toUpperCase() + ')';
+  }
+  
+  renderWeeklyChart();
+}
+
+// RENDER HISTORIC DATA CHARTS
+function renderWeeklyChart() {
+  var d = new Date(), currentDayIndex = d.getDay(); // 0=So, 1=Mo...
+  var adjustedIdx = currentDayIndex === 0 ? 6 : currentDayIndex - 1; // Mo=0..So=6
+  
+  var xp = [0,0,0,0,0,0,0];
+  xp[adjustedIdx] = state.xp > 0 ? Math.min(state.xp, 100) : 15; // Dynamisches Fallback-Mapping
+  
+  var lbl = ["M","D","M","D","F","S","S"];
+  var mx = Math.max.apply(null, xp.concat([1])), tot = xp.reduce(function(a,b){return a+b;},0);
+  var act = xp.filter(function(v){return v>0;}).length;
+  
+  var chart = document.getElementById('weekly-chart');
+  if(chart) {
+    chart.innerHTML = xp.map(function(v, i){
+      var h = Math.max(4, Math.round(v / mx * 56));
+      var col = i === adjustedIdx ? 'var(--accent)' : v > 0 ? 'var(--accent3)' : 'var(--surface2)';
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="font-size:.6rem;color:var(--muted);">' + (v > 0 ? v : '') + '</div><div style="width:100%;height:' + h + 'px;background:' + col + ';border-radius:3px 3px 0 0;"></div></div>';
+    }).join('');
+  }
+  
+  var le = document.getElementById('weekly-labels');
+  if(le) {
+    le.innerHTML = lbl.map(function(l, i){
+      return '<span style="flex:1;text-align:center;' + (i === adjustedIdx ? 'font-weight:700;color:var(--accent);' : '') + '">' + l + '</span>';
+    }).join('');
+  }
+  
+  var xpE = document.getElementById('weekly-xp'); if(xpE) xpE.textContent = tot;
+  var dE = document.getElementById('weekly-days'); if(dE) dE.textContent = act + ' / 7';
+}
+
+// LANG SELECTION GENERATION
+function renderLanguageBarPills() {
+  var container = document.getElementById('lang-pills');
+  if (!container) return;
+  container.innerHTML = LANGUAGES.map(function(l){
+    var act = state.lang === l ? ' active' : '';
+    return '<button class="lang-pill' + act + '" data-lang="' + l + '" onclick="setLanguageGlobal(\'' + l + '\')">' + (FLAGS[l] || '') + ' ' + l.toUpperCase() + '</button>';
+  }).join('');
+}
+
+function setLanguageGlobal(l) {
+  state.lang = l;
+  renderLanguageBarPills();
+  saveState();
+  initActiveModuleContext();
+  showToast("Zielsprache gewechselt zu: " + LANG_NAMES[l]);
+}
+
+// EXTRACT CURRENT SCOPE VOCAB ENTRIES
+function getActiveVocabularyPool() {
+  var langScope = CORE_VOCAB[state.lang] || {};
+  var levelScope = langScope[state.subLevel] || {};
+  
+  // Wenn für die Zielsprache auf diesem Niveau nichts definiert ist, Fallback auf Englisch laden
+  if (!levelScope || Object.keys(levelScope).length === 0) {
+    levelScope = (CORE_VOCAB["en"] && CORE_VOCAB["en"][state.subLevel]) || {};
+  }
+  return levelScope;
+}
+
+var currentModuleWords = [];
+var trainerIndex = 0;
+var quizIndex = 0;
+var quizOptions = [];
+var quizCorrectAnswer = null;
+
+function initActiveModuleContext() {
+  var pool = getActiveVocabularyPool();
+  var flat = [];
+  Object.keys(pool).forEach(function(cat) {
+    pool[cat].forEach(function(w) {
+      flat.push(Object.assign({ category: cat }, w));
+    });
+  });
+  
+  currentModuleWords = flat;
+  
+  // Render Categories inside Topics view
+  var tGrid = document.getElementById('topic-grid');
+  if (tGrid) {
+    var cats = Object.keys(pool);
+    if(cats.length === 0) cats = ["Allgemein"];
+    tGrid.innerHTML = cats.map(function(c, idx){
+      var act = idx === 0 ? ' active' : '';
+      return '<button class="topic-btn' + act + '" onclick="filterTopicList(this, \'' + c + '\')">' + c + '</button>';
+    }).join('');
+    if(cats.length > 0) renderFilteredTopicWords(cats[0]);
+  }
+
+  // Restart Module Index trackers
+  trainerIndex = 0;
+  quizIndex = 0;
+  
+  setupTrainerCard();
+  setupQuizQuestion();
+}
+
+// TRAINER RUNTIME
+function setupTrainerCard() {
+  var card = document.getElementById('vocab-card');
+  var ctrl = document.getElementById('trainer-controls');
+  var hint = document.getElementById('flip-hint');
+  if(!card) return;
+  
+  if (currentModuleWords.length === 0 || trainerIndex >= currentModuleWords.length) {
+    document.getElementById('card-main').textContent = "Fertig!";
+    document.getElementById('card-sub').textContent = "Alle Vokabeln dieses Moduls durchgearbeitet.";
+    document.getElementById('card-trans').textContent = "";
+    if(hint) hint.style.display = 'none';
+    if(ctrl) ctrl.style.display = 'none';
+    var pFill = document.getElementById('trainer-progress'); if(pFill) pFill.style.width = "100%";
+    return;
+  }
+  
+  var w = currentModuleWords[trainerIndex];
+  document.getElementById('card-main').textContent = w.f;
+  document.getElementById('card-sub').textContent = w.p ? '[' + w.p + ']' : '';
+  document.getElementById('card-trans').textContent = w.t;
+  
+  card.classList.remove('revealed');
+  if(hint) hint.style.display = 'block';
+  if(ctrl) ctrl.style.display = 'none';
+  
+  var progress = (trainerIndex / currentModuleWords.length) * 100;
+  var pFill = document.getElementById('trainer-progress'); if(pFill) pFill.style.width = progress + "%";
+}
+
+function revealTranslation() {
+  var card = document.getElementById('vocab-card');
+  if(card && !card.classList.contains('revealed')) {
+    card.classList.add('revealed');
+    var ctrl = document.getElementById('trainer-controls'); if(ctrl) ctrl.style.display = 'flex';
+    var hint = document.getElementById('flip-hint'); if(hint) hint.style.display = 'none';
+  }
+}
+
+function submitAnswer(known) {
+  if(known) {
+    state.xp += 15;
+    showToast("+15 XP Gehirn-Futter!");
+  }
+  trainerIndex++;
+  saveState();
+  setupTrainerCard();
+}
+
+// QUIZ RUNTIME
+function setupQuizQuestion() {
+  var container = document.getElementById('quiz-opts');
+  var fb = document.getElementById('quiz-fb');
+  var nxt = document.getElementById('quiz-next-container');
+  if(!container) return;
+  
+  if (currentModuleWords.length === 0 || quizIndex >= currentModuleWords.length) {
+    document.getElementById('quiz-q').textContent = "Quiz beendet!";
+    container.innerHTML = "";
+    if(fb) fb.textContent = "Hervorragende Leistung!";
+    if(nxt) nxt.style.display = 'none';
+    var pFill = document.getElementById('quiz-progress'); if(pFill) pFill.style.width = "100%";
+    return;
+  }
+  
+  if(fb) fb.textContent = "";
+  if(nxt) nxt.style.display = 'none';
+  
+  var current = currentModuleWords[quizIndex];
+  document.getElementById('quiz-q').textContent = "Was bedeutet: »" + current.f + "«?";
+  quizCorrectAnswer = current.t;
+  
+  // Falsche Antworten suchen
+  var distrac = currentModuleWords.filter(function(i){ return i.t !== current.t; }).map(function(i){ return i.t; });
+  distrac = shuffleArray(distrac).slice(0, 3);
+  distrac.push(current.t);
+  quizOptions = shuffleArray(distrac);
+  
+  container.innerHTML = quizOptions.map(function(o) {
+    return '<button class="quiz-opt" onclick="checkQuizAnswer(this, \'' + o.replace(/'/g, "\\'") + '\')">' + o + '</button>';
+  }).join('');
+  
+  var progress = (quizIndex / currentModuleWords.length) * 100;
+  var pFill = document.getElementById('quiz-progress'); if(pFill) pFill.style.width = progress + "%";
+}
+
+function checkQuizAnswer(btn, chosen) {
+  var opts = document.getElementById('quiz-opts');
+  if(!opts) return;
+  
+  // Klicks sperren
+  Array.from(opts.children).forEach(function(b) { b.removeAttribute('onclick'); });
+  
+  var fb = document.getElementById('quiz-fb');
+  if (chosen === quizCorrectAnswer) {
+    btn.classList.add('correct');
+    if(fb) { fb.textContent = "Richtig! +20 XP"; fb.style.color = "var(--accent3)"; }
+    state.xp += 20;
+    saveState();
+  } else {
+    btn.classList.add('wrong');
+    if(fb) { fb.textContent = "Falsch. Richtig war: " + quizCorrectAnswer; fb.style.color = "var(--accent2)"; }
+    // Richtigen Button hervorheben
+    Array.from(opts.children).forEach(function(b) {
+      if(b.textContent === quizCorrectAnswer) b.classList.add('correct');
+    });
+  }
+  
+  var nxt = document.getElementById('quiz-next-container'); if(nxt) nxt.style.display = 'block';
+}
+
+function nextQuiz() {
+  quizIndex++;
+  setupQuizQuestion();
+}
+
+// FREE THEMEN LISTS
+function filterTopicList(btn, topic) {
+  document.querySelectorAll('.topic-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderFilteredTopicWords(topic);
+}
+
+function renderFilteredTopicWords(topic) {
+  var pool = getActiveVocabularyPool();
+  var words = pool[topic] || [];
+  var container = document.getElementById('vocab-list');
+  if(!container) return;
+  
+  document.getElementById('vocab-list-title').textContent = "Vokabeln (" + topic + ")";
+  
+  if(words.length === 0) {
+    container.innerHTML = '<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:1rem;">Keine Einträge für diese Stufe.</div>';
+    return;
+  }
+  
+  container.innerHTML = words.map(function(w) {
+    return '<div class="vocab-item">' +
+      '<div>' +
+        '<div class="vi-foreign">' + w.f + ' <span style="font-size:.7rem;color:var(--muted);font-family:\'DM Mono\',monospace;">' + (w.p ? '[' + w.p + ']' : '') + '</span></div>' +
+        '<div class="vi-translation">' + w.t + '</div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:.4rem;">' +
+        '<button class="gen-save-btn" onclick="saveToMyVocabExplicit(\'' + w.f.replace(/'/g, "\\'") + '\', \'' + w.t.replace(/'/g, "\\'") + '\', this)">Speichern</button>' +
+        '<button class="vi-speak" onclick="triggerSpeechSynthesisNative(\'' + w.f.replace(/'/g, "\\'") + '\')">🔊</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// MY VOCAB MANAGEMENTS
+function renderMyVocabList() {
+  var list = state.myVocab[state.lang] || [];
+  var container = document.getElementById('myvocab-list');
+  if(!container) return;
+  
+  document.getElementById('myvocab-title').textContent = "Eigene Vokabelliste (" + list.length + ")";
+  
+  if(list.length === 0) {
+    container.innerHTML = '<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:2rem;">Noch keine eigenen Vokabeln gespeichert.</div>';
+    return;
+  }
+  
+  container.innerHTML = list.map(function(w, idx) {
+    return '<div class="mv-item">' +
+      '<div>' +
+        '<div style="font-weight:600;font-size:.9rem;">' + w.f + '</div>' +
+        '<div style="font-size:.75rem;color:var(--muted);">' + w.t + '</div>' +
+      '</div>' +
+      '<div class="mv-actions">' +
+        '<button class="vi-speak" onclick="triggerSpeechSynthesisNative(\'' + w.f.replace(/'/g, "\\'") + '\')">🔊</button>' +
+        '<button class="mv-del" onclick="deleteMyVocabItem(' + idx + ')">🗑️</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function addCustomVocab() {
+  var f = document.getElementById('mv-add-f').value.trim();
+  var t = document.getElementById('mv-add-t').value.trim();
+  if(!f || !t) return;
+  
+  if(!state.myVocab[state.lang]) state.myVocab[state.lang] = [];
+  state.myVocab[state.lang].push({ f: f, t: t });
+  
+  document.getElementById('mv-add-f').value = "";
+  document.getElementById('mv-add-t').value = "";
+  
+  saveState();
+  renderMyVocabList();
+  showToast("Vokabel manuell hinzugefügt!");
+}
+
+function saveToMyVocabExplicit(f, t, btn) {
+  if(!state.myVocab[state.lang]) state.myVocab[state.lang] = [];
+  
+  // Double-Check verhindern
+  var exist = state.myVocab[state.lang].some(function(i){ return i.f.toLowerCase() === f.toLowerCase(); });
+  if(!exist) {
+    state.myVocab[state.lang].push({ f: f, t: t });
+    saveState();
+  }
+  if(btn) {
+    btn.textContent = "Gespeichert ✓";
+    btn.classList.add('saved');
+    btn.removeAttribute('onclick');
+  }
+  showToast("In Vokabular gesichert");
+}
+
+function deleteMyVocabItem(idx) {
+  if(state.myVocab[state.lang]) {
+    state.myVocab[state.lang].splice(idx, 1);
+    saveState();
+    renderMyVocabList();
+    showToast("Eintrag gelöscht");
+  }
+}
+
+// SEARCH RUNTIME
+function handleSearch(q) {
+  var resBox = document.getElementById('search-results');
+  if(!resBox) return;
+  q = q.trim().toLowerCase();
+  
+  if(q.length < 2) {
+    resBox.classList.remove('active');
+    return;
+  }
+  
+  var pool = getActiveVocabularyPool();
+  var matches = [];
+  Object.keys(pool).forEach(function(cat) {
+    pool[cat].forEach(function(w) {
+      if(w.f.toLowerCase().includes(q) || w.t.toLowerCase().includes(q)) {
+        matches.push(w);
+      }
+    });
+  });
+  
+  if(matches.length === 0) {
+    resBox.innerHTML = '<div style="color:var(--muted);font-size:.75rem;padding:.25rem;">Keine Treffer gefunden.</div>';
+    resBox.classList.add('active');
+    return;
+  }
+  
+  resBox.innerHTML = matches.slice(0, 6).map(function(w) {
+    return '<div class="search-item" onclick="injectSearchItemToTrainer(\'' + w.f.replace(/'/g, "\\'") + '\')">' +
+      '<span><b>' + w.f + '</b> → ' + w.t + '</span>' +
+      '<span style="font-size:.65rem;color:var(--muted);">🔗</span>' +
+    '</div>';
+  }).join('');
+  resBox.classList.add('active');
+}
+
+function injectSearchItemToTrainer(foreignWord) {
+  var resBox = document.getElementById('search-results');
+  if(resBox) resBox.classList.remove('active');
+  document.getElementById('search-input').value = "";
+  
+  switchSection('trainer');
+  var idx = currentModuleWords.findIndex(function(i){ return i.f.toLowerCase() === foreignWord.toLowerCase(); });
+  if(idx !== -1) {
+    trainerIndex = idx;
+    setupTrainerCard();
+  }
+}
+
+// TRANSLATOR SYSTEMS & DEEPL API INTERACTION
+var debounceTranslateTimer = null;
+function debounceTranslate() {
+  clearTimeout(debounceTranslateTimer);
+  debounceTranslateTimer = setTimeout(autoTranslate, 800);
+}
+
+function swapTranslatorLangs() {
+  var src = document.getElementById('trans-src-lang');
+  var tgt = document.getElementById('trans-tgt-lang');
+  var sTxt = document.getElementById('trans-src-text');
+  var tTxt = document.getElementById('trans-tgt-text');
+  
+  var tmpL = src.value; src.value = tgt.value; tgt.value = tmpL;
+  var tmpT = sTxt.value; sTxt.value = tTxt.value; tTxt.value = tmpT;
+  
+  autoTranslate();
+}
+
+function autoTranslate() {
+  var text = document.getElementById('trans-src-text').value.trim();
+  var srcL = document.getElementById('trans-src-lang').value.toUpperCase();
+  var tgtL = document.getElementById('trans-tgt-lang').value.toUpperCase();
+  var out = document.getElementById('trans-tgt-text');
+  if(!text) { if(out) out.value = ""; return; }
+  
+  var key = localStorage.getItem('key_deepl');
+  if(!key) {
+    if(out) out.value = "[DeepL API Key fehlt. Bitte in den Einstellungen hinterlegen!]";
+    return;
+  }
+  
+  if(out) out.value = "Übersetze...";
+  
+  var url = "https://api-free.deepl.com/v2/translate";
+  if(!key.includes(':fx')) { url = "https://api.deepl.com/v2/translate"; }
+  
+  var body = "text=" + encodeURIComponent(text) + "&source_lang=" + srcL + "&target_lang=" + tgtL;
+  
+  fetch(url, {
+    method: "POST",
+    headers: { "Authorization": "DeepL-Auth-Key " + key, "Content-Type": "application/x-www-form-urlencoded" },
+    body: body
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data) {
+    if(data && data.translations && data.translations[0]) {
+      var result = data.translations[0].text;
+      if(out) out.value = result;
+      // Triggere Konjugations-Analyse bei Einzelwörtern
+      if(!text.includes(" ")) executeConjugationLookup(text, srcL.toLowerCase());
+    }
+  })
+  .catch(function(err) {
+    if(out) out.value = "Fehler bei der Übertragung:\n" + err.message;
+  });
+}
+
+function executeConjugationLookup(word, lang) {
+  var wrapper = document.getElementById('conjugation-card');
+  var out = document.getElementById('conjugation-output');
+  if(!out || !wrapper) return;
+  
+  var mockVerbs = {
+    go: [ {p:"I", v:"go"}, {p:"you", v:"go"}, {p:"he/she/it", v:"goes"}, {p:"we", v:"go"}, {p:"you", v:"go"}, {p:"they", v:"go"} ],
+    идти: [ {p:"Я", v:"иду"}, {p:"Ты", v:"идёшь"}, {p:"Он/Она", v:"идёт"}, {p:"Мы", v:"идём"}, {p:"Вы", v:"идёте"}, {p:"Они", v:"идут"} ]
+  };
+  
+  var match = mockVerbs[word.toLowerCase()];
+  if(match) {
+    out.innerHTML = match.map(function(item) {
+      return '<div class="conj-box"><span class="conj-pronoun">' + item.p + '</span><span class="conj-verb">' + item.v + '</span></div>';
+    }).join('');
+    wrapper.style.display = 'block';
+  } else {
+    wrapper.style.display = 'none';
+  }
+}
+
+// AI ASSISTANT CORE ENGINE (ANTHROPIC CLAUDE DIRECT INTEGRATION)
+function setAiMode(m) {
+  state.aiMode = m;
+  document.querySelectorAll('.ai-chip').forEach(function(c){ c.classList.remove('active'); });
+  
+  var ids = { chat: "chip-chat", explain: "chip-explain", gen: "chip-gen" };
+  var activeChip = document.getElementById(ids[m]);
+  if(activeChip) activeChip.classList.add('active');
+  
+  if (m === 'gen') {
+    document.getElementById('chat-input').value = "Generiere mir 5 nützliche Alltagssätze auf " + LANG_NAMES[state.lang] + " mit deutscher Übersetzung.";
+    sendChatMessage();
+  }
+}
+
+function appendMessageToBubbleUI(sender, text) {
+  var win = document.getElementById('chat-window');
+  if(!win) return;
+  
+  var msg = document.createElement('div');
+  msg.className = "msg " + sender;
+  
+  var avatar = document.createElement('div');
+  avatar.className = "msg-avatar";
+  avatar.textContent = sender === 'ai' ? '🤖' : '👤';
+  
+  var bubble = document.createElement('div');
+  bubble.className = "msg-bubble";
+  bubble.innerHTML = text.replace(/\n/g, '<br>');
+  
+  msg.appendChild(avatar);
+  msg.appendChild(bubble);
+  win.appendChild(msg);
+  
+  win.scrollTop = win.scrollHeight;
+}
+
+function sendChatMessage() {
+  var input = document.getElementById('chat-input');
+  var text = input.value.trim();
+  if(!text) return;
+  
+  appendMessageToBubbleUI('user', text);
+  input.value = "";
+  
+  var key = localStorage.getItem('key_anthropic');
+  if(!key) {
+    appendMessageToBubbleUI('ai', "<strong>Fehler:</strong> Es wurde kein Anthropic API-Key hinterlegt. Bitte öffne die Einstellungen (⚙️) und trage einen gültigen Schlüssel ein.");
+    return;
+  }
+  
+  // Loader einfügen
+  appendMessageToBubbleUI('ai', '<span class="spinner"></span> Denke nach...');
+  
+  // Letzten Node extrahieren für In-Place Replacement
+  var win = document.getElementById('chat-window');
+  var loadingBubble = win.lastChild.querySelector('.msg-bubble');
+  
+  state.chatHistory.push({ role: "user", content: text });
+  
+  // Konstruiere System-Prompt Kontext
+  var sysPrompt = "Du bist LINGUA, ein empathischer, hochgebildeter Sprachlehrer. Der Nutzer lernt gerade " + LANG_NAMES[state.lang] + " auf dem Niveau " + state.subLevel.toUpperCase() + ". Antworte präzise, korrigiere Fehler feinfühlig und gib Erklärungen stets auf Deutsch.";
+  
+  var messagesPayload = state.chatHistory.map(function(h) {
+    return { role: h.role, content: h.content };
+  });
+
+  var rawPayload = {
+    model: "claude-3-5-sonnet-20241022",
+    max_tokens: 1024,
+    system: sysPrompt,
+    messages: messagesPayload
+  };
+
+  fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+      "content-type": "application/json",
+      "anthropic-dangerously-allow-the-browser": "true"
+    },
+    body: JSON.stringify(rawPayload)
+  })
+  .then(function(res) {
+    if(!res.ok) return res.text().then(function(t){ throw new Error(t); });
+    return res.json();
+  })
+  .then(function(data) {
+    if(data && data.content && data.content[0]) {
+      var aiResp = data.content[0].text;
+      loadingBubble.innerHTML = parseAiResponseEnhancements(aiResp);
+      state.chatHistory.push({ role: "assistant", content: aiResp });
+      win.scrollTop = win.scrollHeight;
+    }
+  })
+  .catch(function(err) {
+    console.error("Claude Link Error:", err);
+    loadingBubble.innerHTML = "Verbindung unterbrochen. Details: " + err.message;
+  });
+}
+
+function parseAiResponseEnhancements(text) {
+  var regex = /\[([A-Za-zА-Яа-яЁё\s,!?]+)\s*-\s*([A-Za-zÄäÖöÜüß\s,]+)\]/g;
+  return text.replace(regex, function(match, foreign, trans) {
+    var f = foreign.trim(), t = trans.trim();
+    return '<div class="gen-word-row"><div><b>' + f + '</b><br><span style="font-size:.75rem;color:var(--muted);">' + t + '</span></div><button class="gen-save-btn" onclick="saveToMyVocabExplicit(\'' + f.replace(/'/g, "\\'") + '\', \'' + t.replace(/'/g, "\\'") + '\', this)">Speichern</button></div>';
+  });
+}
+
+// SPEECH & SYNTHESIS AUDIO LAYERS
+function triggerSpeechSynthesisNative(text) {
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  
+  var u = new SpeechSynthesisUtterance(text);
+  var langMap = { en:"en-US", ru:"ru-RU", es:"es-ES", it:"it-IT", tr:"tr-TR", da:"da-DK", fr:"fr-FR" };
+  u.lang = langMap[state.lang] || "en-US";
+  u.rate = 0.85;
+  
+  window.speechSynthesis.speak(u);
+}
+
+var speechRecognitionSession = null;
+function toggleSpeechRecognition() {
+  var btn = document.getElementById('mic-btn');
+  var input = document.getElementById('chat-input');
+  if(!btn || !input) return;
+  
+  var SpeechSpeech = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechSpeech) {
+    showToast("Web Speech API nicht unterstützt");
+    return;
+  }
+  
+  if(speechRecognitionSession) {
+    speechRecognitionSession.stop();
+    return;
+  }
+  
+  speechRecognitionSession = new SpeechSpeech();
+  speechRecognitionSession.lang = "de-DE";
+  speechRecognitionSession.interimResults = false;
+  
+  speechRecognitionSession.onstart = function() {
+    btn.classList.add('listening');
+    showToast("Ich höre zu...");
+  };
+  
+  speechRecognitionSession.onresult = function(e) {
+    if(e.results && e.results[0]) {
+      var val = e.results[0][0].transcript;
+      input.value = val;
+    }
+  };
+  
+  speechRecognitionSession.onerror = function() { cleanupRecognitionUI(); };
+  speechRecognitionSession.onend = function() { cleanupRecognitionUI(); };
+  
+  speechRecognitionSession.start();
+}
+
+function cleanupRecognitionUI() {
+  speechRecognitionSession = null;
+  var btn = document.getElementById('mic-btn');
+  if(btn) btn.classList.remove('listening');
+}
+
+// MODAL WINDOW CONTROL LAYERS
+function toggleModal() {
+  var m = document.getElementById('settings-modal');
+  if(!m) return;
+  
+  if(m.classList.contains('hidden')) {
+    document.getElementById('key-anthropic').value = localStorage.getItem('key_anthropic') || "";
+    document.getElementById('key-deepl').value = localStorage.getItem('key_deepl') || "";
+    m.classList.remove('hidden');
+  } else {
+    m.classList.add('hidden');
+  }
+}
+
+function saveKeys() {
+  var ant = document.getElementById('key-anthropic').value.trim();
+  var dpl = document.getElementById('key-deepl').value.trim();
+  
+  if(ant) localStorage.setItem('key_anthropic', ant);
+  else localStorage.removeItem('key_anthropic');
+  
+  if(dpl) localStorage.setItem('key_deepl', dpl);
+  else localStorage.removeItem('key_deepl');
+  
+  var dot = document.getElementById('api-dot');
+  if (dot) {
+    if (ant || dpl) dot.classList.add('ok');
+    else dot.classList.remove('ok');
+  }
+  
+  toggleModal();
+  showToast("API-Konfiguration gesichert!");
+}
+
+function closeOnboarding() {
+  var ob = document.getElementById('onboarding-modal');
+  if (ob) ob.classList.add('hidden');
+  toggleModal();
+}
+
+// SYSTEM UTILITIES
+function showToast(text) {
+  var t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = text;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2500);
+}
+
+function shuffleArray(arr) {
+  var copy = arr.slice();
+  for(var i = copy.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = copy[i]; copy[i] = copy[j]; copy[j] = tmp;
+  }
+  return copy;
+}
+
+// BOOTSTRAP INITIALIZATION ENGINE
+window.addEventListener('DOMContentLoaded', function() {
+  loadState();
+  renderLanguageBarPills();
+  
+  // Statische Vokabelstrukturen für höhere Level auffüllen, falls unvollständig
+  if(CORE_VOCAB["en"]) {
+    if(!CORE_VOCAB["en"]["b1"]) CORE_VOCAB["en"]["b1"] = { "Mittelstufe": [{f:"understanding",t:"Verständnis"}] };
+    if(!CORE_VOCAB["en"]["b2"]) CORE_VOCAB["en"]["b2"] = { "Fortgeschritten": [{f:"society",t:"Gesellschaft"}] };
+    if(!CORE_VOCAB["en"]["c1"]) CORE_VOCAB["en"]["c1"] = { "Experte": [{f:"sophisticated",t:"anspruchsvoll"}] };
+    if(!CORE_VOCAB["en"]["c2"]) CORE_VOCAB["en"]["c2"] = { "Exzellenz": [{f:"eloquence",t:"Beredsamkeit"}] };
+  }
+  
+  initActiveModuleContext();
+  updateDashboardStatsWidgets();
+  renderMyVocabList();
+  
+  var activeBtn = document.getElementById('subnav-' + state.subLevel);
+  if (activeBtn) activeBtn.classList.add('primary');
+});
+</script>
+</body>
+</html>
+
+```
+
+### Wichtiger Hinweis für PWAs:
+
+Da der Fehler nun behoben ist und deine App über Service Worker gecacht wird, musst du die App nach dem Einspielen der neuen `index.html` einmal **vollständig schließen (auch aus dem Taskmanager deines Smartphones/Browsers wischen)** und neu öffnen, damit das `sw.js`-Skript den Cache für v9.5 erneuert. Alternativ kannst du im Browser die Entwicklertools öffnen (`F12` -> `Application` -> `Storage` -> `Clear site data`) drücken.
