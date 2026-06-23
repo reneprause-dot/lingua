@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0a0a0f">
 <meta name="description" id="meta-description" content="LINGUA v5.1 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v9.5 · by René Prause</title>
+<title>LINGUA v9.6 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -510,7 +510,7 @@ footer { padding:1rem 2rem; border-top:1px solid var(--border); text-align:cente
 /* Android+NavLevel */
 *{-webkit-tap-highlight-color:rgba(0,0,0,0);}
 button,.btn,.nav-btn,.lang-pill,.nav-level-toggle{touch-action:manipulation;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;}
-nav{touch-action:pan-x;}
+nav{touch-action:auto;}
 .hidden{pointer-events:none!important;}
 .modal-overlay.hidden,.onboarding-overlay.hidden{pointer-events:none!important;display:none!important;}
 .nav-level-toggle{display:flex;align-items:center;gap:.35rem;background:none;border:none;border-left:2px solid var(--border);padding:.35rem .6rem;cursor:pointer;margin-left:.25rem;border-radius:0;flex-shrink:0;opacity:.75;transition:opacity .2s;}
@@ -675,7 +675,7 @@ nav{touch-action:pan-x;}
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v9.5</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v9.6</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -710,7 +710,7 @@ nav{touch-action:pan-x;}
     <button class="nav-btn" data-section="enniveau" data-level="anfaenger" onclick="switchSection('enniveau')"><span class="nav-icon">🇬🇧</span> EN Niveau</button>
     <button class="nav-btn" data-section="badges" data-level="anfaenger" onclick="switchSection('badges')"><span class="nav-icon">🏆</span> Abzeichen</button>
     <button class="nav-btn" data-section="stats" data-level="anfaenger" onclick="switchSection('stats')"><span class="nav-icon">📊</span> Statistiken</button>
-    <button class="nav-level-toggle" id="nav-toggle-fort" onclick="toggleNavLevel('fortgeschritten')">
+    <button type="button" class="nav-level-toggle" id="nav-toggle-fort" onclick="toggleNavLevel('fortgeschritten')">
       <span class="nav-toggle-icon">&#9658;</span>
       <span style="font-size:.65rem;font-weight:700;letter-spacing:.06em;">FORTGESCHRITTEN</span>
     </button>
@@ -722,7 +722,7 @@ nav{touch-action:pan-x;}
     <button class="nav-btn" data-section="srs" data-level="fortgeschritten" onclick="switchSection('srs')" data-hidden="1" style="display:none;"><span class="nav-icon">🧠</span> SRS</button>
     <button class="nav-btn" data-section="myvocab" data-level="fortgeschritten" onclick="switchSection('myvocab')" data-hidden="1" style="display:none;"><span class="nav-icon">⭐</span> Meine Vokabeln</button>
     <button class="nav-btn" data-section="conjugate" data-level="fortgeschritten" onclick="switchSection('conjugate')" data-hidden="1" style="display:none;"><span class="nav-icon">🔗</span> Konjugation</button>
-    <button class="nav-level-toggle" id="nav-toggle-profi" onclick="toggleNavLevel('profi')">
+    <button type="button" class="nav-level-toggle" id="nav-toggle-profi" onclick="toggleNavLevel('profi')">
       <span class="nav-toggle-icon">&#9658;</span>
       <span style="font-size:.65rem;font-weight:700;letter-spacing:.06em;">PROFI</span>
     </button>
@@ -1705,7 +1705,7 @@ nav{touch-action:pan-x;}
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v9.5</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v9.6</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Juni 2026</span>
   </footer>
 </div>
@@ -1873,7 +1873,7 @@ nav{touch-action:pan-x;}
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v9.5</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v9.6</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Juni 2026</span>
     </div>
 
@@ -1901,8 +1901,7 @@ nav{touch-action:pan-x;}
 <div id="toast"></div>
 
 <script>
-// ============================================================
-// VOCABULARY DATABASE – ERWEITERT (~400 Wörter pro Sprache)
+// ==================================// VOCABULARY DATABASE – ERWEITERT (~400 Wörter pro Sprache)
 // ============================================================
 const VOCAB = {
   ru: {
@@ -14017,8 +14016,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 95; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026;
-var BUILD_VERSION = '9.5'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 96; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026;
+var BUILD_VERSION = '9.6'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -14124,6 +14123,17 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
+  96: {
+    emoji: '🗂️',
+    title: 'v9.6 - Nav Toggle Fix (iOS)',
+    items: [
+      'nav touch-action pan-x entfernt (blockierte Toggle auf iOS)',
+      'type=button auf Toggle-Buttons',
+      'Direkte click+touchend Bindung in initNavLevels',
+      'applyNavLevels ID-Mapping korrigiert',
+    ]
+  },
+
   95: {
     emoji: '🔧',
     title: 'v9.5 - Offline Fix: 404 behoben',
@@ -15509,9 +15519,12 @@ function toggleNavLevel(level){NAV_LEVEL_STATE[level]=!NAV_LEVEL_STATE[level];ap
 function applyNavLevels(){
   ['fortgeschritten','profi'].forEach(function(level){
     var open=NAV_LEVEL_STATE[level];
-    var t=document.getElementById('nav-toggle-'+level);
+    var id=level==='fortgeschritten'?'fort':'profi';
+    var t=document.getElementById('nav-toggle-'+id);
     if(t) t.classList.toggle('open',open);
-    document.querySelectorAll('.nav-btn[data-level="'+level+'"]').forEach(function(b){b.style.display=open?'':'none';});
+    document.querySelectorAll('.nav-btn[data-level="'+level+'"]').forEach(function(b){
+      b.style.display=open?'':'none';
+    });
   });
 }
 function initNavLevels(){
@@ -15519,6 +15532,22 @@ function initNavLevels(){
   applyNavLevels();
   var a=document.querySelector('.nav-btn.active');
   if(a&&a.dataset.level&&a.dataset.level!=='anfaenger'){var lv=a.dataset.level;if(!NAV_LEVEL_STATE[lv]){NAV_LEVEL_STATE[lv]=true;applyNavLevels();}}
+  // Direkte Event-Bindung als Fallback fuer iOS (onclick allein reicht manchmal nicht)
+  ['fort','profi'].forEach(function(id){
+    var btn=document.getElementById('nav-toggle-'+id);
+    if(!btn) return;
+    var level=id==='fort'?'fortgeschritten':'profi';
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      toggleNavLevel(level);
+    });
+    // touchend fuer schnellere Reaktion auf iOS
+    btn.addEventListener('touchend',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      toggleNavLevel(level);
+    },{passive:false});
+  });
 }
 
 // AUTO-DATE
@@ -15622,6 +15651,29 @@ function renderWeeklyReport(){
 })();
 
 checkAndShowChangelog();
+initNavLevels();
+
+}).join('');
+  var xpE=document.getElementById('weekly-xp');if(xpE) xpE.textContent=tot;
+  var dE=document.getElementById('weekly-days');if(dE) dE.textContent=act+' / 7';
+  var bE=document.getElementById('weekly-best');if(bE) bE.textContent=best;
+}
+
+// XP-TRACKING PRO TAG
+(function(){
+  if(typeof addXP!=='function') return;
+  var _orig=addXP;
+  addXP=function(amount){
+    _orig(amount);
+    try{var k='lingua_xp_'+new Date().toDateString();localStorage.setItem(k,(parseInt(localStorage.getItem(k)||'0')+(amount||0)));}catch(e){}
+    if(amount===2) incrementDailyTask('dt_vocab',1);
+  };
+})();
+
+checkAndShowChangelog();
+initNavLevels();
+
+gelog();
 initNavLevels();
 
 </script>
