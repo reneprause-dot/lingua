@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0a0a0f">
 <meta name="description" id="meta-description" content="LINGUA v5.1 – KI-gestützte Sprachlern-App von René Prause">
 <meta name="author" content="René Prause">
-<title>LINGUA v9.6 · by René Prause</title>
+<title>LINGUA v9.7 · by René Prause</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -670,12 +670,17 @@ nav{touch-action:auto;}
 .psb-new { background:rgba(108,99,255,.2); color:var(--accent); }
 </style>
 
-<!-- SW verwaltet Cache selbst via activate-Handler -->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(regs) { regs.forEach(function(r){r.unregister();}); });
+}
+if (window.caches) { caches.keys().then(function(ns){ns.forEach(function(n){caches.delete(n);});}); }
+</script>
 </head>
 <body>
 <div id="app">
   <header>
-    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v9.6</span></div>
+    <div class="logo">LIN<span>GUA</span> <span style="font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.05em;" id="logo-version">v9.7</span></div>
     <div class="header-right">
       <div class="lang-pills">
         <button class="lang-pill" data-lang="sq">🇦🇱 SQ</button>
@@ -1705,7 +1710,7 @@ nav{touch-action:auto;}
   </div>
 
   <footer>
-    LINGUA <span id="footer-version">v9.6</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
+    LINGUA <span id="footer-version">v9.7</span> · KI-Sprachlern-App · <span id="footer-text">Dein Fortschritt wird lokal gespeichert</span>
     <span style="display:block;margin-top:.3rem;opacity:.6;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Juni 2026</span>
   </footer>
 </div>
@@ -1873,7 +1878,7 @@ nav{touch-action:auto;}
     </div>
 
     <div style="font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.5rem;">
-      LINGUA <span id="settings-version">v9.6</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
+      LINGUA <span id="settings-version">v9.7</span> · <span id="set-local-note">Alle Daten werden lokal gespeichert</span><br>
       <span style="opacity:.7;">Entwickelt von <strong style="color:var(--accent);">René Prause</strong> · Juni 2026</span>
     </div>
 
@@ -1901,7 +1906,8 @@ nav{touch-action:auto;}
 <div id="toast"></div>
 
 <script>
-// ==================================// VOCABULARY DATABASE – ERWEITERT (~400 Wörter pro Sprache)
+// ============================================================
+// VOCABULARY DATABASE – ERWEITERT (~400 Wörter pro Sprache)
 // ============================================================
 const VOCAB = {
   ru: {
@@ -10574,61 +10580,44 @@ function showFreeVocab(lang, topic) {
 // TRANSLATOR
 // ============================================================
 async function doTranslate() {
-  var text = document.getElementById('trans-input').value.trim();
+  const text = document.getElementById('trans-input').value.trim();
   if (!text) return;
-  var from = document.getElementById('trans-from').value;
-  var to   = document.getElementById('trans-to').value;
+  const from = document.getElementById('trans-from').value;
+  const to   = document.getElementById('trans-to').value;
   if (from === to) { showToast('Quell- und Zielsprache sind identisch.'); return; }
 
-  var fromName = LANG_NAMES[from] || from;
-  var toName   = LANG_NAMES[to]   || to;
-  var outEl = document.getElementById('trans-output');
-  var loadEl = document.getElementById('trans-loading');
+  const fromName = LANG_NAMES[from] || from;
+  const toName   = LANG_NAMES[to]   || to;
 
-  if (loadEl) loadEl.style.display = 'block';
-  if (outEl) outEl.value = '';
+  document.getElementById('trans-loading').style.display = 'block';
+  document.getElementById('trans-output').value = '';
 
-  var claudeKey = getApiKey();
+  // DeepL nutzen wenn beide Sprachen unterstützt werden
   var deeplFrom = DEEPL_LANG_MAP[from];
   var deeplTo   = DEEPL_LANG_MAP[to];
-  var result = null;
 
   try {
-    // Strategie 1: Claude API (kein CORS, funktioniert immer wenn Key gesetzt)
-    if (claudeKey) {
-      result = await callClaude({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 500,
-        system: 'You are a precise translator. Translate the given text from ' + fromName + ' to ' + toName + '. Output ONLY the translation, no explanations, no notes.',
-        messages: [{ role: 'user', content: text }]
-      });
-    }
-    // Strategie 2: DeepL (wenn kein Claude-Key, beide Sprachen unterstuetzt)
-    else if (deeplFrom && deeplTo) {
-      result = await translateWithDeepl(text, deeplTo, deeplFrom);
-    }
-    // Kein Key vorhanden
-    else {
-      if (outEl) outEl.value = '';
-      showToast('\uD83D\uDD11 Anthropic API-Key in Einstellungen eintragen.');
-      setTimeout(openSettings, 700);
-      if (loadEl) loadEl.style.display = 'none';
-      return;
-    }
-
-    if (result && outEl) outEl.value = result;
-
-  } catch(e) {
-    var msg = e.message || 'Fehler';
-    if (msg.includes('API-Key') || msg.includes('kein') || msg.includes('no_key')) {
-      if (outEl) outEl.value = '';
-      showToast('\uD83D\uDD11 Bitte API-Key in den Einstellungen eintragen.');
-      setTimeout(openSettings, 700);
+    if (deeplFrom && deeplTo) {
+      // translateWithDeepl nutzen (robuste Version mit mehreren Fallbacks)
+      var result = await translateWithDeepl(text, deeplTo, deeplFrom);
+      document.getElementById('trans-output').value = result;
     } else {
-      if (outEl) outEl.value = '\u26A0 ' + msg;
+      // Fallback: Claude für nicht-DeepL-Sprachen (sq, th)
+      const result = await callClaude({
+        model:'claude-sonnet-4-6', max_tokens:1000,
+        system:'Du bist ein praeziser Uebersetzer. Uebersetze den gegebenen Text von ' + fromName + ' nach ' + toName + '. Gib NUR die Uebersetzung aus, ohne Erklaerungen.',
+        messages:[{role:'user',content:text}]
+      });
+      document.getElementById('trans-output').value = result;
+    }
+  } catch(e) {
+    document.getElementById('trans-output').value = '⚠ ' + (e.message || 'Fehler');
+    // Hinweis auf Settings zeigen
+    if (e.message && e.message.includes('nicht erreichbar')) {
+      setTimeout(function(){ showToast('💡 Tipp: Eigenen DeepL-Key in Einstellungen eintragen'); }, 500);
     }
   }
-  if (loadEl) loadEl.style.display = 'none';
+  document.getElementById('trans-loading').style.display = 'none';
 }
 
 function swapLangs() {
@@ -14016,8 +14005,8 @@ function showOnboardingNow() {
 // BUILD_VERSION = die Version die für diesen BUILD gilt.
 // Bei jedem Deployment: BUILD +1, BUILD_VERSION +0.1
 // ============================================================
-var BUILD = 96; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026;
-var BUILD_VERSION = '9.6'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
+var BUILD = 97; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026; // Juni 2026;
+var BUILD_VERSION = '9.7'; // ← Beide Zeilen bei jedem Deploy anpassen (+1 / +0.1)
 
 // Version aus localStorage laden oder auf BUILD_VERSION setzen
 (function() {
@@ -14123,34 +14112,15 @@ function updateAllVersionDisplays() {
 // Bei jedem Deploy: neuen Eintrag mit aktuellem BUILD hinzufügen
 // ============================================================
 var CHANGELOG = {
-  96: {
+  97: {
     emoji: '🗂️',
-    title: 'v9.6 - Nav Toggle Fix (iOS)',
+    title: 'v9.7 - Nav Toggle Fix (final)',
     items: [
-      'nav touch-action pan-x entfernt (blockierte Toggle auf iOS)',
+      'initNavLevels 4x→1x bereinigt (verhinderte korrektes Toggling)',
+      'touchend+click Double-Fire entfernt (Toggle sprang sofort zurueck)',
+      'cloneNode verhindert Listener-Anhaeufen bei jedem Aufruf',
+      'nav touch-action auto statt pan-x',
       'type=button auf Toggle-Buttons',
-      'Direkte click+touchend Bindung in initNavLevels',
-      'applyNavLevels ID-Mapping korrigiert',
-    ]
-  },
-
-  95: {
-    emoji: '🔧',
-    title: 'v9.5 - Offline Fix: 404 behoben',
-    items: [
-      'SW-Cache-Cleaner im head entfernt (Ursache des 404)',
-      'SW Network-First (immer aktuelle Version laden)',
-      'sw.js: Cache lingua-v94, alle alten Caches werden geloescht',
-    ]
-  },
-
-  94: {
-    emoji: '🔄',
-    title: 'v9.4 - Uebersetzer: Claude primaer, kein CORS',
-    items: [
-      'Claude API zuerst (kein CORS-Problem auf iOS)',
-      'DeepL als Fallback wenn kein Claude-Key',
-      'Kein Key: Settings oeffnen sich automatisch',
     ]
   },
 
@@ -15519,34 +15489,34 @@ function toggleNavLevel(level){NAV_LEVEL_STATE[level]=!NAV_LEVEL_STATE[level];ap
 function applyNavLevels(){
   ['fortgeschritten','profi'].forEach(function(level){
     var open=NAV_LEVEL_STATE[level];
-    var id=level==='fortgeschritten'?'fort':'profi';
-    var t=document.getElementById('nav-toggle-'+id);
+    var t=document.getElementById('nav-toggle-'+level);
     if(t) t.classList.toggle('open',open);
-    document.querySelectorAll('.nav-btn[data-level="'+level+'"]').forEach(function(b){
-      b.style.display=open?'':'none';
-    });
+    document.querySelectorAll('.nav-btn[data-level="'+level+'"]').forEach(function(b){b.style.display=open?'':'none';});
   });
 }
 function initNavLevels(){
-  try{var s=JSON.parse(localStorage.getItem('lingua_nav_levels')||'{}');if(s.fortgeschritten)NAV_LEVEL_STATE.fortgeschritten=true;if(s.profi)NAV_LEVEL_STATE.profi=true;}catch(e){}
+  try{
+    var saved=JSON.parse(localStorage.getItem('lingua_nav_levels')||'{}');
+    if(saved.fortgeschritten) NAV_LEVEL_STATE.fortgeschritten=true;
+    if(saved.profi) NAV_LEVEL_STATE.profi=true;
+  }catch(e){}
   applyNavLevels();
-  var a=document.querySelector('.nav-btn.active');
-  if(a&&a.dataset.level&&a.dataset.level!=='anfaenger'){var lv=a.dataset.level;if(!NAV_LEVEL_STATE[lv]){NAV_LEVEL_STATE[lv]=true;applyNavLevels();}}
-  // Direkte Event-Bindung als Fallback fuer iOS (onclick allein reicht manchmal nicht)
-  ['fort','profi'].forEach(function(id){
-    var btn=document.getElementById('nav-toggle-'+id);
+  var activeBtn=document.querySelector('.nav-btn.active');
+  if(activeBtn&&activeBtn.dataset.level&&activeBtn.dataset.level!=='anfaenger'){
+    var lv=activeBtn.dataset.level;
+    if(!NAV_LEVEL_STATE[lv]){NAV_LEVEL_STATE[lv]=true;applyNavLevels();}
+  }
+  // cloneNode: entfernt alle alten Listener, verhindert Doppel-Toggle
+  ['fort','profi'].forEach(function(shortId){
+    var level=shortId==='fort'?'fortgeschritten':'profi';
+    var btn=document.getElementById('nav-toggle-'+shortId);
     if(!btn) return;
-    var level=id==='fort'?'fortgeschritten':'profi';
-    btn.addEventListener('click',function(e){
+    var fresh=btn.cloneNode(true);
+    btn.parentNode.replaceChild(fresh,btn);
+    fresh.addEventListener('click',function(e){
       e.stopPropagation();
       toggleNavLevel(level);
     });
-    // touchend fuer schnellere Reaktion auf iOS
-    btn.addEventListener('touchend',function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      toggleNavLevel(level);
-    },{passive:false});
   });
 }
 
@@ -15651,29 +15621,6 @@ function renderWeeklyReport(){
 })();
 
 checkAndShowChangelog();
-initNavLevels();
-
-}).join('');
-  var xpE=document.getElementById('weekly-xp');if(xpE) xpE.textContent=tot;
-  var dE=document.getElementById('weekly-days');if(dE) dE.textContent=act+' / 7';
-  var bE=document.getElementById('weekly-best');if(bE) bE.textContent=best;
-}
-
-// XP-TRACKING PRO TAG
-(function(){
-  if(typeof addXP!=='function') return;
-  var _orig=addXP;
-  addXP=function(amount){
-    _orig(amount);
-    try{var k='lingua_xp_'+new Date().toDateString();localStorage.setItem(k,(parseInt(localStorage.getItem(k)||'0')+(amount||0)));}catch(e){}
-    if(amount===2) incrementDailyTask('dt_vocab',1);
-  };
-})();
-
-checkAndShowChangelog();
-initNavLevels();
-
-gelog();
 initNavLevels();
 
 </script>
