@@ -1,6 +1,6 @@
 {
-  "name": "LINGUA",
-  "short_name": "LINGUA",
+  "name": "SemantiqAI",
+  "short_name": "SemantiqAI",
   "description": "KI-gestützte Sprachlern-App von René Prause",
   "start_url": "./index.html",
   "scope": "./",
